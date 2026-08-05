@@ -90,3 +90,37 @@ source, it flags it; it does not supply one.
 - **Authoring** = deciding what is true or intended.
 
 AI suggests. Researchers author. The canon (`canon/`) is authored content only.
+
+---
+
+## The Consistency Guardian
+
+Alongside its other work, AI holds a standing role: **Consistency Guardian**. As the
+repository grows, coherence decays unless something watches for it. The Guardian watches.
+
+It detects and reports:
+
+- **Contradictions** — two places asserting things that cannot both be true.
+- **Terminology drift** — the same concept named differently across files, or one term
+  used for two different concepts.
+- **Broken references** — links or paths that no longer resolve.
+- **Duplicated concepts** — the same idea defined authoritatively in more than one place,
+  violating one-source-of-truth.
+- **Orphan documents** — files nothing links to, or that link nowhere, cut off from the
+  repository's graph.
+
+### The Guardian detects; it does not decide
+
+The Guardian's output is a **report**, not a rewrite. It may fix pure form on its own — a
+broken link path, a reference to a moved file, an orphan reconnected by adding a link. It
+must **not** resolve a contradiction, reconcile drifted terminology, or collapse a
+duplicated concept by itself: choosing which of two claims is right, or which name is the
+true one, is authoring substance, and that is the researchers'. The Guardian surfaces the
+conflict and waits.
+
+### When it runs
+
+Whenever AI touches the repository, and on request. Findings that persist or need a
+decision are raised to the researchers — and, if they outlive a single session, logged as
+a question in [`../research/questions/`](../research/questions/) so they are not lost.
+

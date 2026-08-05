@@ -33,6 +33,9 @@ stay empty until the foundations in `canon/` and `research/` are ready.
 3. [`canon/roadmap.md`](canon/roadmap.md) — where we are and what comes next.
 4. [`ai/current_focus.md`](ai/current_focus.md) — what is actually being worked on today.
 
+The rest of the canon: [`ontology.md`](canon/ontology.md) and
+[`architecture.md`](canon/architecture.md).
+
 If you are an AI collaborator opening this repo cold, start at
 [`ai/README.md`](ai/README.md), and read [`ai/collaboration.md`](ai/collaboration.md)
 before touching anything.
