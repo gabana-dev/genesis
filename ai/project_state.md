@@ -13,8 +13,9 @@ something meaningful changes. Not a narrative — a status board.
 
 - Repository structure (`canon/`, `research/`, `ai/`, `src/`, `tests/`).
 - Collaboration contract with the provenance rule (`ai/collaboration.md`).
-- Canon scaffolds — structure, formats, and prompts only, no authored substance:
-  `vision`, `constitution`, `ontology`, `architecture`, `roadmap`.
+- `canon/vision.md` — **authored** (first foundation on the page).
+- Canon scaffolds still awaiting authored substance: `constitution`, `ontology`,
+  `architecture`, `roadmap`.
 - `research/` subfolders with their purpose-and-format READMEs.
 - Working-memory files in `ai/`.
 

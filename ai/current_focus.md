@@ -12,9 +12,9 @@ architecture work has begun (by rule).
 
 ## Immediate next step
 
-The canon scaffolds are structurally complete but substantively empty. The next move is
-the researchers', not AI's: begin authoring foundations — starting wherever you choose,
-though `canon/vision.md` is the usual root the rest hangs from.
+`canon/vision.md` is now authored — the first foundation is on the page. The remaining
+canon scaffolds (`constitution`, `ontology`, `architecture`) are still substantively
+empty and await the researchers' authorship. The next move is theirs, not AI's.
 
 ## Not in focus right now
 
