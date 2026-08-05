@@ -14,12 +14,12 @@ architecture work has begun (by rule).
 
 The canon scaffolds are structurally complete but substantively empty. The next move is
 the researchers', not AI's: begin authoring foundations — starting wherever you choose,
-though `docs/vision.md` is the usual root the rest hangs from.
+though `canon/vision.md` is the usual root the rest hangs from.
 
 ## Not in focus right now
 
 - Anything in `src/` or `tests/` — deferred by the one rule.
-- Populating `docs/` substance — that is authored by the researchers, not AI.
+- Populating `canon/` substance — that is authored by the researchers, not AI.
 
 ---
 

@@ -12,7 +12,7 @@ it before doing anything else.
 3. **[`current_focus.md`](current_focus.md)** — the single thing being worked on right now.
 4. **[`terminology.md`](terminology.md)** — the shorthand used across the repo.
 
-Then, for the substance of the project, go to the canon in [`../docs/`](../docs/).
+Then, for the substance of the project, go to the canon in [`../canon/`](../canon/).
 
 ## The purpose of this folder
 

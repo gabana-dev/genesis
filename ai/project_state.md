@@ -7,11 +7,11 @@ something meaningful changes. Not a narrative — a status board.
 
 ## Phase
 
-**Phase 0 — building the laboratory.** See [`../docs/roadmap.md`](../docs/roadmap.md).
+**Phase 0 — building the laboratory.** See [`../canon/roadmap.md`](../canon/roadmap.md).
 
 ## Exists
 
-- Repository structure (`docs/`, `research/`, `ai/`, `src/`, `tests/`).
+- Repository structure (`canon/`, `research/`, `ai/`, `src/`, `tests/`).
 - Collaboration contract with the provenance rule (`ai/collaboration.md`).
 - Canon scaffolds — structure, formats, and prompts only, no authored substance:
   `vision`, `constitution`, `ontology`, `architecture`, `roadmap`.

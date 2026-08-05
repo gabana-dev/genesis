@@ -32,6 +32,25 @@ the research. The researchers own its **substance**.
 
 ---
 
+## The three kinds of documents
+
+Every document in Genesis is one of three types. The type determines who writes it and who
+reviews it.
+
+| Type | Kind | Written by | Reviewed by | Lives in |
+|------|------|------------|-------------|----------|
+| **1** | **Research** | The researchers | Claude *edits* (form only) | `research/`, and the substance of `canon/` |
+| **2** | **Structure** | Mostly Claude | The researchers | scaffolds, `ai/`, formatting, links |
+| **3** | **Implementation** | Mostly Claude | The researchers | `src/`, `tests/` (not yet) |
+
+The distinction is authorship, not effort. In Type 1, the thinking is the researchers'
+and Claude only touches form. In Types 2 and 3, Claude may produce the material, but
+nothing is settled until the researchers review it. Reviewing is not rubber-stamping —
+Type 2 and Type 3 work is *proposed*, and stands only once accepted.
+
+This refines the form/substance division above; it does not replace it. Substance is
+always Type 1.
+
 ## The line, in one sentence
 
 If a change would alter *what Genesis believes, aims at, or means* — it is substance, and
@@ -45,7 +64,7 @@ or a directional option worth considering. That contribution is welcome — but 
 through the front door, not the back:
 
 - Propose it explicitly as a suggestion, labeled as such.
-- Never write it into `docs/` as if settled.
+- Never write it into `canon/` as if settled.
 - If the researchers want to keep it, they author it, or approve it, into the canon
   themselves.
 
@@ -54,7 +73,7 @@ An external or AI-originated idea that the researchers want on the table goes in
 
 ## Provenance — nothing enters the canon untraceable
 
-The canon in `docs/` holds *conclusions*, and every conclusion must be traceable to the
+The canon (`canon/`) holds *conclusions*, and every conclusion must be traceable to the
 thinking that earned it. Each adopted principle, ontology entry, or commitment carries a
 **Source** link back to the `research/decisions/` or `research/journal/` entry where it
 was reasoned.
@@ -70,4 +89,4 @@ source, it flags it; it does not supply one.
 - **Suggesting** = offering wording or structure the researcher can take or leave.
 - **Authoring** = deciding what is true or intended.
 
-AI suggests. Researchers author. The canon in `docs/` is authored content only.
+AI suggests. Researchers author. The canon (`canon/`) is authored content only.

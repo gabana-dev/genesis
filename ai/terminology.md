@@ -6,7 +6,7 @@ Shorthand used across the repository. Two kinds, kept separate on purpose.
   These describe *how we work* and are maintained by AI.
 - **Domain vocabulary** — terms Genesis reasons *about* (concepts of the mind, cognition,
   the project's substance). These are not defined here. They live in the
-  [`../docs/ontology.md`](../docs/ontology.md) canon and are authored by the researchers.
+  [`../canon/ontology.md`](../canon/ontology.md) canon and are authored by the researchers.
 
 Quick definitions belong here for orientation. Load-bearing, authoritative definitions
 belong in the ontology.
@@ -15,7 +15,7 @@ belong in the ontology.
 
 ## Process vocabulary
 
-**Canon** — the `docs/` folder. Slow-changing, authoritative content: what we currently
+**Canon** — the `canon/` folder. Slow-changing, authoritative content: what we currently
 believe and how we've agreed to work. Holds conclusions, each traceable to its source.
 
 **Living record** — the `research/` folder. Append-mostly, chronological. Where thinking
@@ -37,4 +37,4 @@ adopt it into the canon.
 
 ## Domain vocabulary
 
-See [`../docs/ontology.md`](../docs/ontology.md). Not defined here.
+See [`../canon/ontology.md`](../canon/ontology.md). Not defined here.

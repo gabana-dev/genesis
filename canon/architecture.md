@@ -13,7 +13,7 @@ architecture of the **mind** (deferred until the foundations earn it).
 
 *(Descriptive: how the research OS is currently organized. This describes what exists.)*
 
-- **`docs/`** — the canon. Slow-changing, authoritative. What we currently believe
+- **`canon/`** — the canon. Slow-changing, authoritative. What we currently believe
   (`vision`, `ontology`), how we govern the work (`constitution`), where we're headed
   (`roadmap`), and how it's built (this file).
 - **`research/`** — the living record, append-mostly:
@@ -27,7 +27,7 @@ architecture of the **mind** (deferred until the foundations earn it).
   foundations are ready.
 
 The flow: thinking accumulates in `research/`; when something stabilizes and the
-researchers adopt it, it graduates into the `docs/` canon; only what the canon supports
+researchers adopt it, it graduates into the `canon/` canon; only what the canon supports
 becomes `src/`.
 
 ---
@@ -35,7 +35,7 @@ becomes `src/`.
 ## Part B — The mind
 
 > Deferred. The cognitive architecture is not designed here yet, by rule. When the
-> foundations in `docs/` and `research/` are ready, its design is authored by the
+> foundations in `canon/` and `research/` are ready, its design is authored by the
 > researchers in this section.
 
 _(unwritten — see the one rule in the root [`README`](../README.md))_

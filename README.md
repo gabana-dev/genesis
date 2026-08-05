@@ -12,7 +12,7 @@ the laboratory: the structure, memory, and working discipline that a long resear
 effort needs before the first line of the mind is written.
 
 **The one rule right now:** do not implement cognitive architecture. `src/` and `tests/`
-stay empty until the foundations in `docs/` and `research/` are ready.
+stay empty until the foundations in `canon/` and `research/` are ready.
 
 ---
 
@@ -20,7 +20,7 @@ stay empty until the foundations in `docs/` and `research/` are ready.
 
 | Path | What it holds | Change rate |
 |------|---------------|-------------|
-| `docs/` | The canon. Stable, shared, authoritative — what we currently believe and how we've agreed to work. | Slow |
+| `canon/` | The canon. Stable, shared, authoritative — what we currently believe and how we've agreed to work. | Slow |
 | `research/` | The living record. Everything thought, tried, decided, and questioned — append-mostly, chronological. | Fast |
 | `ai/` | Working memory for AI collaborators — the state that must survive a session boundary. | Every session |
 | `src/` | The implementation. Empty by design. | Not yet |
@@ -28,9 +28,9 @@ stay empty until the foundations in `docs/` and `research/` are ready.
 
 ### Where to start reading
 
-1. [`docs/vision.md`](docs/vision.md) — the thesis. Why Genesis exists.
-2. [`docs/constitution.md`](docs/constitution.md) — the invariants that govern the project.
-3. [`docs/roadmap.md`](docs/roadmap.md) — where we are and what comes next.
+1. [`canon/vision.md`](canon/vision.md) — the thesis. Why Genesis exists.
+2. [`canon/constitution.md`](canon/constitution.md) — the invariants that govern the project.
+3. [`canon/roadmap.md`](canon/roadmap.md) — where we are and what comes next.
 4. [`ai/current_focus.md`](ai/current_focus.md) — what is actually being worked on today.
 
 If you are an AI collaborator opening this repo cold, start at
