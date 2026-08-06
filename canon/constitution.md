@@ -1,8 +1,9 @@
 # Constitution
 
-> Authored by the researchers. Claude maintains structure and links only — see
-> [`../ai/collaboration.md`](../ai/collaboration.md). **AI does not invent constitutional
-> principles.** **Status: empty scaffold** — format provided, principles unwritten.
+> **Type 1 · Research — scaffold.** The substance is authored by the researchers; Claude
+> maintains form only (structure, formatting, links) per the
+> [Governing Principle](../ai/collaboration.md#governing-principle). Status: empty scaffold —
+> format provided, principles unwritten.
 
 **Purpose:** The invariants that govern *how this project is conducted* — the discipline
 of the people building Genesis, not the cognition of the system being built. These are meant

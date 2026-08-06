@@ -1,8 +1,9 @@
 # Roadmap
 
-> Structure and formatting maintained by AI. **Research direction is authored by the
-> researchers** — see [`../ai/collaboration.md`](../ai/collaboration.md). AI does not
-> add or reorder phases beyond recording the factual work of building the laboratory.
+> Maintained by Claude (form only) per the
+> [Governing Principle](../ai/collaboration.md#governing-principle). Research direction —
+> including the phases below — is authored by the researchers; Claude records only the
+> factual status of laboratory work.
 
 **Purpose:** Where we are and what comes next. Honest about the present, prompted for the
 future.

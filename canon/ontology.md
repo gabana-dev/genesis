@@ -1,8 +1,9 @@
 # Ontology
 
-> Authored by the researchers. Claude maintains structure and links only — see
-> [`../ai/collaboration.md`](../ai/collaboration.md). **AI does not decide ontology.**
-> **Status: empty scaffold** — entry format provided, entries unwritten.
+> **Type 1 · Research — scaffold.** The substance is authored by the researchers; Claude
+> maintains form only (structure, formatting, links) per the
+> [Governing Principle](../ai/collaboration.md#governing-principle). Status: empty scaffold —
+> entry format provided, entries unwritten.
 
 **Purpose:** The controlled vocabulary and conceptual model of Genesis — the entities the
 project reasons about and how they relate. One authoritative definition per concept.
