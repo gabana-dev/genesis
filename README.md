@@ -34,6 +34,7 @@ stay empty until the foundations in `canon/` and `research/` are ready.
 3. [`canon/constitution.md`](canon/constitution.md) — the invariants that govern the project.
 4. [`canon/roadmap.md`](canon/roadmap.md) — where we are and what comes next.
 5. [`ai/current_focus.md`](ai/current_focus.md) — what is actually being worked on today.
+6. [`research/PROGRAM-STATUS.md`](research/PROGRAM-STATUS.md) — the milestone tracker.
 
 The rest of the canon: [`epistemology.md`](canon/epistemology.md),
 [`ontology.md`](canon/ontology.md), [`architecture.md`](canon/architecture.md), and

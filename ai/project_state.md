@@ -3,6 +3,10 @@
 A factual snapshot. What exists, what's in progress, what's blocked. Updated when
 something meaningful changes. Not a narrative — a status board.
 
+For milestone-level progress (what fraction of the epistemic foundation is done), see
+[`../research/PROGRAM-STATUS.md`](../research/PROGRAM-STATUS.md). This file tracks the same
+territory at session granularity — what changed most recently, not the overall count.
+
 ---
 
 ## Phase
@@ -16,18 +20,19 @@ something meaningful changes. Not a narrative — a status board.
 - `canon/vision.md`, `canon/research-methodology.md`, `canon/philosophical-foundations.md`,
   `canon/epistemology.md` — **authored**.
 - Canon scaffolds still awaiting authored substance: `constitution`, `ontology`,
-  `architecture`, `roadmap`.
+  `architecture` (Part B).
 - `research/` subfolders with their purpose-and-format READMEs.
-- `research/hypotheses/` — format README + 5 named hypothesis scaffolds (0001–0005),
-  all awaiting authored claims.
+- `research/hypotheses/` — 14-section Standard Hypothesis Structure (README).
+  `0001-quality-of-knowing.md` **authored, active**. `0002`–`0005` still scaffolds.
 - `research/conceptual-landscape.md` — **authored** (8-layer conceptual map, living
   document, distinct from ontology/glossary).
+- `research/PROGRAM-STATUS.md` — milestone tracker, new.
 - Working-memory files in `ai/`.
 
 ## In progress
 
-- Nothing actively. The laboratory scaffold is in place; the ball is with the
-  researchers to begin authoring foundations.
+- `0002`–`0005` hypotheses (scaffolded, unwritten).
+- Canon scaffolds: `constitution`, `ontology`, `architecture` Part B.
 
 ## Blocked / waiting
 
