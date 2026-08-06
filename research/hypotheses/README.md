@@ -56,10 +56,8 @@ One file per hypothesis: `NNNN-short-slug.md`. Each contains:
 
 ## Index
 
-*Scaffolds below are awaiting authorship — structure only, no claims written.*
-
-- [0001 · Quality of Knowing](0001-quality-of-knowing.md)
-- [0002 · Emergence](0002-emergence.md)
-- [0003 · Time](0003-time.md)
-- [0004 · Context](0004-context.md)
-- [0005 · Belief Revision](0005-belief-revision.md)
+- [0001 · Quality of Knowing](0001-quality-of-knowing.md) — **active**
+- [0002 · Emergence](0002-emergence.md) — scaffold, unwritten
+- [0003 · Time](0003-time.md) — scaffold, unwritten
+- [0004 · Context](0004-context.md) — scaffold, unwritten
+- [0005 · Belief Revision](0005-belief-revision.md) — scaffold, unwritten
