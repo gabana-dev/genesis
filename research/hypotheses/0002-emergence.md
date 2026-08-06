@@ -13,6 +13,9 @@ _(unwritten)_
 ## Why This Matters
 _(unwritten)_
 
+## Scope
+_(unwritten)_
+
 ## Initial Hypothesis
 _(unwritten — we suspect X but haven't tested it)_
 

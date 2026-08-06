@@ -24,17 +24,19 @@ sections, in order:
 1. **Status** — open | active | supported | weakening | rejected (→ link)
 2. **Central Question** — the question the hypothesis answers.
 3. **Why This Matters** — what turns on it; what changes in Genesis if it's right or wrong.
-4. **Initial Hypothesis** — what we suspect, stated plainly.
-5. **Current Observations** — what motivated the hypothesis. Not yet evidence.
-6. **Alternative Explanations** — competing possibilities, taken seriously.
-7. **Current Evidence** — what has actually been found. Often "none yet."
-8. **Candidate Experiments** — what would test it. Link entries in
+4. **Scope** — what this hypothesis does and does not attempt to investigate. Keeps the
+   inquiry disciplined and prevents research sprawl into adjacent questions.
+5. **Initial Hypothesis** — what we suspect, stated plainly.
+6. **Current Observations** — what motivated the hypothesis. Not yet evidence.
+7. **Alternative Explanations** — competing possibilities, taken seriously.
+8. **Current Evidence** — what has actually been found. Often "none yet."
+9. **Candidate Experiments** — what would test it. Link entries in
    [`../experiments/`](../experiments/) once committed.
-9. **Implications** — what changes in Genesis if the hypothesis holds.
-10. **Confidence** — how strongly held, and why.
-11. **What Would Change Our Minds?** — the falsification conditions, stated in advance.
-12. **Open Questions** — what remains unresolved even if the hypothesis is confirmed.
-13. **Revision History** — versioned log of how the hypothesis has changed.
+10. **Implications** — what changes in Genesis if the hypothesis holds.
+11. **Confidence** — how strongly held, and why.
+12. **What Would Change Our Minds?** — the falsification conditions, stated in advance.
+13. **Open Questions** — what remains unresolved even if the hypothesis is confirmed.
+14. **Revision History** — versioned log of how the hypothesis has changed.
 
 See [`0001-quality-of-knowing.md`](0001-quality-of-knowing.md) for the structure in use.
 

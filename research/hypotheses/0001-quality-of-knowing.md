@@ -31,6 +31,16 @@ If it proves fruitful, it may become the central organizing principle of the ent
 
 ---
 
+## Scope
+
+This hypothesis investigates the nature of adaptive knowing.
+
+It does not attempt to define intelligence as a whole, nor does it propose implementation strategies.
+
+Those questions belong elsewhere in the research program.
+
+---
+
 ## Initial Hypothesis
 
 The quality of knowing is not determined by the quantity of information a system possesses, nor solely by its predictive accuracy.
