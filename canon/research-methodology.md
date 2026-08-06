@@ -211,6 +211,32 @@ Every canonical concept remains open to future revision through this same method
 
 ---
 
+## The Epistemic Lifecycle
+
+Canon, Hypotheses, Experiments, and Decisions are often treated as folders.
+
+They are not merely folders.
+
+They are stages in the evolution of a claim's relationship to evidence.
+
+The Canon asks what we currently believe.
+
+The Hypotheses ask what we are trying to discover.
+
+The Experiments ask what happened when reality answered.
+
+The Decisions ask what changed because of that.
+
+A claim does not skip these stages.
+
+It cannot enter the Canon without having first been at risk as a Hypothesis.
+
+It cannot become a Decision without having first been tested.
+
+This is the epistemic lifecycle through which every claim in Genesis must pass before it is trusted.
+
+---
+
 ## Confidence
 
 Genesis distinguishes confidence from certainty.
