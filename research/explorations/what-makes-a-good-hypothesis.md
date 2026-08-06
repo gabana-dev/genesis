@@ -48,6 +48,10 @@ Scope protects inquiry.
 
 ## A good hypothesis can be challenged
 
+> *Authoritative exploration of challengeability — referenced from
+> [`canon/research-methodology.md`](../../canon/research-methodology.md#3-hypothesis),
+> which keeps its own treatment concise and points here for depth.*
+
 Every hypothesis should invite disagreement.
 
 A useful question is:

@@ -128,6 +128,10 @@ Every hypothesis should clearly state:
 
 A hypothesis that cannot, even in principle, be challenged provides little research value.
 
+For a deeper discussion of what makes a hypothesis scientifically useful — including
+challengeability, uncertainty reduction, and scope — see
+[`research/explorations/what-makes-a-good-hypothesis.md`](../research/explorations/what-makes-a-good-hypothesis.md).
+
 ---
 
 ### 4. Experiment
