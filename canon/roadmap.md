@@ -1,9 +1,9 @@
 # Roadmap
 
 > Maintained by Claude (form only) per the
-> [Governing Principle](../ai/collaboration.md#governing-principle). Research direction —
-> including the phases below — is authored by the researchers; Claude records only the
-> factual status of laboratory work.
+> [Governing Principle](../ai/collaboration.md#governing-principle). **Type: mixed** — the
+> research direction (the phases) is Type-1, authored by the researchers; the factual
+> Phase-0 status is Type-2, recorded by Claude.
 
 **Purpose:** Where we are and what comes next. Honest about the present, prompted for the
 future.

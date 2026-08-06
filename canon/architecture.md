@@ -1,7 +1,9 @@
 # Architecture
 
-> Structure and links maintained by AI. The architecture of the *system* is authored by the
-> researchers — see [`../ai/collaboration.md`](../ai/collaboration.md).
+> Maintained by Claude (form only) per the
+> [Governing Principle](../ai/collaboration.md#governing-principle). **Type: mixed** — Part A
+> (the laboratory) is Type-2, Claude-authored and factual; Part B (the architecture of the
+> system) is Type-1, authored by the researchers.
 
 **Purpose:** How things are built. Two parts, deliberately separate: the architecture of
 the **laboratory** (this repository and its workflow, which exists now) and the
@@ -14,10 +16,11 @@ architecture of the **system** (deferred until the foundations earn it).
 *(Descriptive: how the research OS is currently organized. This describes what exists.)*
 
 - **`canon/`** — the canon. Slow-changing, authoritative. What we currently believe
-  (`vision`, `ontology`), how we govern the work (`constitution`), where we're headed
-  (`roadmap`), and how it's built (this file).
+  (`vision`, `ontology`), how we govern the work (`constitution`), how the lab reasons
+  (`research-methodology`), where we're headed (`roadmap`), and how it's built (this file).
 - **`research/`** — the living record, append-mostly:
   - `journal/` — chronological thinking.
+  - `hypotheses/` — what we suspect but haven't tested (distinct from decisions).
   - `decisions/` — decision records (what was chosen and why).
   - `experiments/` — things tried and what they showed.
   - `external_ideas/` — imported ideas, marked unadopted until the researchers decide.
@@ -27,7 +30,7 @@ architecture of the **system** (deferred until the foundations earn it).
   foundations are ready.
 
 The flow: thinking accumulates in `research/`; when something stabilizes and the
-researchers adopt it, it graduates into the `canon/` canon; only what the canon supports
+researchers adopt it, it graduates into the `canon/`; only what the canon supports
 becomes `src/`.
 
 ---
