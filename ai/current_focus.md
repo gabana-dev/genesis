@@ -6,20 +6,47 @@
 
 ## Now
 
-**Phase 0 — building the laboratory.** Establishing the research operating system: the
-directory structure, the canon scaffolds, and the collaboration contract. No cognitive
-architecture work has begun (by rule).
+**Research mode.** The Research OS (Phase 0's laboratory-building) is functionally
+complete: collaboration contract, Guardian, research methodology, program status,
+conceptual landscape, and the hypothesis framework are all in place. Genesis has moved
+from building the environment to using it. Everything remaining is substantive — no
+more framework, scaffolding, or process design.
+
+## The research cycle
+
+Every cycle now follows:
+
+```
+Question → Contemplation (researchers + Claude) → Draft (researchers) →
+Guardian Review (Claude) → Revision → Accepted Research
+```
+
+Claude's role in Contemplation is to sharpen and pressure-test — surface tensions,
+point at what the conceptual landscape or canon already implies, check whether a
+question is well-formed. Not to steer toward an answer. That boundary is the same
+form/substance line as always ([`collaboration.md`](collaboration.md)), extended one
+step earlier in the cycle than before.
+
+## How the next question is chosen
+
+Not "what should we investigate next," as a sequence of topics. The selection
+criterion is: **what question, if answered, would most reduce our uncertainty about
+Genesis?** Research direction is an optimization of understanding, not a checklist to
+work through in order.
 
 ## Immediate next step
 
-`canon/vision.md` is now authored — the first foundation is on the page. The remaining
-canon scaffolds (`constitution`, `ontology`, `architecture`) are still substantively
-empty and await the researchers' authorship. The next move is theirs, not AI's.
+Five open hypotheses remain: `0002` Emergence, `0003` Time, `0004` Context, `0005`
+Belief Revision — plus `canon/constitution.md`, `canon/ontology.md`, and
+`canon/architecture.md` Part B still unwritten. Which of these gets taken up next is
+decided by the criterion above, not by list order. That choice belongs to the
+researchers.
 
 ## Not in focus right now
 
 - Anything in `src/` or `tests/` — deferred by the one rule.
-- Populating `canon/` substance — that is authored by the researchers, not AI.
+- Any further changes to the framework itself (collaboration contract, hypothesis
+  structure, Guardian role) — considered stable as of this transition.
 
 ---
 
