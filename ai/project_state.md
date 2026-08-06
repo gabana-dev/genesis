@@ -13,8 +13,8 @@ something meaningful changes. Not a narrative — a status board.
 
 - Repository structure (`canon/`, `research/`, `ai/`, `src/`, `tests/`).
 - Collaboration contract with the provenance rule (`ai/collaboration.md`).
-- `canon/vision.md`, `canon/research-methodology.md`, `canon/philosophical-foundations.md`
-  — **authored**.
+- `canon/vision.md`, `canon/research-methodology.md`, `canon/philosophical-foundations.md`,
+  `canon/epistemology.md` — **authored**.
 - Canon scaffolds still awaiting authored substance: `constitution`, `ontology`,
   `architecture`, `roadmap`.
 - `research/` subfolders with their purpose-and-format READMEs.
