@@ -9,8 +9,14 @@
 **Research mode.** The Research OS (Phase 0's laboratory-building) is functionally
 complete: collaboration contract, Guardian, research methodology, program status,
 conceptual landscape, and the hypothesis framework are all in place. Genesis has moved
-from building the environment to using it. Everything remaining is substantive — no
-more framework, scaffolding, or process design.
+from building the environment to using it.
+
+Correction to an earlier version of this note: "no more framework, scaffolding, or
+process design" turned out not to hold — `research/explorations/` was added afterward as
+a new structural category (investigations into research method, distinct from both
+hypotheses and canon). Minor, necessary structural additions are still possible; what's
+closed is large framework changes to the core apparatus (collaboration contract,
+hypothesis structure, Guardian role, provenance rule).
 
 ## The research cycle
 
@@ -36,11 +42,20 @@ work through in order.
 
 ## Immediate next step
 
-Five open hypotheses remain: `0002` Emergence, `0003` Time, `0004` Context, `0005`
-Belief Revision — plus `canon/constitution.md`, `canon/ontology.md`, and
-`canon/architecture.md` Part B still unwritten. Which of these gets taken up next is
-decided by the criterion above, not by list order. That choice belongs to the
-researchers.
+One pending decision, waiting on the researchers: a request to create
+`research/explorations/what-changes-when-understanding-improves.md` was declined,
+because it asked Claude to originate the exploration's philosophical content itself
+(map dimensions, tensions, competing possibilities) rather than format existing
+researcher content — a Governing Principle violation, not a formatting question.
+Two ways to proceed: (1) Claude scaffolds it empty, researchers author later, or
+(2) Contemplation now — researchers state the actual dimensions, Claude helps
+structure them, flagged as Claude-drafted-from-researcher-framing for review, same
+treatment as the Epistemic Lifecycle section.
+
+Beyond that: `0002` Emergence (one seed captured), `0003` Time, `0004` Context, `0005`
+Belief Revision, `canon/constitution.md`, `canon/ontology.md`, and
+`canon/architecture.md` Part B remain open. Selection is by the uncertainty-reduction
+criterion above, not list order. That choice belongs to the researchers.
 
 ## Not in focus right now
 

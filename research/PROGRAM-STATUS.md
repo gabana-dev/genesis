@@ -29,10 +29,10 @@ framework-building into research mode — see
 
 ## Status
 
-`10 / 17 milestones complete`
+`11 / 18 milestones complete`
 
 ```
-██████░░░░ 59%
+██████░░░░ 61%
 ```
 
 *(Derived from the counts below — completed ÷ total. Not a fixed figure; recompute when
@@ -46,6 +46,8 @@ the lists change.)*
 - [x] Program Status (this document)
 - [x] Conceptual Landscape (`research/conceptual-landscape.md`)
 - [x] Hypothesis Framework (`research/hypotheses/README.md`)
+- [x] Explorations Framework (`research/explorations/README.md`) — a category added
+  after the Research OS was first marked complete; see note below
 
 ## Completed — Genesis Theory
 
@@ -54,9 +56,21 @@ the lists change.)*
 - [x] Epistemology (`canon/epistemology.md`)
 - [x] 0001 · Quality of Knowing (`research/hypotheses/0001-quality-of-knowing.md`) — active
 
+## In Progress
+
+- [ ] 0002 · Emergence — one seed captured (`Current Observations`: the holon/heterarchy
+  candidate framing), 13 of 14 fields still unwritten. Not yet a formed hypothesis.
+
+## Completed — Explorations
+
+*Neither Research OS nor Genesis Theory — explorations investigate method, not belief.
+Not tracked as required milestones the way canon docs and hypotheses are; listed here for
+visibility since they're real, finished artifacts.*
+
+- [x] What Makes a Good Hypothesis (`research/explorations/what-makes-a-good-hypothesis.md`)
+
 ## Remaining
 
-- [ ] 0002 · Emergence
 - [ ] 0003 · Time
 - [ ] 0004 · Context
 - [ ] 0005 · Belief Revision
@@ -67,6 +81,12 @@ the lists change.)*
 Selection among these is not by list order. Per the research-mode operating principle
 (see [`../ai/current_focus.md`](../ai/current_focus.md)): the next item taken up is
 whichever question, if answered, would most reduce uncertainty about Genesis.
+
+> Note: the Research OS was marked complete before `explorations/` existed as a category.
+> Explorations don't fit cleanly into the Research OS / Genesis Theory split — they're
+> about how Genesis researches, not what it believes or how the lab is structured.
+> Left as a visible third grouping rather than force-fit into either track; the
+> researchers may want to formalize that split explicitly.
 
 ---
 
