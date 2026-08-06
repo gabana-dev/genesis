@@ -29,8 +29,9 @@ territory at session granularity — what changed most recently, not the overall
 - `research/PROGRAM-STATUS.md` — milestone tracker, new.
 - `research/explorations/` — `what-makes-a-good-hypothesis.md` and
   `patterns-emerging-across-investigations.md`, both authored.
-- `research/journal/` — first two entries, dated 2026-08-06: the Belief/Context
-  interpretive collision, and the Reception/Update computational-primitives derivation.
+- `research/journal/` — three entries, dated 2026-08-06: the Belief/Context interpretive
+  collision, the Reception/Update computational-primitives derivation, and the
+  reality/resistance/action thread (ends on the constitutive-vs-installed caring fork).
   Previously empty; a real gap now partially closed.
 - Working-memory files in `ai/`.
 
