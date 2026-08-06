@@ -5,11 +5,11 @@
 
 ---
 
-## This repository is the laboratory, not the mind.
+## This repository is the laboratory, not the system.
 
 There is no cognitive architecture here yet, and that is deliberate. We are preparing
 the laboratory: the structure, memory, and working discipline that a long research
-effort needs before the first line of the mind is written.
+effort needs before the first line of the system is written.
 
 **The one rule right now:** do not implement cognitive architecture. `src/` and `tests/`
 stay empty until the foundations in `canon/` and `research/` are ready.

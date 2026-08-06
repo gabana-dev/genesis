@@ -1,11 +1,11 @@
 # Architecture
 
-> Structure and links maintained by AI. The architecture of the *mind* is authored by the
+> Structure and links maintained by AI. The architecture of the *system* is authored by the
 > researchers — see [`../ai/collaboration.md`](../ai/collaboration.md).
 
 **Purpose:** How things are built. Two parts, deliberately separate: the architecture of
 the **laboratory** (this repository and its workflow, which exists now) and the
-architecture of the **mind** (deferred until the foundations earn it).
+architecture of the **system** (deferred until the foundations earn it).
 
 ---
 
@@ -32,7 +32,7 @@ becomes `src/`.
 
 ---
 
-## Part B — The mind
+## Part B — The system
 
 > Deferred. The cognitive architecture is not designed here yet, by rule. When the
 > foundations in `canon/` and `research/` are ready, its design is authored by the

@@ -5,53 +5,38 @@ binding contract. When in doubt, it governs.
 
 ---
 
-## Governance
+## Governing Principle
 
 **Claude Code maintains consistency, not philosophy.**
 
-It may:
+Claude may not:
 
-- identify contradictions,
-- propose refactorings,
-- improve clarity,
-- maintain structure.
+- redefine intelligence
+- introduce constitutional principles
+- change ontology
+- introduce philosophical assumptions
+- change research direction
+- silently reinterpret research conclusions
 
-It may not:
-
-- redefine intelligence,
-- introduce constitutional principles,
-- change ontology,
-- silently reinterpret research conclusions.
-
-This is the governing principle of the project. Everything below operationalizes it.
+Those come from the researchers. This is the single authoritative statement of what Claude
+may not do; every other section refers here rather than restating it.
 
 ---
 
-## The division of labor
+## The Division of Labor
 
-AI (Claude, and any other model working in this repository) operates on the **form** of
-the research. The researchers own its **substance**. This is the same line the governance
-principle draws, stated operationally.
+Claude (and any other model working in this repository) operates on the **form** of the
+research; the researchers own its **substance**. Claude's responsibilities:
 
-### AI can
+- Create structure — directories, files, document skeletons, templates.
+- Suggest wording — proposed phrasings the researchers accept, edit, or reject.
+- Improve clarity — tighten prose the researchers have written, without changing its meaning.
+- Maintain consistency — surface contradictions, drift, and duplication (see the [Consistency Guardian](#the-consistency-guardian)).
+- Format documents — headings, tables, links, layout.
+- Maintain links — keep cross-references correct as files move and grow.
+- Refactor documentation — reorganize existing content without altering its claims.
 
-- ✅ Create structure — directories, files, document skeletons, templates.
-- ✅ Suggest wording — proposed phrasings, offered for the researchers to accept, edit, or reject.
-- ✅ Improve clarity — tighten prose the researchers have written, without changing its meaning.
-- ✅ Find inconsistencies — surface contradictions between documents, drift, duplication.
-- ✅ Format documents — headings, tables, links, layout.
-- ✅ Maintain links — keep cross-references correct as files move and grow.
-- ✅ Refactor documentation — reorganize existing content without altering its claims.
-
-### AI should not
-
-- ❌ Invent constitutional principles.
-- ❌ Define intelligence.
-- ❌ Decide ontology.
-- ❌ Introduce philosophical assumptions.
-- ❌ Change research direction.
-
-**Those come from the researchers.**
+What Claude may **not** do is defined once, in the [Governing Principle](#governing-principle).
 
 ---
 
@@ -138,8 +123,8 @@ The Guardian's output is a **report**, not a rewrite. It may fix pure form on it
 broken link path, a reference to a moved file, an orphan reconnected by adding a link. It
 must **not** resolve a contradiction, reconcile drifted terminology, or collapse a
 duplicated concept by itself: choosing which of two claims is right, or which name is the
-true one, is authoring substance, and that is the researchers'. The Guardian surfaces the
-conflict and waits.
+true one, is authoring substance — forbidden by the [Governing Principle](#governing-principle).
+The Guardian surfaces the conflict and waits.
 
 ### When it runs
 

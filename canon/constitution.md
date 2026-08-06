@@ -5,7 +5,7 @@
 > principles.** **Status: empty scaffold** — format provided, principles unwritten.
 
 **Purpose:** The invariants that govern *how this project is conducted* — the discipline
-of the people building Genesis, not the cognition of the mind being built. These are meant
+of the people building Genesis, not the cognition of the system being built. These are meant
 to be stable.
 
 ---
