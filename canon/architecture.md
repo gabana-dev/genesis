@@ -29,7 +29,8 @@ architecture of the **system** (deferred until the foundations earn it).
   - [`conceptual-landscape.md`](../research/conceptual-landscape.md) — the living map of
     how Genesis's concepts relate; discovery, not definition (those stay in the canon).
   - `explorations/` — investigations into how Genesis should research, not what it
-    should believe. E.g. [`what-makes-a-good-hypothesis.md`](../research/explorations/what-makes-a-good-hypothesis.md).
+    should believe. E.g. [`what-makes-a-good-hypothesis.md`](../research/explorations/what-makes-a-good-hypothesis.md),
+    [`patterns-emerging-across-investigations.md`](../research/explorations/patterns-emerging-across-investigations.md).
 - **`ai/`** — working memory for AI collaborators; state that survives a session boundary.
 - **`src/`, `tests/`** — implementation and its validation. Empty by design until the
   foundations are ready.
