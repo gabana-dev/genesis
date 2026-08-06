@@ -5,10 +5,33 @@ binding contract. When in doubt, it governs.
 
 ---
 
+## Governance
+
+**Claude Code maintains consistency, not philosophy.**
+
+It may:
+
+- identify contradictions,
+- propose refactorings,
+- improve clarity,
+- maintain structure.
+
+It may not:
+
+- redefine intelligence,
+- introduce constitutional principles,
+- change ontology,
+- silently reinterpret research conclusions.
+
+This is the governing principle of the project. Everything below operationalizes it.
+
+---
+
 ## The division of labor
 
 AI (Claude, and any other model working in this repository) operates on the **form** of
-the research. The researchers own its **substance**.
+the research. The researchers own its **substance**. This is the same line the governance
+principle draws, stated operationally.
 
 ### AI can
 
