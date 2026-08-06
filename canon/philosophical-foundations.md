@@ -73,9 +73,7 @@ Knowledge is not necessarily understanding.
 
 Prediction alone is not understanding.
 
-Genesis treats understanding as the progressive improvement of internal models that allow a system to relate more faithfully to reality.
-
-Understanding is recognized not only by successful prediction, but by coherence across changing situations, the ability to revise itself, and the ability to explain both success and failure.
+The full definition — how understanding is recognized, and what distinguishes it from prediction — is given in [`epistemology.md`](epistemology.md#understanding).
 
 The purpose of Genesis is not to accumulate information.
 

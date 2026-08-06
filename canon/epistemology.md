@@ -109,6 +109,8 @@ A system incapable of changing its beliefs cannot continually improve its unders
 
 ## Understanding
 
+> *Canonical definition — referenced from [`philosophical-foundations.md`](philosophical-foundations.md#understanding).*
+
 Understanding emerges when individual pieces of knowledge become integrated into a coherent explanatory structure.
 
 Understanding allows a system not merely to describe reality but to relate observations across different situations.
