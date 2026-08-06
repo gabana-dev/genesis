@@ -4,24 +4,41 @@
 > per the [Governing Principle](../../ai/collaboration.md#governing-principle).
 > Status: unwritten — no claim authored.
 
-**Status:** open
-**Current confidence:** —
-**Last reviewed:** —
-
-## Question
+## Status
 _(unwritten)_
 
-## Hypothesis
+## Central Question
+_(unwritten)_
+
+## Why This Matters
+_(unwritten)_
+
+## Initial Hypothesis
 _(unwritten — we suspect X but haven't tested it)_
 
-## Why we think so
+## Current Observations
 _(unwritten)_
 
-## Supporting evidence
+## Alternative Explanations
 _(unwritten)_
 
-## Counterarguments
+## Current Evidence
 _(unwritten)_
 
-## Experiments
+## Candidate Experiments
 _(unwritten — link entries in [`../experiments/`](../experiments/))_
+
+## Implications
+_(unwritten)_
+
+## Confidence
+_(unwritten)_
+
+## What Would Change Our Minds?
+_(unwritten)_
+
+## Open Questions
+_(unwritten)_
+
+## Revision History
+_(unwritten)_

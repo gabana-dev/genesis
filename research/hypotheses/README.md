@@ -16,35 +16,27 @@ How a hypothesis becomes a decision, and a decision becomes canon, is defined in
 [`../../canon/research-methodology.md`](../../canon/research-methodology.md) (authored by
 the researchers).
 
-## Format
+## Standard Hypothesis Structure
 
-One file per hypothesis: `NNNN-short-slug.md`. Each contains:
+One file per hypothesis: `NNNN-short-slug.md`, titled `# NNNN · <Title>`. Thirteen
+sections, in order:
 
-```
-# NNNN · <Title>
+1. **Status** — open | active | supported | weakening | rejected (→ link)
+2. **Central Question** — the question the hypothesis answers.
+3. **Why This Matters** — what turns on it; what changes in Genesis if it's right or wrong.
+4. **Initial Hypothesis** — what we suspect, stated plainly.
+5. **Current Observations** — what motivated the hypothesis. Not yet evidence.
+6. **Alternative Explanations** — competing possibilities, taken seriously.
+7. **Current Evidence** — what has actually been found. Often "none yet."
+8. **Candidate Experiments** — what would test it. Link entries in
+   [`../experiments/`](../experiments/) once committed.
+9. **Implications** — what changes in Genesis if the hypothesis holds.
+10. **Confidence** — how strongly held, and why.
+11. **What Would Change Our Minds?** — the falsification conditions, stated in advance.
+12. **Open Questions** — what remains unresolved even if the hypothesis is confirmed.
+13. **Revision History** — versioned log of how the hypothesis has changed.
 
-**Status:** open | supported | weakening | rejected (→ link)
-**Current confidence:** <how strongly held, on whatever scale you adopt>
-**Last reviewed:** YYYY-MM-DD
-
-## Question
-<the question the hypothesis answers.>
-
-## Hypothesis
-<what we suspect — stated plainly.>
-
-## Why we think so
-<the reasoning behind the suspicion.>
-
-## Supporting evidence
-<what points toward it so far.>
-
-## Counterarguments
-<what points against it, and what would falsify it.>
-
-## Experiments
-<what would test it. Link entries in ../experiments/.>
-```
+See [`0001-quality-of-knowing.md`](0001-quality-of-knowing.md) for the structure in use.
 
 ## Notes
 
