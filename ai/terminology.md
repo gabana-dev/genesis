@@ -4,7 +4,7 @@ Shorthand used across the repository. Two kinds, kept separate on purpose.
 
 - **Process vocabulary** — terms for the laboratory itself (the repo, the workflow).
   These describe *how we work* and are maintained by AI.
-- **Domain vocabulary** — terms Genesis reasons *about* (concepts of the mind, cognition,
+- **Domain vocabulary** — terms Genesis reasons *about* (concepts of cognition and understanding,
   the project's substance). These are not defined here. They live in the
   [`../canon/ontology.md`](../canon/ontology.md) canon and are authored by the researchers.
 
