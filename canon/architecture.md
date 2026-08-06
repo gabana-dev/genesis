@@ -26,6 +26,8 @@ architecture of the **system** (deferred until the foundations earn it).
   - `experiments/` — things tried and what they showed.
   - `external_ideas/` — imported ideas, marked unadopted until the researchers decide.
   - `questions/` — open problems.
+  - [`conceptual-landscape.md`](../research/conceptual-landscape.md) — the living map of
+    how Genesis's concepts relate; discovery, not definition (those stay in the canon).
 - **`ai/`** — working memory for AI collaborators; state that survives a session boundary.
 - **`src/`, `tests/`** — implementation and its validation. Empty by design until the
   foundations are ready.

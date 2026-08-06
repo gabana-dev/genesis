@@ -20,6 +20,8 @@ something meaningful changes. Not a narrative — a status board.
 - `research/` subfolders with their purpose-and-format READMEs.
 - `research/hypotheses/` — format README + 5 named hypothesis scaffolds (0001–0005),
   all awaiting authored claims.
+- `research/conceptual-landscape.md` — **authored** (8-layer conceptual map, living
+  document, distinct from ontology/glossary).
 - Working-memory files in `ai/`.
 
 ## In progress
