@@ -16,8 +16,9 @@ architecture of the **system** (deferred until the foundations earn it).
 *(Descriptive: how the research OS is currently organized. This describes what exists.)*
 
 - **`canon/`** — the canon. Slow-changing, authoritative. What we currently believe
-  (`vision`, `ontology`), how we govern the work (`constitution`), how the lab reasons
-  (`research-methodology`), where we're headed (`roadmap`), and how it's built (this file).
+  (`vision`, `philosophical-foundations`, `ontology`), how we govern the work
+  (`constitution`), how the lab reasons (`research-methodology`), where we're headed
+  (`roadmap`), and how it's built (this file).
 - **`research/`** — the living record, append-mostly:
   - `journal/` — chronological thinking.
   - `hypotheses/` — what we suspect but haven't tested (distinct from decisions).

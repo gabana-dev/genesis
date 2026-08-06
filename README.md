@@ -29,12 +29,15 @@ stay empty until the foundations in `canon/` and `research/` are ready.
 ### Where to start reading
 
 1. [`canon/vision.md`](canon/vision.md) — the thesis. Why Genesis exists.
-2. [`canon/constitution.md`](canon/constitution.md) — the invariants that govern the project.
-3. [`canon/roadmap.md`](canon/roadmap.md) — where we are and what comes next.
-4. [`ai/current_focus.md`](ai/current_focus.md) — what is actually being worked on today.
+2. [`canon/philosophical-foundations.md`](canon/philosophical-foundations.md) — the ground
+   the vision stands on.
+3. [`canon/constitution.md`](canon/constitution.md) — the invariants that govern the project.
+4. [`canon/roadmap.md`](canon/roadmap.md) — where we are and what comes next.
+5. [`ai/current_focus.md`](ai/current_focus.md) — what is actually being worked on today.
 
-The rest of the canon: [`ontology.md`](canon/ontology.md) and
-[`architecture.md`](canon/architecture.md).
+The rest of the canon: [`ontology.md`](canon/ontology.md),
+[`architecture.md`](canon/architecture.md), and
+[`research-methodology.md`](canon/research-methodology.md).
 
 If you are an AI collaborator opening this repo cold, start at
 [`ai/README.md`](ai/README.md), and read [`ai/collaboration.md`](ai/collaboration.md)

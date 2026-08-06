@@ -15,7 +15,7 @@ something meaningful changes. Not a narrative — a status board.
 - Collaboration contract with the provenance rule (`ai/collaboration.md`).
 - `canon/vision.md` and `canon/research-methodology.md` — **authored**.
 - Canon scaffolds still awaiting authored substance: `constitution`, `ontology`,
-  `architecture`, `roadmap`.
+  `architecture`, `roadmap`, `philosophical-foundations` (new, reserved 2026-08-06).
 - `research/` subfolders with their purpose-and-format READMEs.
 - `research/hypotheses/` — format README + 5 named hypothesis scaffolds (0001–0005),
   all awaiting authored claims.
