@@ -7,25 +7,31 @@ Maintained by Claude as a factual snapshot (Type-2), same as
 [`../ai/project_state.md`](../ai/project_state.md) but at milestone granularity rather than
 session granularity. Update it whenever a milestone completes.
 
+Project phases are defined once, authoritatively, in
+[`../canon/roadmap.md`](../canon/roadmap.md). This document does not define phases — it
+drills into the milestones of whichever phase is current.
+
 ---
 
 ## Current Phase
 
-**Phase 0 — Epistemic Foundation**
+**Phase 0 — Build the Laboratory** *(per [`canon/roadmap.md`](../canon/roadmap.md))*
 
-> ⚠️ Naming note: [`../canon/roadmap.md`](../canon/roadmap.md) also defines a "Phase 0"
-> ("Build the laboratory" — the research OS itself). This is a different phase with the
-> same number. Not resolved here — roadmap phases are researcher-authored direction; this
-> tracker uses the name given for the epistemic-foundation milestone. Worth reconciling the
-> numbering when the roadmap's later phases are authored.
+## Milestone: Epistemic Foundation
+
+The foundational canon and first research artifacts — one milestone within Phase 0, not a
+phase of its own.
 
 ## Status
 
-`6 / 13 milestones — 46%`
+`6 / 14 milestones complete`
 
 ```
-█████░░░░░ 46%
+████░░░░░░ 43%
 ```
+
+*(Derived from the counts below — completed ÷ total. Not a fixed figure; recompute when
+the lists change.)*
 
 ## Completed
 
@@ -45,6 +51,7 @@ session granularity. Update it whenever a milestone completes.
 
 ## Upcoming
 
+- [ ] Constitution (`canon/constitution.md`) — governance is part of building the laboratory
 - [ ] Ontology (`canon/ontology.md`)
 - [ ] Architecture — Part B, the system (`canon/architecture.md`)
 - [ ] First Cognitive Prototype
