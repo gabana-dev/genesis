@@ -7,6 +7,12 @@
 > the method rather than continue refining it. Claude performed the derivation. The method
 > required no changes anywhere in this pass — every finding below came from the existing
 > seven steps, run as already stood.
+>
+> **Amendment, 2026-08-07:** the title's word "closed" overclaims. Nothing here is
+> final — the correct status is *sufficient for current leverage*, not reopened unless a
+> concrete downstream investigation (in `0005`, Belief/Context, or Architecture Part B)
+> exposes a gap. Caught immediately after persisting; left as originally written per the
+> historical-record principle this same entry's neighbors derive, corrected here instead.
 
 ## Signature — does provenance survive as a required third argument?
 

@@ -49,6 +49,19 @@ territory at session granularity — what changed most recently, not the overall
   failure), and the architectural-leverage gate (every investigation must answer what it
   unlocks, why now, what becomes possible after, and its stopping condition, or be
   deferred).
+- Eighth journal entry (2026-08-07): Belief derived by necessity. Property-search did not
+  converge (all candidates were structural; falsified in sequence); reframed via the
+  finding that Reception+Update is closed under state-algebra choice, so no property is
+  internally forced. The necessity is at the interface: partial observability + acting on
+  the unobserved forces a belief-state (sufficient statistic for the hidden cause) —
+  coincides with POMDP theory, recorded as convergence not novelty. Belief = necessary
+  but not primitive (a forced configuration of Update, not a new operation). Unblocks
+  architecture.md Part B and a first executable experiment.
+- **Standing discipline, adopted 2026-08-07:** no investigation ends without a permanent
+  artifact (journal entry, hypothesis revision, architecture spec, interface, code, or
+  test). Conversation alone no longer counts as project progress. Work is chosen by
+  project leverage (what artifact/file/downstream it produces, whether it could be tested
+  instead of analyzed), not intellectual interest.
 - Working-memory files in `ai/`.
 
 ## In progress
