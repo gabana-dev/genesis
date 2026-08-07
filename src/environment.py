@@ -51,3 +51,8 @@ class PartiallyObservableBit:
 
     def reward(self, guess):
         return 1 if guess == self._hidden else 0
+
+    def reveal(self):
+        """The true hidden state, available only after the episode -- lets an agent
+        learn its own observation model from labelled experience (Laboratory 2)."""
+        return self._hidden

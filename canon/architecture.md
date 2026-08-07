@@ -39,29 +39,35 @@ it).
 - **`src/`, `tests/`** — implementation and its validation. Empty by design until the
   foundations are ready.
 
-### The pipeline (established by Laboratory 1)
+### The pipeline (two parallel streams)
 
-Genesis has one path from idea to executable knowledge, and every future laboratory —
-trading included — follows it. This *is* the deliverable of the first laboratory, more than
-any single result it produces:
+Genesis turns ideas into executable knowledge along one path, run as **two independent
+streams that do not block each other** — production creates confidence, governance records
+it:
 
-**Research → Architecture → Implementation → Experiment → Journal → Canon**
+- **Production:** Research → Architecture → Implementation → Experiment
+- **Governance:** Experiment → Postmortem → Canon
 
-- **Research** discovers and compresses (`research/journal/`, `research/hypotheses/`).
-- **Architecture** commits earned research to a spec (Part B), importing nothing unearned.
-- **Implementation** operationalizes the spec in `src/`, adding no generality of its own.
-- **Experiment** exposes it to reality (`tests/`) and records the result in
-  `research/experiments/`.
-- **Journal** captures what happened — including ambiguities the build exposed, which
-  become new `research/questions/` and feed Research again.
-- **Canon** is where a result that survives all of the above graduates into settled belief.
+Production discovers, commits earned research to an
+[architecture spec](#part-b--the-minimal-adaptive-loop), builds it in `src/`, and exposes it
+to reality in `tests/` and `research/experiments/`. Governance takes a completed experiment,
+harvests its lessons in a postmortem (`research/journal/`), and — only once the result has
+earned it — graduates it into the Canon. The two run concurrently: a new laboratory can begin
+in production while the previous one is still moving through governance. Neither is the
+other's critical path.
+
+**The bar for Canon is not "survived one implementation."** It is *an architectural contract
+with demonstrated stability under variation* — the same invariant surviving a different
+implementation, a different environment, or a different representation. One successful build
+is evidence; it is not yet stability. A result therefore graduates carrying an honest
+confidence level (cf. the ontology entry statuses: proposed / working / stable), reaching
+**stable** only after variation confirms the invariant is not an accident of one
+implementation.
 
 This is the [Epistemic Lifecycle](research-methodology.md#the-epistemic-lifecycle) made
-executable — it inserts Architecture and Implementation as explicit stages between a
-hypothesis and its test. The lifecycle remains the authority on what the stages *mean*;
-this describes how they run in practice. **Laboratory 1 traversed the whole path except the
-final step:** nothing has yet graduated to Canon. That step is the researchers' act, and
-running it once would be the pipeline's first full closure.
+executable — production inserts Architecture and Implementation as explicit stages;
+governance is the lifecycle's Reflection → Decision → Canon tail. The lifecycle remains the
+authority on what the stages *mean*.
 
 ---
 

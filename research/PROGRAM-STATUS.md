@@ -64,8 +64,20 @@ entirely ahead.)*
 ## Completed — Architecture & Laboratory
 
 - [x] Architecture Part B — the minimal adaptive loop, earned-only (`canon/architecture.md`)
-- [x] Laboratory 1 — belief-state vs memoryless, built and run (`src/`, `tests/`,
-  `research/experiments/0001-belief-vs-memoryless.md`)
+- [x] The pipeline, two streams — Production + Governance, with the variation bar for Canon
+  (`canon/architecture.md` Part A)
+- [x] Laboratory 1 — belief-state vs memoryless (`research/experiments/0001-...`)
+- [x] Laboratory 1 postmortem (`research/journal/2026-08-07-laboratory-1-postmortem.md`)
+- [x] Laboratory 2 — learned observation model; variation test passed
+  (`research/experiments/0002-learned-observation-model.md`). Belief-necessity survived one
+  variation (representation); observation model shown to be a second Update loop.
+
+## Governance stream (in progress)
+
+- [ ] Belief-necessity → Canon. Derived, built, validated (Lab 1), survived learned-model
+  variation (Lab 2). Awaiting researcher ratification into `canon/epistemology.md` at
+  confidence "working" (one variation survived; environment variation still pending "stable").
+  Draft prepared; Claude does not author canon.
 
 ## In Progress
 

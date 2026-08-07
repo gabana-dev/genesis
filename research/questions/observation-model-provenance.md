@@ -1,6 +1,10 @@
 # Where does the observation model come from?
 
-**Status:** open
+**Status:** narrowing — the supervised case is answered by Laboratory 2
+([`../experiments/0002-learned-observation-model.md`](../experiments/0002-learned-observation-model.md)):
+when the true state is revealed after each episode, the observation model is learned by a
+*second Update loop* (a tally of faithful vs corrupted observations), converging to the true
+noise (0.299 vs 0.30). The unsupervised case — the true state is *never* revealed — remains open.
 **Weight:** high — it sits directly on the belief-necessity result and the next laboratory likely depends on it.
 
 Surfaced by Laboratory 1 ([`../experiments/0001-belief-vs-memoryless.md`](../experiments/0001-belief-vs-memoryless.md)).
