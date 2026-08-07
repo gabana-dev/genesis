@@ -39,18 +39,31 @@ The uncertainty-reduction criterion above is superseded by the leverage rule ado
 2026-08-07. It's not wrong, just subsumed: leverage is uncertainty-reduction made
 concrete against the remaining architecture, rather than assessed in the abstract.
 
-## Standing rule: architectural leverage (adopted 2026-08-07)
+## Phase: capability construction (recognized 2026-08-07)
 
-Every proposed investigation must answer, explicitly, before it proceeds:
+Genesis has left the foundations-validation phase. The pipeline is proven (belief-necessity
+travelled it end-to-end into canon). The question is no longer "is the theory true enough to
+build on" but **"which experiment permanently adds the next architectural capability?"** We
+are assembling the architecture of Genesis one earned capability at a time — each earned
+through experiment before it becomes permanent. This is a research-guided engineering
+project now, not a validation project.
 
-1. **What does this unlock?** Name the specific documents/hypotheses that cannot be
-   completed until this investigation succeeds. If nothing, say so.
-2. **Why now?** Why this over the other unfinished work — or recommend that instead.
-3. **What becomes possible afterward?** The immediate next step once it succeeds.
-4. **Stopping condition.** What evidence ends the investigation and returns to building.
+## Standing rule: the capability-construction gate (adopted 2026-08-07, supersedes the leverage gate)
 
-An investigation must resolve an existing contradiction, unblock unfinished
-architecture, or falsify a currently accepted idea. If it does none of those, defer it.
+Every proposed laboratory must answer, explicitly, before it proceeds:
+
+1. **What hypothesis does it test?**
+2. **What uncertainty does it eliminate?**
+3. **What permanent architectural capability does it earn?** — *paired with a compression
+   check:* is this capability new machinery, or the belief-core re-aimed at a new target
+   (per the [architectural roadmap](../research/architectural-roadmap.md))? If it claims to
+   be new machinery, it carries the Architectural Compression Principle's burden of proof.
+   Most labs earn a validated *application/reach*, not a new primitive.
+4. **Which future laboratories become possible because this capability now exists?** —
+   *the primary question.* A capability compounds; choose the one that unlocks the most.
+
+A laboratory must earn a permanent capability (or genuinely falsify an accepted one). If it
+only re-validates something already stable without earning new reach, defer it.
 
 ## Standing rule: the Method of Discovery is frozen (adopted 2026-08-07)
 
@@ -62,26 +75,34 @@ genuine failure in practice.
 
 ## Immediate next step
 
-`0002` Emergence (one seed captured), `0003` Time, `canon/constitution.md`, and
-`canon/ontology.md` remain open, lower-leverage-right-now per the standing rule above.
+**Laboratory 3 — dynamic hidden state (regime-switching).** Chosen by the
+capability-construction gate, justified in the
+[architectural roadmap](../research/architectural-roadmap.md):
 
-**Unblocked as of 2026-08-07:** the Update investigation closed (signature, invariants,
-identity, metadata, uncertainty, provenance — see the journal). This was explicitly
-gating both `0005 · Belief Revision` and the Belief/Context collision. Both are now
-open for work, with real material to draw on rather than starting cold. `0004 · Context`
-remains blocked on the Belief/Context resolution specifically.
+1. *Hypothesis:* belief-necessity holds when the hidden cause changes over time; and the
+   filtering predict-step compresses into Update-with-null-observation.
+2. *Uncertainty eliminated:* whether belief was an artifact of static worlds; whether naive
+   accumulation (not a real filter) was secretly sufficient.
+3. *Capability earned:* belief over a dynamic state — mostly the belief-core re-aimed at
+   dynamics (old machinery), with **forgetting becoming necessary** as the genuinely-new
+   element. Completes the passive-knower stack (state + sensor + dynamics).
+4. *Future labs unlocked:* the closed action loop (Lab 4) — the agency gate — which requires
+   belief over a state the agent itself moves. Lab 3 is the last purely-epistemic capability
+   before Genesis must become an actor.
 
-The still-pending decision about
-`research/explorations/what-changes-when-understanding-improves.md` (declined — asked
-Claude to originate philosophical content) is dormant, not resolved. Revisit if it
-becomes relevant again; not currently blocking anything.
+**The strategic event beyond Lab 3:** the agency gate (Lab 4) forces **axiology** — the
+system needs an objective to choose actions, which is the frozen caring fork. Decide *where
+the objective comes from* (install vs. derive) before Lab 4, not during it.
 
 ## Not in focus right now
 
-- Anything in `src/` or `tests/` — deferred by the one rule.
-- Any further changes to the framework itself (collaboration contract, hypothesis
-  structure, Guardian role) — considered stable as of this transition.
+- Unsupervised observation-model learning — deferred (confounded as a belief-necessity test;
+  belongs on a purpose-built task, per the roadmap).
+- `0002` Emergence, `0003` Time hypotheses, `constitution.md`, `ontology.md`, the caring
+  fork — frozen.
+- Shared harness / infrastructure — premature (two labs too few to earn the interface;
+  revisit after Lab 3–4).
 
 ---
 
-*Last updated: 2026-08-06.*
+*Last updated: 2026-08-07.*
