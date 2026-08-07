@@ -73,6 +73,14 @@ Both outcomes represent progress.
 
 ---
 
+### Architectural Compression Principle
+
+When new phenomena are discovered, prefer explanations that derive them from existing primitives before introducing new primitives.
+
+New primitives require demonstrating that no composition of existing primitives explains the phenomenon.
+
+---
+
 ## The Lifecycle of Knowledge
 
 Every meaningful concept within Genesis progresses through distinct stages.
