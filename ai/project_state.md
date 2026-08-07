@@ -29,18 +29,26 @@ territory at session granularity — what changed most recently, not the overall
 - `research/PROGRAM-STATUS.md` — milestone tracker, new.
 - `research/explorations/` — `what-makes-a-good-hypothesis.md` and
   `patterns-emerging-across-investigations.md`, both authored.
-- `research/journal/` — six entries. Four dated 2026-08-06: the Belief/Context
+- `research/journal/` — seven entries. Four dated 2026-08-06: the Belief/Context
   interpretive collision, the Reception/Update computational-primitives derivation, the
   reality/resistance/action thread, and the caring/regulation/optimization comparison
   (the last two both reach the same unresolved constitutive-vs-installed caring fork,
-  from different directions). Two dated 2026-08-07: Update-operator invariants (four
+  from different directions). Three dated 2026-08-07: Update-operator invariants (four
   survivors: prior-state-dependence, formal input-capacity, well-definedness, causal
   locality; corrects the primitives entry re: blending via forward amendment, not a
-  silent edit), and Update-algebra unification (point-correction and population-selection
+  silent edit); Update-algebra unification (point-correction and population-selection
   reduce to the same Bayesian-conditioning operation over two representations; structural
   learning partly reduces too via functional-gradient/lattice views; open-ended structural
-  search remains a genuine, unresolved edge). Previously empty; a real gap now
-  substantially closed.
+  search remains a genuine, unresolved edge); and Update-closed (signature = (state,
+  input); a fifth invariant found — non-everywhere-discontinuity, grounding identity
+  across updates; provenance, metadata, and uncertainty-as-required all rejected).
+  **Update investigation is closed.** Previously empty; a real gap now substantially
+  closed.
+- Two new standing rules in `ai/current_focus.md`, adopted 2026-08-07: the Method of
+  Discovery is frozen (seven steps, self-tested from eight, revise only on demonstrated
+  failure), and the architectural-leverage gate (every investigation must answer what it
+  unlocks, why now, what becomes possible after, and its stopping condition, or be
+  deferred).
 - Working-memory files in `ai/`.
 
 ## In progress

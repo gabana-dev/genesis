@@ -33,29 +33,48 @@ question is well-formed. Not to steer toward an answer. That boundary is the sam
 form/substance line as always ([`collaboration.md`](collaboration.md)), extended one
 step earlier in the cycle than before.
 
-## How the next question is chosen
+## How the next question is chosen — superseded, see below
 
-Not "what should we investigate next," as a sequence of topics. The selection
-criterion is: **what question, if answered, would most reduce our uncertainty about
-Genesis?** Research direction is an optimization of understanding, not a checklist to
-work through in order.
+The uncertainty-reduction criterion above is superseded by the leverage rule adopted
+2026-08-07. It's not wrong, just subsumed: leverage is uncertainty-reduction made
+concrete against the remaining architecture, rather than assessed in the abstract.
+
+## Standing rule: architectural leverage (adopted 2026-08-07)
+
+Every proposed investigation must answer, explicitly, before it proceeds:
+
+1. **What does this unlock?** Name the specific documents/hypotheses that cannot be
+   completed until this investigation succeeds. If nothing, say so.
+2. **Why now?** Why this over the other unfinished work — or recommend that instead.
+3. **What becomes possible afterward?** The immediate next step once it succeeds.
+4. **Stopping condition.** What evidence ends the investigation and returns to building.
+
+An investigation must resolve an existing contradiction, unblock unfinished
+architecture, or falsify a currently accepted idea. If it does none of those, defer it.
+
+## Standing rule: the Method of Discovery is frozen (adopted 2026-08-07)
+
+Seven steps, self-tested down from an original eight, documented across
+[`../research/journal/2026-08-07-update-operator-invariants.md`](../research/journal/2026-08-07-update-operator-invariants.md)
+and the entries around it. Treat it as stable. Don't refine it in isolation — use it on
+real architectural questions. Only revise it if a concrete investigation exposes a
+genuine failure in practice.
 
 ## Immediate next step
 
-One pending decision, waiting on the researchers: a request to create
-`research/explorations/what-changes-when-understanding-improves.md` was declined,
-because it asked Claude to originate the exploration's philosophical content itself
-(map dimensions, tensions, competing possibilities) rather than format existing
-researcher content — a Governing Principle violation, not a formatting question.
-Two ways to proceed: (1) Claude scaffolds it empty, researchers author later, or
-(2) Contemplation now — researchers state the actual dimensions, Claude helps
-structure them, flagged as Claude-drafted-from-researcher-framing for review, same
-treatment as the Epistemic Lifecycle section.
+`0002` Emergence (one seed captured), `0003` Time, `canon/constitution.md`, and
+`canon/ontology.md` remain open, lower-leverage-right-now per the standing rule above.
 
-Beyond that: `0002` Emergence (one seed captured), `0003` Time, `0004` Context, `0005`
-Belief Revision, `canon/constitution.md`, `canon/ontology.md`, and
-`canon/architecture.md` Part B remain open. Selection is by the uncertainty-reduction
-criterion above, not list order. That choice belongs to the researchers.
+**Unblocked as of 2026-08-07:** the Update investigation closed (signature, invariants,
+identity, metadata, uncertainty, provenance — see the journal). This was explicitly
+gating both `0005 · Belief Revision` and the Belief/Context collision. Both are now
+open for work, with real material to draw on rather than starting cold. `0004 · Context`
+remains blocked on the Belief/Context resolution specifically.
+
+The still-pending decision about
+`research/explorations/what-changes-when-understanding-improves.md` (declined — asked
+Claude to originate philosophical content) is dormant, not resolved. Revisit if it
+becomes relevant again; not currently blocking anything.
 
 ## Not in focus right now
 
