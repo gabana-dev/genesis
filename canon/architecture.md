@@ -39,9 +39,29 @@ it).
 - **`src/`, `tests/`** — implementation and its validation. Empty by design until the
   foundations are ready.
 
-The flow: thinking accumulates in `research/`; when something stabilizes and the
-researchers adopt it, it graduates into the `canon/`; only what the canon supports
-becomes `src/`.
+### The pipeline (established by Laboratory 1)
+
+Genesis has one path from idea to executable knowledge, and every future laboratory —
+trading included — follows it. This *is* the deliverable of the first laboratory, more than
+any single result it produces:
+
+**Research → Architecture → Implementation → Experiment → Journal → Canon**
+
+- **Research** discovers and compresses (`research/journal/`, `research/hypotheses/`).
+- **Architecture** commits earned research to a spec (Part B), importing nothing unearned.
+- **Implementation** operationalizes the spec in `src/`, adding no generality of its own.
+- **Experiment** exposes it to reality (`tests/`) and records the result in
+  `research/experiments/`.
+- **Journal** captures what happened — including ambiguities the build exposed, which
+  become new `research/questions/` and feed Research again.
+- **Canon** is where a result that survives all of the above graduates into settled belief.
+
+This is the [Epistemic Lifecycle](research-methodology.md#the-epistemic-lifecycle) made
+executable — it inserts Architecture and Implementation as explicit stages between a
+hypothesis and its test. The lifecycle remains the authority on what the stages *mean*;
+this describes how they run in practice. **Laboratory 1 traversed the whole path except the
+final step:** nothing has yet graduated to Canon. That step is the researchers' act, and
+running it once would be the pipeline's first full closure.
 
 ---
 
