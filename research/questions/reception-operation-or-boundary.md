@@ -1,6 +1,11 @@
 # Is Reception a computational operation, or a boundary condition?
 
-**Status:** open
+**Status:** open — Laboratory 3 touched it but did not resolve it (the environment collapsed;
+see [`../experiments/0003-choice-over-information.md`](../experiments/0003-choice-over-information.md)).
+What Lab 3 *did* show: the "choose what to observe" capability was implementable as a **read
+of the belief-state** (channel selection as a function of belief), which points toward
+*selection is an Action-as-read, Reception stays a boundary* rather than *Reception becomes
+active* — but this is suggestive, not settled, because the environment could not discriminate.
 **Weight:** medium — it does not block the next laboratory, but it questions one of the two foundational primitives.
 
 Surfaced by Laboratory 1 ([`../experiments/0001-belief-vs-memoryless.md`](../experiments/0001-belief-vs-memoryless.md)).
