@@ -29,15 +29,18 @@ territory at session granularity — what changed most recently, not the overall
 - `research/PROGRAM-STATUS.md` — milestone tracker, new.
 - `research/explorations/` — `what-makes-a-good-hypothesis.md` and
   `patterns-emerging-across-investigations.md`, both authored.
-- `research/journal/` — five entries. Four dated 2026-08-06: the Belief/Context
+- `research/journal/` — six entries. Four dated 2026-08-06: the Belief/Context
   interpretive collision, the Reception/Update computational-primitives derivation, the
   reality/resistance/action thread, and the caring/regulation/optimization comparison
   (the last two both reach the same unresolved constitutive-vs-installed caring fork,
-  from different directions). One dated 2026-08-07: Update-operator invariants (four
+  from different directions). Two dated 2026-08-07: Update-operator invariants (four
   survivors: prior-state-dependence, formal input-capacity, well-definedness, causal
-  locality), which corrects a claim in the primitives entry (blending is not a separate
-  family from discrepancy-driven correction) via a forward-pointing amendment rather than
-  a silent edit. Previously empty; a real gap now substantially closed.
+  locality; corrects the primitives entry re: blending via forward amendment, not a
+  silent edit), and Update-algebra unification (point-correction and population-selection
+  reduce to the same Bayesian-conditioning operation over two representations; structural
+  learning partly reduces too via functional-gradient/lattice views; open-ended structural
+  search remains a genuine, unresolved edge). Previously empty; a real gap now
+  substantially closed.
 - Working-memory files in `ai/`.
 
 ## In progress
