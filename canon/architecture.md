@@ -48,9 +48,8 @@ it:
 - **Production:** Research → Architecture → Implementation → Experiment
 - **Governance:** Experiment → Postmortem → Canon
 
-Production discovers, commits earned research to an
-[architecture spec](#part-b--the-minimal-adaptive-loop), builds it in `src/`, and exposes it
-to reality in `tests/` and `research/experiments/`. Governance takes a completed experiment,
+Production discovers, commits earned research to an architecture spec (Part B, below),
+builds it in `src/`, and exposes it to reality in `tests/` and `research/experiments/`. Governance takes a completed experiment,
 harvests its lessons in a postmortem (`research/journal/`), and — only once the result has
 earned it — graduates it into the Canon. The two run concurrently: a new laboratory can begin
 in production while the previous one is still moving through governance. Neither is the
