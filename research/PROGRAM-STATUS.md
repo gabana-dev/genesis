@@ -72,12 +72,15 @@ entirely ahead.)*
   (`research/experiments/0002-learned-observation-model.md`). Belief-necessity survived one
   variation (representation); observation model shown to be a second Update loop.
 
-## Governance stream (in progress)
+## Governance stream
 
-- [ ] Belief-necessity → Canon. Derived, built, validated (Lab 1), survived learned-model
-  variation (Lab 2). Awaiting researcher ratification into `canon/epistemology.md` at
-  confidence "working" (one variation survived; environment variation still pending "stable").
-  Draft prepared; Claude does not author canon.
+- [x] **Belief-necessity → Canon (2026-08-07).** Ratified by the researcher into
+  `canon/epistemology.md` as "Necessity of Internal State under Partial Observability" at
+  status **Working**. Generalized on ratification: canon preserves the invariant (maintained
+  internal state under partial observability), with the belief-state as *one realization* —
+  not the implementation. **This is the pipeline's first full closure:** an idea travelled
+  Research → Architecture → Implementation → Experiment → Postmortem → Canon end-to-end.
+  Promotion to *Stable* pending environment variation.
 
 ## In Progress
 

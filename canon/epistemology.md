@@ -107,6 +107,22 @@ A system incapable of changing its beliefs cannot continually improve its unders
 
 ---
 
+## Necessity of Internal State under Partial Observability
+
+When a system must act on aspects of the world that are not fully revealed by its observations, reacting only to the current observation is insufficient.
+
+The system is forced to maintain internal state representing the unobserved causes of its observations.
+
+A belief-state is one realization of this requirement and has been validated by Laboratories 1 and 2.
+
+This claim concerns the necessity of maintained state under partial observability, not the uniqueness of any particular representation.
+
+**Status:** Working — derived from first principles and validated across multiple implementations. Promotion to Stable requires successful replication under additional environment variations.
+
+**Source:** [`../research/journal/2026-08-07-belief-derived-by-necessity.md`](../research/journal/2026-08-07-belief-derived-by-necessity.md), [`../research/experiments/0001-belief-vs-memoryless.md`](../research/experiments/0001-belief-vs-memoryless.md), [`../research/experiments/0002-learned-observation-model.md`](../research/experiments/0002-learned-observation-model.md).
+
+---
+
 ## Understanding
 
 > *Canonical definition — referenced from [`philosophical-foundations.md`](philosophical-foundations.md#understanding).*

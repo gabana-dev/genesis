@@ -86,10 +86,12 @@ Each element descends from a specific earned result:
 
 - **Reception** — intake of information not already derivable from current state.
   *(research/journal/2026-08-06-computational-primitives-reception-update.md)*
-- **State = a belief-state** — when the world is partially observable and the agent must
-  act on what it cannot directly observe, the state is forced to be a *sufficient statistic
-  for the hidden cause*, not a record of observations.
-  *(research/journal/2026-08-07-belief-derived-by-necessity.md)*
+- **State = internal state representing unobserved causes** — when the world is partially
+  observable and the agent must act on what it cannot directly observe, the system is forced
+  to maintain internal state that stands in for the unobserved causes of its observations
+  (canonical: [`epistemology.md`](epistemology.md#necessity-of-internal-state-under-partial-observability)).
+  A **belief-state** — a distribution over the hidden cause — is the *one realization*
+  Laboratories 1 and 2 implement; the canon does not commit to it being the only one.
 - **Update** — signature `(state, input) → state`, satisfying the five invariants. In a
   distribution-valued state, Update is Bayesian conditioning.
   *(research/journal/2026-08-07-update-operator-invariants.md,
