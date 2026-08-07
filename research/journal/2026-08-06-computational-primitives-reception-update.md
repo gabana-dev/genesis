@@ -5,6 +5,12 @@
 > with the repository deliberately set aside. This records the path taken, including
 > where an earlier conclusion was overturned under stricter testing — not a polished
 > result, a record of how it was reached.
+>
+> **Amendment, 2026-08-07:** the claim below that blending and discrepancy-driven
+> correction are separate families does not hold — see
+> [`2026-08-07-update-operator-invariants.md`](2026-08-07-update-operator-invariants.md)
+> for the correction. Left as originally written rather than edited, per the
+> historical-record principle that entry itself derives.
 
 ## The question
 

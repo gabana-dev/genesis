@@ -29,12 +29,15 @@ territory at session granularity — what changed most recently, not the overall
 - `research/PROGRAM-STATUS.md` — milestone tracker, new.
 - `research/explorations/` — `what-makes-a-good-hypothesis.md` and
   `patterns-emerging-across-investigations.md`, both authored.
-- `research/journal/` — four entries, dated 2026-08-06: the Belief/Context interpretive
-  collision, the Reception/Update computational-primitives derivation, the
+- `research/journal/` — five entries. Four dated 2026-08-06: the Belief/Context
+  interpretive collision, the Reception/Update computational-primitives derivation, the
   reality/resistance/action thread, and the caring/regulation/optimization comparison
-  (both of the last two end on or return to the same unresolved constitutive-vs-installed
-  caring fork, approached from different directions). Previously empty; a real gap now
-  partially closed.
+  (the last two both reach the same unresolved constitutive-vs-installed caring fork,
+  from different directions). One dated 2026-08-07: Update-operator invariants (four
+  survivors: prior-state-dependence, formal input-capacity, well-definedness, causal
+  locality), which corrects a claim in the primitives entry (blending is not a separate
+  family from discrepancy-driven correction) via a forward-pointing amendment rather than
+  a silent edit. Previously empty; a real gap now substantially closed.
 - Working-memory files in `ai/`.
 
 ## In progress
