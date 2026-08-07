@@ -15,28 +15,31 @@ drills into the milestones of whichever phase is current.
 
 ## Current Phase
 
-**Phase 0 — Build the Laboratory** *(per [`canon/roadmap.md`](../canon/roadmap.md))*
+**Laboratory 1** — transitioned 2026-08-07 from the Foundation phase. Genesis now optimizes
+for turning earned foundations into executable knowledge, not for deriving more foundations.
+The loop from here: research earns architecture → architecture generates implementation →
+implementation exposes ambiguity → ambiguity generates research.
 
-## Milestone: Epistemic Foundation
+## Milestone: Epistemic Foundation — complete; Laboratory 1 — complete
 
-The foundational canon and first research artifacts — one milestone within Phase 0, not a
-phase of its own. Tracked in two tracks: the **Research OS** (the process and structure of
-the lab) and **Genesis Theory** (its substance).
-
-The Research OS track is complete. As of this milestone, Genesis has moved from
-framework-building into research mode — see
-[`../ai/current_focus.md`](../ai/current_focus.md) for the current operating cycle.
+The Foundation milestone (canon + primitives + the Update/Belief theory) is done. As of
+2026-08-07 the first executable laboratory exists and ran: Reception, Update, and a
+belief-state implemented cleanly from the canon; belief-state agent 0.929 vs memoryless
+0.699 under partial observability. Concepts became software. See
+[`experiments/0001-belief-vs-memoryless.md`](experiments/0001-belief-vs-memoryless.md).
 
 ## Status
 
-`11 / 18 milestones complete`
+`15 / 18 milestones complete` *(frozen items excluded from the count)*
 
 ```
-██████░░░░ 61%
+████████░░ 83%
 ```
 
-*(Derived from the counts below — completed ÷ total. Not a fixed figure; recompute when
-the lists change.)*
+*(Derived from the counts below — completed ÷ (completed + remaining). Not a fixed figure;
+recompute when the lists change. The high number reflects the Foundation phase being nearly
+done — it does not mean Genesis is nearly done; the Laboratory and Product phases are almost
+entirely ahead.)*
 
 ## Completed — Research OS
 
@@ -55,6 +58,14 @@ the lists change.)*
 - [x] Philosophical Foundations (`canon/philosophical-foundations.md`)
 - [x] Epistemology (`canon/epistemology.md`)
 - [x] 0001 · Quality of Knowing (`research/hypotheses/0001-quality-of-knowing.md`) — active
+- [x] Primitives (Reception, Update) + Update invariants + algebra unification (journal)
+- [x] Belief-necessity (partial observability forces a belief-state) (journal)
+
+## Completed — Architecture & Laboratory
+
+- [x] Architecture Part B — the minimal adaptive loop, earned-only (`canon/architecture.md`)
+- [x] Laboratory 1 — belief-state vs memoryless, built and run (`src/`, `tests/`,
+  `research/experiments/0001-belief-vs-memoryless.md`)
 
 ## In Progress
 
@@ -71,16 +82,17 @@ visibility since they're real, finished artifacts.*
 
 ## Remaining
 
-- [ ] 0003 · Time
-- [ ] 0004 · Context
-- [ ] 0005 · Belief Revision
-- [ ] Ontology (`canon/ontology.md`)
-- [ ] Architecture — Part B, the system (`canon/architecture.md`)
-- [ ] Constitution (`canon/constitution.md`)
+*Selection is now by laboratory leverage: what unlocks the next executable laboratory or
+improves one that exists. Not by intellectual interest, not by list order.*
 
-Selection among these is not by list order. Per the research-mode operating principle
-(see [`../ai/current_focus.md`](../ai/current_focus.md)): the next item taken up is
-whichever question, if answered, would most reduce uncertainty about Genesis.
+- [ ] Laboratory 2 — candidate: the agent must *learn* its observation model rather than be
+  given it (opened by `research/questions/observation-model-provenance.md`)
+- [ ] 0004 · Context / 0005 · Belief Revision — reframed: what algebra the belief-state lives
+  in; may now be informed by building rather than more analysis
+- [ ] Ontology (`canon/ontology.md`) — still to be *earned* from results, not authored ahead
+
+**Frozen** (nothing depends on them now): `0002` Emergence, `0003` Time, constitutional
+principles (`constitution.md`), the caring fork, method/family meta-work.
 
 > Note: the Research OS was marked complete before `explorations/` existed as a category.
 > Explorations don't fit cleanly into the Research OS / Genesis Theory split — they're
