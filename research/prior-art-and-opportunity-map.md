@@ -45,21 +45,55 @@ metaethics dispute. **Verdict: E — philosophically unresolved, possibly ill-po
 to Genesis; an old problem rediscovered.** Marginal tractable sliver: operationalizing *where*
 the premise enters — probably a restatement of no-free-lunch-for-values.
 
-## Research OS — prior-art audit
+## Research OS — deeper prior-art audit
 
-Closest work: autonomous discovery (Sakana AI Scientist 2024; Coscientist 2023; Google AI
-co-scientist 2025 — these *automate*, Genesis inverts), experiment tracking/provenance (MLflow,
-W&B, DVC, W3C PROV), open science (OSF, Registered Reports), human-AI collaboration
-(mixed-initiative, Horvitz 1999; co-writing 2023–25), knowledge/argumentation (Zettelkasten,
-IBIS, Toulmin). Plausibly-novel sliver: the **enforced form/substance governance contract**
-(AI as consistency-maintainer forbidden to author substance) + provenance-of-reasoning
-sustaining a long-horizon human-led program without drift.
+Component-by-component, nearly everything is established practice:
 
-**Verdict: C — candidate contribution, novelty unvalidated, value unproven.** Needs a real
-CSCW/HCI + AI-agents prior-art review; its first output was re-derivation; it can only prove
-value on a genuine frontier. Real open sub-question (D): *does the form/substance contract
-measurably reduce drift/hallucinated-substance vs. unconstrained collaboration?* — Genesis's
-most tractable open question, but a methodology-evaluation question, not cognitive science.
+| Component | Closest prior art | Established? |
+|---|---|---|
+| Decision records (`decisions/`) | Architecture Decision Records (Nygard 2011); design rationale (IBIS) | yes |
+| Pre-registered experiment contracts | Registered Reports; preregistration (OSF) | yes |
+| Provenance (claim→source) | W3C PROV; design rationale | yes |
+| Guardian (drift/dup/orphan/broken-link checks) | linters, CI, dead-link checkers | yes |
+| Canon vs. record + linked structure | Zettelkasten; semantic wikis | yes |
+| Epistemic status (Working/Stable) | evidence grading (GRADE); maturity ladders | yes |
+| AI barred from authoring substance | author/editor distinction; AI-not-author norms (ICMJE 2023); mixed-initiative (Horvitz 1999) | *stance* yes; enforced+tooled discipline not found as a named system |
+
+Field context: autonomous AI-scientists (Sakana 2024; Google co-scientist 2025) push toward
+AI *automating* research; Genesis inverts this — the AI does heavy work but is barred from
+substance. The live, unsolved problem that inversion targets is **AI substance-capture /
+drift** in AI-assisted research.
+
+**Recorded status (precise):**
+- **Research OS as a whole: Import + Engineering validation.** Established components
+  assembled into a coherent workflow.
+- **Form/substance governance: Potentially novel, pending stronger prior-art verification.**
+  Do not call it novel.
+- **Demonstrated property: epistemic honesty / anti-self-deception about novelty.** Strongest
+  evidence is internal — the OS's own provenance + literature-reconciliation caused Genesis to
+  detect and formally acknowledge (Decision 0001) that much of its supposed architectural
+  research was established science. *This is evidence of usefulness, NOT of novelty.*
+- **Controlled superiority claim: Open question.** Difficult to test at solo scale; heavily
+  confounded by the established components (preregistration already reduces error; ADRs
+  already improve auditability).
+- **Contribution category: methodology / HCI / CSCW — not cognitive science.**
+
+**The four-level distinction, applied honestly:** (1) established components — yes, all of
+them; (2) a potentially distinctive *combination* — yes, evidence for this; (3) a genuinely
+new *mechanism* — **no**; on scrutiny the "mechanism" reduces to the author/editor
+relationship + linting + citation discipline, all established; (4) demonstrated empirical
+advantage — only a *small* internal piece (it caught our own false-novelty claim); the broader
+comparative claim is untested. **Genesis has (2) and a small piece of (4); not (3); broader (4)
+untested.**
+
+Guard against circularity: the OS exposing our earlier mistake is evidence the *method works*,
+**not** evidence the method is *novel*. Using internal success as a novelty substitute is
+itself the error the "Rediscovery Is Not Discovery" rule forbids.
+
+**Verdict: primarily Import + Engineering validation, with a Potentially-novel governance
+sliver that has not cleared the bar for a new mechanism.** Do not manufacture a study to
+validate it. Best treated, if pursued at all, as a *documentable methodology artifact*, not a
+research program.
 
 ## One genuinely-open, tractable, adjacent problem
 
@@ -76,9 +110,13 @@ founding contribution.
   filtering, active sensing, causal/interventional reasoning, closed-loop/model-based RL.
 - **B — Engineering validation only:** minimal implementations of the above *if* needed as
   dependencies.
-- **C — Genesis-specific candidate (validate novelty):** the Research OS.
-- **D — Genuinely unresolved & researchable:** (i) the Research-OS drift-reduction study;
-  (ii) reflexive/performative decision-making (adjacent, crowded).
+- **C — Genesis-specific candidate:** the Research OS — but the deeper audit narrows this to
+  *Import + Engineering validation* overall, with only a *Potentially-novel* form/substance
+  governance sliver that has **not** cleared the bar for a new mechanism. Best treated as a
+  documentable methodology artifact, not a research program.
+- **D — Genuinely unresolved & researchable:** reflexive/performative decision-making
+  (adjacent, crowded). (The Research-OS controlled-superiority study is *open* but likely
+  impractical at solo scale and confounded — not recommended as a research target.)
 - **E — Philosophically unresolved / possibly ill-posed:** the axiology/install problem.
 - **F — Abandon:** primitive-counting (proven description-relative); the "differentiator
   sentence" search; re-deriving established estimation/control theory as if it were discovery;
@@ -90,8 +128,9 @@ founding contribution.
   survives — it is established science.
 - As a bid to **solve axiology:** nothing survives as tractable research — it is deep,
   likely-ill-posed philosophy.
-- **What survives is narrow:** the Research OS as a *methodology* candidate (unvalidated), and
-  the option of *normal* research on reflexive/performative decision-making.
+- **What survives is narrow:** the Research OS as a *documentable methodology artifact*
+  (strong synthesis; one demonstrated benefit — anti-self-deception; no new mechanism
+  identified), and the option of *normal* research on reflexive/performative decision-making.
 
 Genesis is, at present, **a research method in search of a problem worthy of it.** The honest
 open decision is no longer "which lab next" but "which project is Genesis" — a methodology
