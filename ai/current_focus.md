@@ -105,9 +105,26 @@ Slip condition inconclusive; p=3 excluded by the pre-registered wall rule.
 accurate* than the belief agent (0.889 vs 0.810) at 7× the steps. Nothing charges for time, so
 patience beats knowledge.
 
-**Next:** Milestone 3 candidate — **a cost on time** (step cost, deadline, or non-waiting
-target), from that exact resistance. Not designed, not approved; design review required before
-any build. Still no RL, planning, market data, trading, or reflexivity.
+**Milestone 3 — proposed, design-reviewed, REJECTED. The toy sequence is closed at M2.**
+A cost on time would have answered a question already available in closed form from M2's data
+(λ* ≈ 0.0068), could not preserve the identical-policy principle, and would have made belief win
+by construction. Draft decision:
+[`../research/decisions/0002-close-the-toy-milestone-sequence.md`](../research/decisions/0002-close-the-toy-milestone-sequence.md)
+— **awaiting review; canon deliberately untouched.**
+
+**The lesson that closed the sequence:** every capability Genesis added met a cheap
+environmental substitute, and the reflex was to modify the environment until the substitute
+failed. That is capability-demonstration engineering, not research — the `0001`
+manufactured-necessity failure mode displaced from the capability onto the environment.
+**Existence, correctness and usefulness are three separate claims**, and usefulness is only
+demonstrable against a cost, so an environment can always be built to make any capability look
+necessary. Building it demonstrates nothing.
+
+**Next:** no experiment by default. A drafted **environment-first gate** now precedes the
+research gate (environment justified before capability). Applied to Genesis's own market goal it
+returns *no justified environment* — so the laboratory sequence stops. Three phase options are
+on the table in `0002` (recommended: deploy the machinery against a real environment and label
+it engineering, not research). **Researcher's decision; nothing proceeds until it is made.**
 
 DR0001's formal direction decision remains open; this construction direction is the accepted
 *working* posture, not a formal closure of that decision.

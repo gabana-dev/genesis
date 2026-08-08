@@ -377,6 +377,36 @@ when observations were intermittent, isolated from mere memory by the stale base
 here is a discovery about filtering, a new primitive, or evidence about anything beyond this
 corridor. **Import + Build.** No canon change.
 
+## F. Consequence analysis — the cost-of-waiting crossover (Import / Analysis, NOT an experiment)
+
+**Classification: Import + Analysis. This is not a laboratory, not a milestone, and not a new
+result.** It is arithmetic on the numbers already in §A/§E, recorded here because it *answers*
+the question a Milestone 3 would have been built to ask — which is why that milestone was not
+built (see [`../decisions/0002-...`](../decisions/0002-close-the-toy-milestone-sequence.md)).
+
+A per-step cost is a linear re-weighting of two quantities this experiment already recorded.
+With `score = accuracy − λ · steps`, the belief agent overtakes the waiting (null) agent when
+`λ > Δaccuracy / Δsteps`:
+
+| condition | belief (acc / steps) | null (acc / steps) | crossover λ* |
+|---|---|---|---|
+| p=5, noise 0.2 | 0.810 / 1.95 | 0.889 / 13.63 | **0.0068** |
+| p=5, noise 0.5 | 0.508 / 1.84 | 0.514 / 19.47 | **0.00034** |
+| p=1, noise 0.2 | 0.921 / 2.27 | 0.906 / 2.77 | n/a — belief dominates on both axes |
+
+Equivalently: **the null agent pays ~148 extra steps for each additional correct declaration**
+at noise 0.2, and ~2,900 at noise 0.5. If a single step is worth more than 0.68% of a
+successful declaration, patience loses.
+
+**What this establishes:** that imposing a cost on waiting would reverse §E's ranking at almost
+any non-degenerate cost. **What it does not establish:** anything about agency, belief, or
+Genesis. The reversal is a property of the scoring function, not of the agents. Running a lab
+to observe it would be watching arithmetic happen.
+
+**Prior art for the general case:** optimal stopping / sequential decision under uncertainty
+(Wald's SPRT 1945; Chow–Robbins–Siegmund; Bellman-optimal POMDP policies trading information
+against delay). Fully established — **Import**.
+
 ## What limitation this actually exposes
 
 M1: belief was not decision-relevant. M2 fixed that — and revealed the next resistance
@@ -384,10 +414,14 @@ immediately behind it: **the environment does not charge for time, so knowing so
 nothing.** The belief agent's real advantage over the null agent is that it can act *before*
 evidence arrives; the task gives that no value.
 
-Any next milestone should be justified by that observation. The smallest change consistent with
-it is a **cost on time** (a step cost, a deadline, or a target that does not wait), which would
-make acting under uncertainty strictly better than waiting for certainty. That is a candidate,
-not a decision — to be reviewed before any build, per the standing rule.
+Any next milestone should be justified by that observation. The obvious candidate was a **cost
+on time** (step cost, deadline, or a target that does not wait).
+
+**It was reviewed and rejected.** §F shows the answer is available in closed form from data
+already collected; the design review further found that a cost-of-waiting test cannot preserve
+the identical-policy principle and would have made the belief agent win by construction rather
+than by contest. The toy-milestone sequence is closed at M2 —
+[`../decisions/0002-close-the-toy-milestone-sequence.md`](../decisions/0002-close-the-toy-milestone-sequence.md).
 
 ## Rulings incorporated (all approved)
 

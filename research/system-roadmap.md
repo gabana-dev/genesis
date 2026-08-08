@@ -78,9 +78,19 @@ from the **observed limitation** of the previous one, not from a roadmap of ambi
   **Unanticipated limitation exposed:** a null agent that simply waits for fresh evidence is
   *more accurate* than the belief agent (0.889 vs 0.810) at 7× the steps — nothing in this
   environment charges for time.
-- **Milestone 3 — candidate: a cost on time** (step cost, deadline, or a target that does not
-  wait), so that acting under uncertainty is strictly better than waiting for certainty.
-  Justified by M2's observed resistance, not by a ladder. Not designed, not approved.
+- **Milestone 3 — PROPOSED AND REJECTED. The milestone sequence is closed at M2.**
+  The candidate (a cost on time) was design-reviewed and declined: the answer is available in
+  closed form from M2's own data (`experiments/0005-...` §F, crossover λ* ≈ 0.0068), the design
+  could not preserve the identical-policy principle, and it would have made the belief agent win
+  by construction rather than by contest. Draft decision:
+  [`decisions/0002-close-the-toy-milestone-sequence.md`](decisions/0002-close-the-toy-milestone-sequence.md)
+  (awaiting review; canon untouched).
+- **No further milestone by default.** The pattern M1→M2→M3 exposed a second manufactured-
+  necessity failure mode: each added capability met a cheap environmental substitute, and the
+  reflex was to modify the environment until the substitute failed. A proposed
+  **environment-first gate** now precedes the research gate — the environment must be justified
+  before the capability is. Applied to Genesis's own market goal, it currently returns *no
+  justified environment*, so the laboratory sequence stops rather than manufacturing one.
 
 ## Historical record (preserved, not the plan)
 

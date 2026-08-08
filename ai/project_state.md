@@ -143,6 +143,34 @@ territory at session granularity — what changed most recently, not the overall
   belief agent (0.889 vs 0.810) at 13.63 vs 1.95 steps. Costless waiting dominates. → M3
   candidate: a cost on time. Import + Build; no canon change, no novelty claim.
 
+## Milestone sequence closed (2026-08-08) — DR0002 draft
+
+- **M3 was proposed, design-reviewed, and rejected.** Draft decision
+  [`../research/decisions/0002-close-the-toy-milestone-sequence.md`](../research/decisions/0002-close-the-toy-milestone-sequence.md).
+  **Awaiting researcher review — canon untouched.**
+- **Why:** the cost-of-waiting question is answered in closed form by M2's own numbers
+  (`0005` §F, λ* ≈ 0.0068, recorded as **Import/Analysis, not an experiment**); the design could
+  not preserve the identical-policy principle; and it would have produced a belief win by
+  construction rather than by contest.
+- **The pattern that stopped the sequence:** each capability Genesis added met a cheap
+  environmental substitute, and the reflex was to modify the toy corridor until the substitute
+  failed. Same manufactured-necessity failure mode as `0001`, displaced from capability to
+  environment.
+- **Proposed canon lesson (drafted, not adopted):** existence, correctness and usefulness are
+  three separate claims; usefulness is only demonstrable against a cost; therefore an
+  environment can always be built to make any capability useful, and building it demonstrates
+  nothing.
+- **Proposed environment-first gate (drafted, not adopted):** five questions ahead of the
+  existing research gate — real need / why simpler strategies fail / established machinery /
+  what remains unresolved / does it test that or demonstrate imports. Applied to Genesis's own
+  market goal it returns **no justified environment**.
+- **Phase options in DR0002:** (A, recommended) deploy the machinery against a real environment
+  — PsTally console monitoring is an M2-shaped problem in the wild — labelled engineering, not
+  research; (B) pursue reflexivity, likely blocked by scale; (C) close the program and preserve
+  the method as the artifact. A and C are compatible.
+- **Not a failure.** The milestones established that the machinery works and exposed where the
+  program was manufacturing necessity.
+
 ## Frozen
 
 - `0002` Emergence, `0003` Time, `constitution.md`, `ontology.md`, the caring fork.
