@@ -15,31 +15,32 @@ drills into the milestones of whichever phase is current.
 
 ## Current Phase
 
-**Laboratory 1** — transitioned 2026-08-07 from the Foundation phase. Genesis now optimizes
-for turning earned foundations into executable knowledge, not for deriving more foundations.
-The loop from here: research earns architecture → architecture generates implementation →
-implementation exposes ambiguity → ambiguity generates research.
+**Research triage (2026-08-08).** Not a laboratory phase. A literature-reconciliation pass
+([`prior-art-and-opportunity-map.md`](prior-art-and-opportunity-map.md)) established that
+Genesis's foundations are established science, and re-founded how work is chosen: no lab for
+anything already solved in the literature. The milestone counter below is **retired** — it
+measured progress up a capability ladder that turned out to be import, not research, so the
+percentage was measuring the wrong thing.
 
-## Milestone: Epistemic Foundation — complete; Laboratory 1 — complete
+## The honest status
 
-The Foundation milestone (canon + primitives + the Update/Belief theory) is done. As of
-2026-08-07 the first executable laboratory exists and ran: Reception, Update, and a
-belief-state implemented cleanly from the canon; belief-state agent 0.929 vs memoryless
-0.699 under partial observability. Concepts became software. See
-[`experiments/0001-belief-vs-memoryless.md`](experiments/0001-belief-vs-memoryless.md).
+- Labs 1–3 ran (belief-necessity validated → canon Working; observation-model learnable;
+  choice-over-information — a clean *negative* that exposed primitive-counting as
+  description-relative).
+- **The novel-cognitive-architecture thesis has collapsed into established science.**
+- **The axiology/install thesis is an old philosophical problem** (Hume's is/ought), likely
+  ill-posed.
+- **The Research OS is the strongest surviving candidate contribution** — novelty and value
+  both still unproven.
+- **Open decision (researcher's):** which project Genesis now is. See
+  [`../ai/current_focus.md`](../ai/current_focus.md) and the opportunity map.
 
-## Status
+## Retired milestone counter
 
-`15 / 18 milestones complete` *(frozen items excluded from the count)*
-
-```
-████████░░ 83%
-```
-
-*(Derived from the counts below — completed ÷ (completed + remaining). Not a fixed figure;
-recompute when the lists change. The high number reflects the Foundation phase being nearly
-done — it does not mean Genesis is nearly done; the Laboratory and Product phases are almost
-entirely ahead.)*
+The former "15/18, 83%" figure is retired. It counted rungs of a POMDP/RL capability ladder
+now classified as *import*, so it overstated research progress. Progress is no longer
+measured by capability rungs; it is measured by whether Genesis produces something the
+literature does not already have — which the triage found it has not yet done.
 
 ## Completed — Research OS
 

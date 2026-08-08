@@ -6,17 +6,21 @@
 
 ## Now
 
-**Research mode.** The Research OS (Phase 0's laboratory-building) is functionally
-complete: collaboration contract, Guardian, research methodology, program status,
-conceptual landscape, and the hypothesis framework are all in place. Genesis has moved
-from building the environment to using it.
+**Research triage — a turning point, not a lab.** A literature-reconciliation pass
+(2026-08-08) established that Genesis's foundations are established science, not discoveries.
+See [`../research/prior-art-and-opportunity-map.md`](../research/prior-art-and-opportunity-map.md).
+The capability-construction phase is **over**; we do not climb the POMDP/RL ladder as research.
 
-Correction to an earlier version of this note: "no more framework, scaffolding, or
-process design" turned out not to hold — `research/explorations/` was added afterward as
-a new structural category (investigations into research method, distinct from both
-hypotheses and canon). Minor, necessary structural additions are still possible; what's
-closed is large framework changes to the core apparatus (collaboration contract,
-hypothesis structure, Guardian role, provenance rule).
+**The honest state, plainly:** the novel-cognitive-architecture thesis collapsed into
+established science; the axiology/install thesis is an old philosophical problem (Hume's
+is/ought), likely ill-posed; the **Research OS is the strongest surviving candidate
+contribution, but its novelty and value are both unproven.**
+
+**Open decision (the researcher's, not yet made):** which project is Genesis now —
+(1) a methodology project (validate the Research OS), (2) a normal research project
+(reflexive/performative decision-making, adjacent, crowded), (3) a modest philosophy project
+(axiology, likely non-resolving), or (4) a completed learning vehicle. To be recorded as the
+first entry in `research/decisions/`.
 
 ## The research cycle
 
@@ -75,34 +79,25 @@ genuine failure in practice.
 
 ## Immediate next step
 
-**Laboratory 3 — dynamic hidden state (regime-switching).** Chosen by the
-capability-construction gate, justified in the
-[architectural roadmap](../research/architectural-roadmap.md):
+**No laboratory.** The next move is the researcher's direction decision (the four options in
+"Now"), to be recorded in `research/decisions/` as Genesis's first Decision Record. A draft
+of that record and of the methodological rule for canon await ratification (see the map).
 
-1. *Hypothesis:* belief-necessity holds when the hidden cause changes over time; and the
-   filtering predict-step compresses into Update-with-null-observation.
-2. *Uncertainty eliminated:* whether belief was an artifact of static worlds; whether naive
-   accumulation (not a real filter) was secretly sufficient.
-3. *Capability earned:* belief over a dynamic state — mostly the belief-core re-aimed at
-   dynamics (old machinery), with **forgetting becoming necessary** as the genuinely-new
-   element. Completes the passive-knower stack (state + sensor + dynamics).
-4. *Future labs unlocked:* the closed action loop (Lab 4) — the agency gate — which requires
-   belief over a state the agent itself moves. Lab 3 is the last purely-epistemic capability
-   before Genesis must become an actor.
+Note: the capability-construction gate above and the Method-of-Discovery freeze remain on
+record as history, but the gate is now subordinate to the prior-art rule — *no laboratory at
+all* for anything classified as import (A) in the opportunity map.
 
-**The strategic event beyond Lab 3:** the agency gate (Lab 4) forces **axiology** — the
-system needs an objective to choose actions, which is the frozen caring fork. Decide *where
-the objective comes from* (install vs. derive) before Lab 4, not during it.
+## Not in focus right now — abandoned or frozen
 
-## Not in focus right now
-
-- Unsupervised observation-model learning — deferred (confounded as a belief-necessity test;
-  belongs on a purpose-built task, per the roadmap).
-- `0002` Emergence, `0003` Time hypotheses, `constitution.md`, `ontology.md`, the caring
-  fork — frozen.
-- Shared harness / infrastructure — premature (two labs too few to earn the interface;
-  revisit after Lab 3–4).
+- **Abandoned (F):** primitive-counting; the "differentiator sentence" search; re-deriving
+  established estimation/control theory as if it were discovery; the capability graph as a
+  *research* roadmap (it is a dependency map).
+- **Import if needed (A), never as research:** dynamic-state filtering (was "Lab 3"),
+  unsupervised obs-model, closed-loop RL, causal inference.
+- **Frozen:** `0002` Emergence, `0003` Time, `constitution.md`, `ontology.md`.
+- **Open but unchosen (D/E):** Research-OS validation; reflexive/performative decision-making;
+  the axiology/install problem.
 
 ---
 
-*Last updated: 2026-08-07.*
+*Last updated: 2026-08-08.*

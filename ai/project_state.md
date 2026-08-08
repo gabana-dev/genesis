@@ -88,17 +88,28 @@ territory at session granularity — what changed most recently, not the overall
   escaping the one-step/single-function regime (multi-step, joint-dependent channels, or
   intractable beliefs) — a boundary decision, not yet taken.
 
-## In progress / next
+## Research triage (2026-08-08) — the major reframe
 
-- Laboratory 2 candidate: the agent must *learn* its observation model rather than be given
-  it (from `observation-model-provenance`).
-- `0004`/`0005` reframed around which algebra the belief-state lives in; frozen otherwise.
+- A literature-reconciliation pass ([`../research/prior-art-and-opportunity-map.md`](../research/prior-art-and-opportunity-map.md))
+  established that Genesis's foundations are **established science** (POMDP, Bayes/Kalman,
+  Baum-Welch, filtering, active sensing, Pearl, model-based RL) — not discoveries.
+- **The novel-cognitive-architecture thesis collapsed into established science.** The
+  **axiology/install thesis is an old philosophical problem** (Hume's is/ought), likely
+  ill-posed. The **Research OS is the strongest surviving candidate contribution** — novelty
+  and value both unproven.
+- New standing rule (proposed for canon, awaiting ratification): rediscovery ≠ research
+  novelty; import established results, don't re-derive them as research.
+- Abandoned (F): primitive-counting; the "differentiator sentence" search; the capability
+  graph as a *research* roadmap (it's a dependency map now).
+- **Open decision (researcher's, not made):** which project Genesis is — methodology /
+  normal-research (reflexive-performative) / modest-philosophy (axiology) / completed-learning
+  vehicle. To be the first `research/decisions/` entry. Drafts of that record and the canon
+  rule await ratification.
 
-## Frozen (nothing depends on them now)
+## Frozen
 
-- `0002` Emergence, `0003` Time, `constitution.md`, `ontology.md` (earned, not authored
-  ahead), the caring fork, method/family meta-work.
+- `0002` Emergence, `0003` Time, `constitution.md`, `ontology.md`, the caring fork.
 
 ---
 
-*Last updated: 2026-08-07.*
+*Last updated: 2026-08-08.*
