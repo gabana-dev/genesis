@@ -106,6 +106,22 @@ territory at session granularity — what changed most recently, not the overall
   vehicle. To be the first `research/decisions/` entry. Drafts of that record and the canon
   rule await ratification.
 
+## System construction — Milestone 1 (2026-08-08)
+
+- **The first CLOSED loop.** `src/closed_loop.py`, `tests/test_closed_loop.py`,
+  [`../research/experiments/0004-minimal-closed-loop.md`](../research/experiments/0004-minimal-closed-loop.md).
+  1-D corridor (K=7, target 3), action-conditioned Bayes filter (Import: Thrun–Burgard–Fox;
+  Åström 1965), certainty-equivalent greedy policy. Deliberately boring by contract.
+- **A. Integration validity — passed.** Full filter vs Update-only ablation, 3000 episodes:
+  true-posterior 0.775/0.548 (noise 0.2), 0.457/0.292 (0.5), 0.286/0.189 (0.7). Belief never
+  detaches from the world across the episode.
+- **B. Behavioral utility — did not materialize.** Belief vs memoryless: 2.48/2.56 steps,
+  3.95/4.12, and at noise 0.7 memoryless is *better* (0.992 reached / 6.53 steps vs 0.974 /
+  7.03). Reported honestly; no success narrative manufactured.
+- **Observed limitation → next capability:** belief is behaviorally load-bearing only when one
+  current observation cannot carry the decision. Milestone 2 candidate: sparse/intermittent
+  observations. No canon change; no novelty claim.
+
 ## Frozen
 
 - `0002` Emergence, `0003` Time, `constitution.md`, `ontology.md`, the caring fork.

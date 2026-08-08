@@ -84,9 +84,19 @@ intact (belief → learn → act → adapt → eventually markets); it is reache
 established machinery, not rediscovery. Working roadmap:
 [`../research/system-roadmap.md`](../research/system-roadmap.md). Old capability graph retired.
 
-**Next:** Milestone 1 — the minimal closed agent loop (env → obs → belief → decision → action
-→ transition → obs) with the simplest established policy. Spec proposed, awaiting researcher
-approval before build. No RL, planning, market data, trading, or reflexivity in M1.
+**Milestone 1 — DONE** (2026-08-08):
+[`../research/experiments/0004-minimal-closed-loop.md`](../research/experiments/0004-minimal-closed-loop.md),
+`src/closed_loop.py`, `tests/test_closed_loop.py`. The first closed loop Genesis has built —
+belief → action → changed world → new evidence → updated belief. Integration validity
+**passed** (the action-conditioned Predict keeps the belief on a state the agent is moving;
+the Update-only ablation loses alignment). Behavioral utility **did not materialize** — the
+memoryless baseline matches it, and beats it slightly at noise 0.7. Recorded as a split
+result, not a win.
+
+**Next:** Milestone 2 — the same loop with **sparse observations**, chosen from M1's observed
+limitation: belief only becomes behaviorally load-bearing when a single current observation is
+insufficient to decide. Intermittent-observation filtering = Import; harness = Build. Awaiting
+researcher approval before build. Still no RL, planning, market data, trading, or reflexivity.
 
 DR0001's formal direction decision remains open; this construction direction is the accepted
 *working* posture, not a formal closure of that decision.

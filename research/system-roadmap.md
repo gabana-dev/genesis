@@ -58,12 +58,19 @@ from the **observed limitation** of the previous one, not from a roadmap of ambi
 
 ## Milestones
 
-- **Milestone 1 — the minimal closed agent loop.** Proposed; awaiting researcher approval
-  before build (spec presented in conversation). Establishes only:
-  `environment → observation → state/belief → decision → action → transition → new observation`,
-  with the simplest established decision policy. No RL, planning, market data, trading, or
-  reflexivity.
-- **Milestone 2+ —** determined from Milestone 1's observed limitation. Not pre-specified.
+- **Milestone 1 — the minimal closed agent loop. DONE.**
+  [`experiments/0004-minimal-closed-loop.md`](experiments/0004-minimal-closed-loop.md).
+  Established `environment → observation → belief → decision → action → transition → new
+  observation` with an action-conditioned Predict step and a trivial greedy policy.
+  **A. Integration validity: passed** — the belief tracks a state the agent is itself moving;
+  an Update-only ablation loses alignment at every noise level. **B. Behavioral utility: did
+  not materialize** — the memoryless baseline matches the belief agent (and slightly beats it
+  at noise 0.7). Reported, not rewritten into a win.
+- **Milestone 2 — candidate: the same loop with sparse observations.** Chosen from Milestone
+  1's observed limitation: belief is behaviorally load-bearing only when a single current
+  observation is insufficient to decide. Intermittent-observation filtering is **Import**;
+  the harness is **Build**. Awaiting researcher approval before build.
+- **Milestone 3+ —** determined from Milestone 2's observed limitation. Not pre-specified.
 
 ## Historical record (preserved, not the plan)
 
