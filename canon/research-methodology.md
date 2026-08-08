@@ -81,6 +81,30 @@ New primitives require demonstrating that no composition of existing primitives 
 
 ---
 
+### Rediscovery Is Not Discovery
+
+Before Genesis builds a laboratory around a capability, it identifies the established literature and asks whether the capability is already solved. If it is, Genesis imports it, names the prior art, implements the minimum needed as a dependency, and moves on.
+
+First-principles derivation remains valuable for understanding, verification, and exposing hidden assumptions. But independently re-deriving established science is not research progress, and Genesis does not count it as a discovery.
+
+**Source:** [`../research/prior-art-and-opportunity-map.md`](../research/prior-art-and-opportunity-map.md).
+
+#### The research gate (mandatory)
+
+Before any proposed laboratory enters the roadmap, perform a prior-art check and classify it:
+
+1. **Import** — established result; use existing literature/machinery.
+2. **Engineering validation** — implementation needed for Genesis; no research novelty claimed.
+3. **Replication** — independently reproduce an established result for verification.
+4. **Open question** — established literature does not settle the specific question.
+5. **Potentially novel** — a concrete difference from prior art identified; still needs verification.
+6. **Philosophical / open-ended** — unresolved, but not necessarily an engineering research target.
+
+A laboratory cannot be justified merely because Genesis has not derived the capability before. If the prior-art review closes the question, that is a successful research outcome — do not manufacture a laboratory to preserve the roadmap. The sequence for any proposed lab is:
+**prior art → unresolved gap → why Genesis is positioned to investigate → falsifiable question → smallest discriminating experiment.**
+
+---
+
 ## The Lifecycle of Knowledge
 
 Every meaningful concept within Genesis progresses through distinct stages.
