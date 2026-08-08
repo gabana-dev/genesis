@@ -6,12 +6,13 @@
 > updated as laboratories confirm or revise it. The researchers decide what graduates from
 > here into canon or architecture.
 >
-> **SUPERSEDED IN PART (2026-08-08) by [`prior-art-and-opportunity-map.md`](prior-art-and-opportunity-map.md).**
-> The literature-reconciliation pass established that this capability graph is almost entirely
+> **RETIRED as a roadmap (2026-08-08). Preserved as historical record — do not delete.**
+> Superseded by [`system-roadmap.md`](system-roadmap.md) (the current working roadmap) and
+> [`prior-art-and-opportunity-map.md`](prior-art-and-opportunity-map.md). The
+> literature-reconciliation pass established that this capability graph is almost entirely
 > **established science to be imported** (POMDP → RL → causal inference), not a research
-> roadmap. Do not read the ladder below as "what Genesis should discover." It is "what
-> Genesis would import if it needs these capabilities as dependencies." The graph remains
-> useful as a dependency map; it is no longer a statement of research direction.
+> roadmap. It survives only as (a) a dependency map and (b) a record of how Genesis once
+> imagined its own progression. It is no longer a statement of research direction.
 
 **Purpose:** the smallest capability graph that could plausibly grow into the Genesis of
 [`../canon/vision.md`](../canon/vision.md). Plan in terms of *capability acquisition*, not

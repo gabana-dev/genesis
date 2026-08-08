@@ -79,9 +79,17 @@ genuine failure in practice.
 
 ## Immediate next step
 
-**No laboratory.** The next move is the researcher's direction decision (the four options in
-"Now"), to be recorded in `research/decisions/` as Genesis's first Decision Record. A draft
-of that record and of the methodological rule for canon await ratification (see the map).
+**Transitioned to literature-grounded system construction** (2026-08-08). The system goal is
+intact (belief → learn → act → adapt → eventually markets); it is reached by *importing*
+established machinery, not rediscovery. Working roadmap:
+[`../research/system-roadmap.md`](../research/system-roadmap.md). Old capability graph retired.
+
+**Next:** Milestone 1 — the minimal closed agent loop (env → obs → belief → decision → action
+→ transition → obs) with the simplest established policy. Spec proposed, awaiting researcher
+approval before build. No RL, planning, market data, trading, or reflexivity in M1.
+
+DR0001's formal direction decision remains open; this construction direction is the accepted
+*working* posture, not a formal closure of that decision.
 
 Note: the capability-construction gate above and the Method-of-Discovery freeze remain on
 record as history, but the gate is now subordinate to the prior-art rule — *no laboratory at

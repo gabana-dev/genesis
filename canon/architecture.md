@@ -32,12 +32,15 @@ it).
   - `questions/` — open problems.
   - [`conceptual-landscape.md`](../research/conceptual-landscape.md) — the living map of
     how Genesis's concepts relate; discovery, not definition (those stay in the canon).
-  - [`architectural-roadmap.md`](../research/architectural-roadmap.md) — the capability
-    graph (now a *dependency* map, not a research roadmap; see the map below).
+  - [`system-roadmap.md`](../research/system-roadmap.md) — **the current working roadmap.**
+    Marks the transition to literature-grounded system construction (import established
+    machinery; build the shortest honest path to the system goal; milestones grow from
+    observed limitations).
   - [`prior-art-and-opportunity-map.md`](../research/prior-art-and-opportunity-map.md) —
-    where Genesis stands vs. established literature; classifies every result as
-    import / validate / candidate-contribution / open / ill-posed / abandon. The current
-    authority on what is worth researching.
+    where Genesis stands vs. established literature (import / validate / open / ill-posed /
+    abandon). The authority on what is worth researching.
+  - [`architectural-roadmap.md`](../research/architectural-roadmap.md) — *retired* capability
+    graph, preserved as historical record.
   - `explorations/` — investigations into how Genesis should research, not what it
     should believe. E.g. [`what-makes-a-good-hypothesis.md`](../research/explorations/what-makes-a-good-hypothesis.md),
     [`patterns-emerging-across-investigations.md`](../research/explorations/patterns-emerging-across-investigations.md).
