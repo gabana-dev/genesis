@@ -93,10 +93,21 @@ the Update-only ablation loses alignment). Behavioral utility **did not material
 memoryless baseline matches it, and beats it slightly at noise 0.7. Recorded as a split
 result, not a win.
 
-**Next:** Milestone 2 — the same loop with **sparse observations**, chosen from M1's observed
-limitation: belief only becomes behaviorally load-bearing when a single current observation is
-insufficient to decide. Intermittent-observation filtering = Import; harness = Build. Awaiting
-researcher approval before build. Still no RL, planning, market data, trading, or reflexivity.
+**Milestone 2 — DONE** (2026-08-08):
+[`../research/experiments/0005-sparse-observation-decision-relevance.md`](../research/experiments/0005-sparse-observation-decision-relevance.md),
+`src/sparse_loop.py`, `tests/test_sparse_loop.py`. Sparse observations made belief
+behaviorally load-bearing: the predictive agent beats a stale-observation agent running the
+*identical* policy by +0.810 [+0.796, +0.824] at gap 5, ≈0 at the p=1 control. It fails as
+predicted — the stale agent cannot detect its own arrival, overshoots, and never declares.
+Slip condition inconclusive; p=3 excluded by the pre-registered wall rule.
+
+**But:** the throwaway null agent — waits for fresh evidence, holds still otherwise — is *more
+accurate* than the belief agent (0.889 vs 0.810) at 7× the steps. Nothing charges for time, so
+patience beats knowledge.
+
+**Next:** Milestone 3 candidate — **a cost on time** (step cost, deadline, or non-waiting
+target), from that exact resistance. Not designed, not approved; design review required before
+any build. Still no RL, planning, market data, trading, or reflexivity.
 
 DR0001's formal direction decision remains open; this construction direction is the accepted
 *working* posture, not a formal closure of that decision.

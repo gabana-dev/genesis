@@ -122,6 +122,27 @@ territory at session granularity — what changed most recently, not the overall
   current observation cannot carry the decision. Milestone 2 candidate: sparse/intermittent
   observations. No canon change; no novelty claim.
 
+## System construction — Milestone 2 (2026-08-08)
+
+- **Sparse observations make belief behaviorally load-bearing.** `src/sparse_loop.py`,
+  `tests/test_sparse_loop.py`,
+  [`../research/experiments/0005-sparse-observation-decision-relevance.md`](../research/experiments/0005-sparse-observation-decision-relevance.md).
+  Contract pre-registered *and approved* before build; nothing tuned afterwards.
+- Four agents, **identical policy `π(p̂)`**, differing only in the state estimate (predictive
+  belief / stale observation / null / frozen belief). Agent-owned STOP — the environment never
+  detects arrival, which would have handed everyone an oracle.
+- **Primary (behavioral) met:** paired belief−stale declaration accuracy +0.015 at `p=1`
+  (M1 control, flat as pre-registered) → +0.572 at `p=2` → +0.810 [+0.796, +0.824] at `p=5`.
+  Predicted mechanism observed exactly: the stale agent overshoots and never declares (0.000
+  correct at `p=5`).
+- **Secondary (mechanism) confirmed:** belief posterior flat across gap age (~0.65 at gaps 0–3);
+  frozen ablation collapses to 0.13 with MAP error 4.2.
+- **Slip condition inconclusive**; two conditions excluded by the pre-registered 25%
+  wall-contamination rule (which fired on the artifact it was written for).
+- **Unanticipated limitation:** the null "wait for evidence" agent is *more accurate* than the
+  belief agent (0.889 vs 0.810) at 13.63 vs 1.95 steps. Costless waiting dominates. → M3
+  candidate: a cost on time. Import + Build; no canon change, no novelty claim.
+
 ## Frozen
 
 - `0002` Emergence, `0003` Time, `constitution.md`, `ontology.md`, the caring fork.

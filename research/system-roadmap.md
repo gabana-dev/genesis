@@ -66,11 +66,21 @@ from the **observed limitation** of the previous one, not from a roadmap of ambi
   an Update-only ablation loses alignment at every noise level. **B. Behavioral utility: did
   not materialize** — the memoryless baseline matches the belief agent (and slightly beats it
   at noise 0.7). Reported, not rewritten into a win.
-- **Milestone 2 — candidate: the same loop with sparse observations.** Chosen from Milestone
-  1's observed limitation: belief is behaviorally load-bearing only when a single current
-  observation is insufficient to decide. Intermittent-observation filtering is **Import**;
-  the harness is **Build**. Awaiting researcher approval before build.
-- **Milestone 3+ —** determined from Milestone 2's observed limitation. Not pre-specified.
+- **Milestone 2 — sparse observations. DONE.**
+  [`experiments/0005-sparse-observation-decision-relevance.md`](experiments/0005-sparse-observation-decision-relevance.md).
+  Contract pre-registered and approved before build. **Primary criterion met:** with an
+  identical policy and paired randomness, the predictive belief beats the stale-observation
+  agent on declaration accuracy by +0.810 [+0.796, +0.824] at `p=5`, and by +0.015 at the
+  `p=1` null control. Mechanism confirmed — belief alignment flat across gap age, frozen
+  ablation collapses; the stale agent fails specifically by overshooting and never declaring.
+  **Slip condition inconclusive.** Two conditions excluded by the pre-registered
+  wall-contamination rule.
+  **Unanticipated limitation exposed:** a null agent that simply waits for fresh evidence is
+  *more accurate* than the belief agent (0.889 vs 0.810) at 7× the steps — nothing in this
+  environment charges for time.
+- **Milestone 3 — candidate: a cost on time** (step cost, deadline, or a target that does not
+  wait), so that acting under uncertainty is strictly better than waiting for certainty.
+  Justified by M2's observed resistance, not by a ladder. Not designed, not approved.
 
 ## Historical record (preserved, not the plan)
 
