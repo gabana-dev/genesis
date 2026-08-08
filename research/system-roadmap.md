@@ -83,7 +83,7 @@ from the **observed limitation** of the previous one, not from a roadmap of ambi
   closed form from M2's own data (`experiments/0005-...` §F, crossover λ* ≈ 0.0068), the design
   could not preserve the identical-policy principle, and it would have made the belief agent win
   by construction rather than by contest. Draft decision:
-  [`decisions/0002-close-the-toy-milestone-sequence.md`](decisions/0002-close-the-toy-milestone-sequence.md)
+  [`decisions/0002-close-the-genesis-research-program.md`](decisions/0002-close-the-genesis-research-program.md)
   (awaiting review; canon untouched).
 - **No further milestone by default.** The pattern M1→M2→M3 exposed a second manufactured-
   necessity failure mode: each added capability met a cheap environmental substitute, and the

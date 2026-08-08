@@ -146,7 +146,7 @@ territory at session granularity — what changed most recently, not the overall
 ## Milestone sequence closed (2026-08-08) — DR0002 draft
 
 - **M3 was proposed, design-reviewed, and rejected.** Draft decision
-  [`../research/decisions/0002-close-the-toy-milestone-sequence.md`](../research/decisions/0002-close-the-toy-milestone-sequence.md).
+  [`../research/decisions/0002-close-the-genesis-research-program.md`](../research/decisions/0002-close-the-genesis-research-program.md).
   **Awaiting researcher review — canon untouched.**
 - **Why:** the cost-of-waiting question is answered in closed form by M2's own numbers
   (`0005` §F, λ* ≈ 0.0068, recorded as **Import/Analysis, not an experiment**); the design could

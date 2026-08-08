@@ -109,7 +109,7 @@ patience beats knowledge.
 A cost on time would have answered a question already available in closed form from M2's data
 (λ* ≈ 0.0068), could not preserve the identical-policy principle, and would have made belief win
 by construction. Draft decision:
-[`../research/decisions/0002-close-the-toy-milestone-sequence.md`](../research/decisions/0002-close-the-toy-milestone-sequence.md)
+[`../research/decisions/0002-close-the-genesis-research-program.md`](../research/decisions/0002-close-the-genesis-research-program.md)
 — **awaiting review; canon deliberately untouched.**
 
 **The lesson that closed the sequence:** every capability Genesis added met a cheap

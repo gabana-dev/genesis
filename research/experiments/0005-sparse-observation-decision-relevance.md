@@ -382,7 +382,7 @@ corridor. **Import + Build.** No canon change.
 **Classification: Import + Analysis. This is not a laboratory, not a milestone, and not a new
 result.** It is arithmetic on the numbers already in §A/§E, recorded here because it *answers*
 the question a Milestone 3 would have been built to ask — which is why that milestone was not
-built (see [`../decisions/0002-...`](../decisions/0002-close-the-toy-milestone-sequence.md)).
+built (see [`../decisions/0002-...`](../decisions/0002-close-the-genesis-research-program.md)).
 
 A per-step cost is a linear re-weighting of two quantities this experiment already recorded.
 With `score = accuracy − λ · steps`, the belief agent overtakes the waiting (null) agent when
@@ -421,7 +421,7 @@ on time** (step cost, deadline, or a target that does not wait).
 already collected; the design review further found that a cost-of-waiting test cannot preserve
 the identical-policy principle and would have made the belief agent win by construction rather
 than by contest. The toy-milestone sequence is closed at M2 —
-[`../decisions/0002-close-the-toy-milestone-sequence.md`](../decisions/0002-close-the-toy-milestone-sequence.md).
+[`../decisions/0002-close-the-genesis-research-program.md`](../decisions/0002-close-the-genesis-research-program.md).
 
 ## Rulings incorporated (all approved)
 
