@@ -79,6 +79,25 @@ notes that the environment-first gate ruled on Genesis-*authored* simulators and
 externally recorded data. DR0003 permits considering a harder recorded target; **it selects
 none.**
 
+## Kill criteria (researcher, 2026-08-09)
+
+Stated so that abandoning a line of work is a planned outcome rather than a failure, and so
+that "intellectually interesting" is never sufficient reason to continue.
+
+| Condition | Response |
+|---|---|
+| Live validation reveals the recorder is fundamentally flawed | **Fix it** |
+| The recorder works beautifully but no meaningful application emerges | **Reconsider the application** |
+| An application requires assumptions Genesis cannot legitimately observe | **Reject it** |
+| The system grows more complex without producing evidence | **Stop and simplify** |
+| An established product already does exactly what Genesis does | **Do not pretend we invented it** |
+| A genuinely valuable capability is found | **Investigate commercialisation aggressively** |
+
+These govern the current engineering line. They are recorded here rather than in a new
+document because the project's stated priority is less documentation and more real
+connection. If they should bind at the decision layer, that is a decision record for the
+researcher to author.
+
 ## What "better" means
 
 A milestone succeeds when the system becomes **more capable, more adaptive, more measurable, or

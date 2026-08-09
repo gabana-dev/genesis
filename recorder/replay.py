@@ -14,6 +14,8 @@ from log import read
 
 SNAPSHOT = "orderbook_snapshot"
 DELTA = "orderbook_delta"
+DEPTH = "depthUpdate"          # Binance: absolute level assignment, not a delta
+DEPTH_SNAP = "depthSnapshot"   # Binance: REST anchor for the documented reconciliation
 
 
 def _ts(ev):
@@ -37,7 +39,8 @@ def order_book_at(path, market_ticker, at=None):
     # Sizes are Decimal, never int and never float. Kalshi's public order book carries
     # fractional decimal-string quantities ("0.01", "191.00") under a tapered_deci_cent price
     # structure, so integer coercion both crashes and would lose sub-unit size.
-    book = {"yes": defaultdict(lambda: Decimal("0")), "no": defaultdict(lambda: Decimal("0"))}
+    book = {"yes": defaultdict(lambda: Decimal("0")), "no": defaultdict(lambda: Decimal("0")),
+            "bids": defaultdict(lambda: Decimal("0")), "asks": defaultdict(lambda: Decimal("0"))}
     complete, reason, last_seq, applied = False, "no snapshot seen", None, 0
     current_run = None
 
@@ -84,7 +87,11 @@ def order_book_at(path, market_ticker, at=None):
             continue
 
         world = body.get("world", {})
-        if world.get("market_ticker") != market_ticker:
+        # Association falls back to what Genesis requested only when the venue itself did
+        # not name a market (Binance's REST snapshot). The two are kept distinguishable.
+        requested = (body.get("observation", {}).get("request") or {}).get("symbol")
+        named = world.get("market_ticker")
+        if named != market_ticker and not (named is None and requested == market_ticker):
             continue
 
         msg = (world.get("raw") or {}).get("msg") or {}
@@ -111,6 +118,44 @@ def order_book_at(path, market_ticker, at=None):
             last_seq = world.get("venue_seq")
             applied += 1
 
+        elif typ == DEPTH_SNAP:
+            # A REST anchor replaces the book wholesale, like any snapshot.
+            book["bids"] = defaultdict(lambda: Decimal("0"))
+            book["asks"] = defaultdict(lambda: Decimal("0"))
+            for side in ("bids", "asks"):
+                for price, size in canon.get(side) or []:
+                    value = E.to_decimal(size)
+                    if value > 0:
+                        book[side][price] = value
+            complete, reason = (False, "uninterpretable field(s) in depthSnapshot") \
+                if bad_fields else (True, None)
+            last_seq = world.get("venue_seq")
+            applied += 1
+
+        elif typ == DEPTH:
+            # Absolute assignment: the value IS the new size at that price, and "0" removes
+            # the level. Never accumulated -- accumulating would invent a book the venue
+            # never described. A depthUpdate stream carries no snapshot of its own, so the
+            # first message establishes only the levels it mentions; completeness for this
+            # dialect is asserted by sequence continuity, not by a snapshot.
+            if bad_fields:
+                complete = False
+                reason = (f"uninterpretable field(s) in depthUpdate: "
+                          f"{', '.join(f['field'] for f in bad_fields)}")
+                last_seq = world.get("venue_seq")
+            else:
+                for side in ("bids", "asks"):
+                    for price, size in canon.get(side) or []:
+                        value = E.to_decimal(size)
+                        if value <= 0:
+                            book[side].pop(price, None)
+                        else:
+                            book[side][price] = value
+                if reason == "no snapshot seen":
+                    complete, reason = True, None
+                last_seq = world.get("venue_seq")
+                applied += 1
+
         elif typ == DELTA:
             side = canon.get("side")
             price = canon.get("price_dollars")
@@ -131,7 +176,8 @@ def order_book_at(path, market_ticker, at=None):
                 last_seq = world.get("venue_seq")
                 applied += 1
 
-    return {"book": {s: {p: E.canon_size(q) for p, q in v.items()} for s, v in book.items()},
+    return {"book": {s: {p: E.canon_size(q) for p, q in v.items()}
+                     for s, v in book.items() if v or s in ("yes", "no")},
             "complete": complete, "reason": reason,
             "last_seq": last_seq, "events_applied": applied}
 

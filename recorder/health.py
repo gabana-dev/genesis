@@ -93,11 +93,20 @@ def report(path) -> dict:
             "settlement reference values (BRTI licence-gated; settlement is OBSERVED, "
             "not INDEPENDENTLY VERIFIED)",
         ],
-        "assumptions": [
-            "sequence scope assumed per-subscription (sid), falling back to "
-            "(channel, market_ticker) -- unconfirmed against a live feed",
-        ],
+        "assumptions": _assumptions(counts_by_type),
     }
+
+
+def _assumptions(counts_by_type):
+    """Dialect-specific. Stating a Kalshi assumption on a Binance run would be false."""
+    out = []
+    if counts_by_type.get("depthUpdate"):
+        out.append("Binance sequence scope is per-symbol-stream, U/u ranges, contiguity "
+                   "U == previous u + 1 -- published by the venue, not assumed")
+    if counts_by_type.get("orderbook_delta") or counts_by_type.get("orderbook_snapshot"):
+        out.append("Kalshi sequence scope assumed per-subscription (sid), falling back to "
+                   "(channel, market_ticker) -- undocumented by the venue, unconfirmed live")
+    return out or ["none recorded for the channels observed"]
 
 
 def _completeness(path, first_t, last_t):
@@ -137,7 +146,7 @@ def _completeness(path, first_t, last_t):
                 open_for(list(open_iv.keys()) or [None], t, typ)
                 open_iv.setdefault(None, {"market_ticker": None, "from": t, "to": None,
                                           "reason": typ, "open_ended": True})
-        elif cls == E.WORLD and typ == "orderbook_snapshot":
+        elif cls == E.WORLD and typ in ("orderbook_snapshot", "depthSnapshot"):
             mt = body.get("world", {}).get("market_ticker")
             for k in (mt, None):
                 iv = open_iv.pop(k, None)

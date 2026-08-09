@@ -16,6 +16,7 @@ health report.
 
 from datetime import datetime
 
+import dialects
 import events as E
 
 SNAPSHOT = "orderbook_snapshot"
@@ -26,9 +27,12 @@ CLOCK_ANOMALY_MS = 60_000
 
 
 class Ingestor:
-    def __init__(self, log, connection_id=None):
+    def __init__(self, log, connection_id=None, dialect=None):
         self.log = log
         self.connection_id = connection_id or "unknown"
+        # A dialect only reads a payload; it never rewrites one. Default is Kalshi, the
+        # venue this recorder was written for.
+        self.dialect = dialect or dialects.KALSHI
         self._last_seq = {}
         self._seen = {}
         self._resume_sequences()
@@ -56,10 +60,14 @@ class Ingestor:
             if seq is None:
                 continue
             raw = world.get("raw") or {}
-            key = self._seq_key(raw, world.get("channel") or "unknown",
+            # subscription_id lives under `observation`, not `world` -- reading it from the
+            # wrong place silently orphans all resumed sequence state, because the live key
+            # is ("sid", n) while the resumed key falls back to ("cm", channel, market).
+            sid = ev.get("body", {}).get("observation", {}).get("subscription_id")
+            key = self._seq_key(sid, world.get("channel") or "unknown",
                                 world.get("market_ticker"))
-            self._last_seq[key] = seq
-            self._remember(key, seq, E.content_hash(raw.get("msg") or {}))
+            self._last_seq[key] = world.get("venue_seq_last") or seq
+            self._remember(key, seq, E.content_hash(raw))
 
     def _remember(self, key, seq, digest):
         seen = self._seen.setdefault(key, {})
@@ -105,11 +113,10 @@ class Ingestor:
 
     # ---- observation --------------------------------------------------------------
 
-    def _seq_key(self, raw, channel, market_ticker):
-        sid = raw.get("sid")
+    def _seq_key(self, sid, channel, market_ticker):
         return ("sid", sid) if sid is not None else ("cm", channel, market_ticker)
 
-    def observe(self, raw, received_at=None):
+    def observe(self, raw, received_at=None, request=None):
         """
         Record one inbound venue message. Emits a SEQUENCE_GAP first when the sequence
         skips -- the gap is never repaired and the missing deltas are never synthesised.
@@ -120,15 +127,16 @@ class Ingestor:
         if E.has_non_finite(raw):
             return self.malformed(raw, "payload contains NaN or Infinity; not valid JSON")
 
-        channel = raw.get("type") or "unknown"
-        msg = raw.get("msg") if isinstance(raw.get("msg"), dict) else {}
-        market_ticker = msg.get("market_ticker")
-        seq = raw.get("seq")
+        ex = self.dialect["extract"](raw)
+        channel = ex["channel"]
+        market_ticker = ex["market"]
+        seq = ex["seq_first"]
+        seq_last = ex["seq_last"] if ex["seq_last"] is not None else seq
 
         if seq is not None:
-            key = self._seq_key(raw, channel, market_ticker)
+            key = self._seq_key(ex.get("subscription_id"), channel, market_ticker)
             last = self._last_seq.get(key)
-            digest = E.content_hash(msg)
+            digest = E.content_hash(raw)
             prior = self._seen.get(key, {}).get(seq)
 
             if prior is not None:
@@ -138,7 +146,7 @@ class Ingestor:
                 return self.log.append(
                     E.RECORDER, "DUPLICATE_MESSAGE",
                     {"channel": channel, "market_ticker": market_ticker, "seq": seq,
-                     "conflict": prior != digest,
+                     "seq_last": seq_last, "conflict": prior != digest,
                      "first_content_hash": prior, "repeat_content_hash": digest,
                      "received_at": received_at, "raw": raw})
 
@@ -152,12 +160,12 @@ class Ingestor:
                                     {"kind": "sequence_regression",
                                      "detail": f"last={last} received={seq}",
                                      "market_ticker": market_ticker, "channel": channel})
-            self._last_seq[key] = seq if last is None else max(last, seq)
+            self._last_seq[key] = seq_last if last is None else max(last, seq_last)
             self._remember(key, seq, digest)
 
-        self._check_clock(msg.get("ts_ms"), received_at, market_ticker, channel)
+        self._check_clock(ex.get("venue_ts_ms"), received_at, market_ticker, channel)
 
-        body = E.observation_body(raw, received_at, self.connection_id, channel)
+        body = E.observation_body(raw, received_at, self.connection_id, ex, request)
         ev = self.log.append(E.WORLD, channel, body)
 
         # A field the recorder cannot interpret is recorded, never dropped and never

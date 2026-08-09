@@ -173,6 +173,29 @@ def canonical_view(channel: str, msg: dict) -> dict:
             out["invalid"] = invalid
         return out
 
+    if channel in ("depthUpdate", "depthSnapshot"):
+        # Absolute level assignment. A quantity of "0" is a REMOVAL, not an error and not a
+        # missing level -- unlike a snapshot, where a zero size is simply not a level.
+        out = {"absolute": True}
+        for key, name in (("b", "bids"), ("a", "asks")):
+            levels = []
+            for lv in msg.get(key) or []:
+                if not isinstance(lv, (list, tuple)) or len(lv) < 2:
+                    bad(name, lv, "level is not a [price, size] pair")
+                    continue
+                price, size = canon_price(lv[0]), canon_size(lv[1])
+                if price is None:
+                    bad(f"{name}.price", lv[0], "not a non-negative decimal")
+                    continue
+                if size is None:
+                    bad(f"{name}.size", lv[1], "not a non-negative decimal")
+                    continue
+                levels.append([price, size])
+            out[name] = levels
+        if invalid:
+            out["invalid"] = invalid
+        return out
+
     if channel == "orderbook_snapshot":
         out = {}
         for side in ("yes", "no"):
@@ -200,21 +223,31 @@ def canonical_view(channel: str, msg: dict) -> dict:
 
 
 def observation_body(raw: dict, received_at: str, connection_id: str,
-                     channel: str, subscription_id=None) -> dict:
-    msg = raw.get("msg") or {}
+                     extracted: dict, request=None) -> dict:
+    """
+    `extracted` comes from a dialect. `raw` is stored verbatim and never rewritten.
+
+    `request` records what Genesis ASKED FOR -- a URL, a symbol. That is Genesis's own
+    knowledge, not the venue's statement, so it belongs on the observation side and never
+    inside `world`. Binance's REST depth snapshot carries no symbol; writing one into
+    `world.market_ticker` would attribute to the venue something it did not say.
+    """
+    channel = extracted["channel"]
     return {
         "observation": {
             "received_at": received_at,
             "connection_id": connection_id,
-            "subscription_id": subscription_id if subscription_id is not None else raw.get("sid"),
+            "subscription_id": extracted.get("subscription_id"),
+            "request": request,
         },
         "world": {
             "raw": raw,
-            "venue_seq": raw.get("seq"),
-            "venue_ts_ms": msg.get("ts_ms"),
-            "market_ticker": msg.get("market_ticker"),
+            "venue_seq": extracted.get("seq_first"),
+            "venue_seq_last": extracted.get("seq_last"),
+            "venue_ts_ms": extracted.get("venue_ts_ms"),
+            "market_ticker": extracted.get("market"),
             "channel": channel,
-            "canonical": canonical_view(channel, msg),
+            "canonical": canonical_view(channel, extracted.get("msg") or {}),
         },
     }
 
