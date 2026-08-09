@@ -52,6 +52,27 @@ protocol. Development period complete; **the holdout is unopened.**
    **No sequence is pre-authorized** — DR0003 (10) forbids adopting a roadmap of future
    milestones in advance, and DR0001 classifies the capability graph as **F — abandon**.
 
+**Environment search — one candidate investigated and closed.** The NEM battery environment was
+studied and the study is closed:
+[`../research/nem-battery-environment-study.md`](../research/nem-battery-environment-study.md).
+Finding: the **consequence** is genuinely external (money someone paid, computed from published
+settlement prices, against an industry benchmark), but the **dynamics** cannot be obtained
+without authoring them — battery state of charge is not published anywhere in AEMO's public data
+model and must be integrated through an assumed efficiency, parasitic-loss rate and initial
+condition. SOC is the coupling that makes the problem sequential, so authoring it means
+authoring the mechanism. **Answer to the clean test: no.** Whether to use the environment anyway
+under declared assumptions is undecided and is the researcher's.
+
+**Second candidate investigated and closed — Kalshi mechanically-settled price markets.**
+[`../research/kalshi-mechanical-settlement-environment-study.md`](../research/kalshi-mechanical-settlement-environment-study.md).
+**The authorship test passes**: settlement is a fixed 60-second arithmetic mean of the CF
+Benchmarks Bitcoin Real Time Index, computed by a regulated administrator under a published,
+versioned methodology; agent state is exactly accounting-derived. **It fails on record and
+access instead** — Kalshi publishes no historical order-book depth (third-party sampled
+reconstructions only, from 2026-01-07), and the reference's historical values are licence-gated,
+so the consequence cannot be independently reproduced. **Answer to the central question: no**,
+for historical reconstruction. Nothing selected or rejected.
+
 An environment distinction is on record but selects nothing:
 [`../research/journal/2026-08-09-real-data-is-not-a-simulator.md`](../research/journal/2026-08-09-real-data-is-not-a-simulator.md)
 notes that the environment-first gate ruled on Genesis-*authored* simulators and never ruled on
