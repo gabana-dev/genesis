@@ -61,7 +61,13 @@ and the untested surface is confined to one thin module.
 `record` requires `KALSHI_KEY_ID` and `KALSHI_PRIVATE_KEY_PATH`, plus the `cryptography` package
 for request signing (imported lazily). `websockets` is required for the live path only.
 
-Checks: `.venv/bin/python tests/test_recorder.py`
+Checks — **this project uses its own runner and is not pytest-compatible**
+(see [`../tests/README.md`](../tests/README.md); `pytest` fails loudly with a pointer):
+
+```
+.venv/bin/python tests/run_all.py recorder   # all 49 recorder checks
+.venv/bin/python tests/run_all.py            # every suite
+```
 
 ## The two guarantees
 

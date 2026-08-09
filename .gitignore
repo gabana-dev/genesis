@@ -1,6 +1,7 @@
 __pycache__/
 *.py[cod]
 .venv/
+.DS_Store
 
 # Development-period run logs. The per-origin result records in rdb_data/results/ are the
 # artifact; stdout is not.
