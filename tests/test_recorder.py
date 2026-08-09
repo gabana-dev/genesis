@@ -130,14 +130,14 @@ def test_book_replay_is_deterministic_and_marks_incompleteness(tmp):
     b = replay.order_book_at(path, TICKER)
     assert a == b, "replay must be deterministic"
     assert a["complete"] is True, a
-    assert a["book"]["yes"] == {"0.43": 60, "0.42": 250, "0.41": 60}, a["book"]
-    assert a["book"]["no"] == {"0.56": 80}
+    assert a["book"]["yes"] == {"0.43": "60", "0.42": "250", "0.41": "60"}, a["book"]
+    assert a["book"]["no"] == {"0.56": "80"}
 
     # a mid-log timestamp reproduces the earlier state, not the latest one
     evs = [e for e in read(path) if e["event_class"] == E.WORLD]
     at = evs[1]["body"]["observation"]["received_at"]
     mid = replay.order_book_at(path, TICKER, at=at)
-    assert mid["book"]["yes"]["0.43"] == 60 and "0.41" not in mid["book"]["yes"], mid["book"]
+    assert mid["book"]["yes"]["0.43"] == "60" and "0.41" not in mid["book"]["yes"], mid["book"]
 
     with EventLog(path) as log:
         Ingestor(log).observe(delta(9, 1900, "yes", "0.42", -50))  # gap 4..8
@@ -176,10 +176,10 @@ def test_account_replay_from_events_only(tmp):
                       count=7, price_dollars="0.43", fee_dollars="0.02")
 
     s = replay.account_state_at(path)
-    assert s["positions"] == {f"{TICKER}|yes": 7}, s["positions"]
+    assert s["positions"] == {f"{TICKER}|yes": "7"}, s["positions"]
     assert s["cash_dollars"] == "-3.03", s["cash_dollars"]        # 7*0.43 + 0.02
     assert s["fees_dollars"] == "0.02"
-    assert s["open_orders"]["o1"]["filled"] == 7
+    assert s["open_orders"]["o1"]["filled"] == "7"
     assert s["reserved_collateral_dollars"] == "5.59"             # 13 unfilled * 0.43
     assert len(s["fills"]) == 1
 

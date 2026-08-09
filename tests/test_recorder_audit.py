@@ -58,7 +58,7 @@ def f1_duplicate_delta_not_applied_twice(tmp):
         i.observe(dl(2, 1100, "0.50", -30))
         i.observe(dl(2, 1100, "0.50", -30))          # exact duplicate
     b = replay.order_book_at(path, T)
-    assert b["book"]["yes"] == {"0.5": 70}, b["book"]
+    assert b["book"]["yes"] == {"0.5": "70"}, b["book"]
     types = [e["event_type"] for e in read(path)]
     assert "DUPLICATE_MESSAGE" in types, types
     return "identical duplicate ignored once, recorded as an anomaly"
@@ -86,7 +86,7 @@ def f1_duplicate_snapshot(tmp):
         i.observe(snap(1, 1000, yes=[["0.50", 100]]))
         i.observe(snap(1, 1000, yes=[["0.50", 100]]))
     b = replay.order_book_at(path, T)
-    assert b["book"]["yes"] == {"0.5": 100} and b["complete"], b
+    assert b["book"]["yes"] == {"0.5": "100"} and b["complete"], b
     return "duplicate snapshot is idempotent"
 
 
@@ -103,7 +103,7 @@ def f1_duplicate_across_restart(tmp):
         i.started({})
         i.observe(dl(2, 1100, "0.50", -30))          # replayed after restart
     b = replay.order_book_at(path, T)
-    assert b["book"]["yes"] == {"0.5": 70}, b["book"]
+    assert b["book"]["yes"] == {"0.5": "70"}, b["book"]
     assert "DUPLICATE_MESSAGE" in [e["event_type"] for e in read(path)]
     return "duplicate seq detected across a restart, not double-applied"
 
@@ -118,7 +118,7 @@ def f2_equivalent_price_representations_agree(tmp):
         i.observe(snap(1, 1000, yes=[["0.50", 100]]))
         i.observe(dl(2, 1100, 0.5, -40))             # numeric, not string
     b = replay.order_book_at(path, T)
-    assert b["book"]["yes"] == {"0.5": 60}, b["book"]
+    assert b["book"]["yes"] == {"0.5": "60"}, b["book"]
     return "'0.50' and 0.5 resolve to one level; the delta is not discarded"
 
 
@@ -197,8 +197,8 @@ def p5_no_side_settles_correctly(tmp):
                     side="no", count=5, price_dollars="1.00", fee_dollars="0")
     s = replay.account_state_at(path)
     assert s["positions"] == {}, s["positions"]
-    # canonical prices strip trailing zeros, so 0.40 -> 0.4 and 1.00 -> 1: -2.0 + 5 = 3.0
-    assert s["cash_dollars"] == "3.0", s["cash_dollars"]
+    # canonical decimals strip trailing zeros: 0.40 -> 0.4, 1.00 -> 1, and -2 + 5 -> 3
+    assert s["cash_dollars"] == "3", s["cash_dollars"]
     assert s["complete"] is True, s["reasons"]
     return "NO position settles and clears; no implicit YES default"
 
@@ -268,9 +268,9 @@ def p7_clock_step_does_not_drop_events(tmp):
         i.observe(dl(3, 1200, "0.50", -10), received_at="2026-08-09T10:00:02+00:00")
     b = replay.order_book_at(path, T, at="2026-08-09T10:00:03+00:00")
     assert b["events_applied"] == 2, b          # snapshot + the 10:00:02 delta
-    assert b["book"]["yes"] == {"0.5": 90}, b["book"]
+    assert b["book"]["yes"] == {"0.5": "90"}, b["book"]
     later = replay.order_book_at(path, T, at="2026-08-09T10:00:06+00:00")
-    assert later["book"]["yes"] == {"0.5": 80}, later["book"]
+    assert later["book"]["yes"] == {"0.5": "80"}, later["book"]
     return "backwards clock step no longer truncates the scan; eligible events still applied"
 
 
@@ -282,7 +282,7 @@ def p7_no_future_information_used(tmp):
         i.observe(snap(1, 1000, yes=[["0.50", 100]]), received_at="2026-08-09T10:00:00+00:00")
         i.observe(dl(2, 1100, "0.50", -60), received_at="2026-08-09T10:00:09+00:00")
     b = replay.order_book_at(path, T, at="2026-08-09T10:00:05+00:00")
-    assert b["book"]["yes"] == {"0.5": 100}, b["book"]
+    assert b["book"]["yes"] == {"0.5": "100"}, b["book"]
     return "an event received after the boundary is excluded"
 
 

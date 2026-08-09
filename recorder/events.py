@@ -52,13 +52,19 @@ def has_non_finite(obj) -> bool:
     return False
 
 
-def canon_price(value):
+def canon_decimal(value, allow_negative=True):
     """
-    SPEC invariant 9. One decimal string per price, so "0.50", "0.5000" and numeric 0.5 all
-    become the same book key. Trailing zeros are stripped without exponent notation, and no
-    precision is discarded. Returns None for values that are not prices.
+    SPEC invariant 9. One decimal string per numeric value, so "0.50", "0.5000" and numeric
+    0.5 all become the same key. Trailing zeros are stripped without exponent notation, and no
+    precision is discarded. Returns None for values that cannot be interpreted.
+
+    `str(value)` before `Decimal` is deliberate: it routes a binary float through its shortest
+    repr, so 0.1 becomes Decimal("0.1") rather than the exact binary expansion.
+
+    Zero is always "0". Without this, Decimal("-0.00") normalises to "-0" and becomes a second
+    book key for the same value -- the mirror image of the price-collision defect.
     """
-    if value is None:
+    if value is None or isinstance(value, bool):
         return None
     try:
         d = Decimal(str(value))
@@ -66,8 +72,48 @@ def canon_price(value):
         return None
     if not d.is_finite():
         return None
-    d = d.normalize()
-    return format(d, "f")
+    if d == 0:
+        return "0"
+    if not allow_negative and d < 0:
+        return None
+    return format(d.normalize(), "f")
+
+
+# Representation is shared; VALIDITY IS NOT. The rules differ by the role a number plays, not
+# by its type, and collapsing them is how a negative resting size became book state:
+#
+#   price  -- what one unit costs. Never negative.
+#   size   -- a resting quantity at a level. Never negative.
+#   qty    -- a delta amount or a signed position change. Negative is normal and meaningful.
+#   money  -- cash, fees, realised P&L. Signed by nature.
+#
+# Venue-specific range policy (Kalshi binary contracts trade in [0,1]) is deliberately NOT
+# enforced here: it is the venue's rule, it can change, and encoding it would silently reject
+# real data if it did.
+def canon_price(value):
+    return canon_decimal(value, allow_negative=False)
+
+
+def canon_size(value):
+    return canon_decimal(value, allow_negative=False)
+
+
+def canon_qty(value):
+    return canon_decimal(value, allow_negative=True)
+
+
+def canon_money(value):
+    return canon_decimal(value, allow_negative=True)
+
+
+def to_decimal(value, default="0") -> Decimal:
+    """Parse a canonical decimal string back to Decimal. Never returns a float."""
+    if value is None or value == "":
+        return Decimal(default)
+    try:
+        return Decimal(str(value))
+    except (InvalidOperation, ValueError):
+        return Decimal(default)
 
 
 def content_hash(obj) -> str:
@@ -107,16 +153,49 @@ def canonical_view(channel: str, msg: dict) -> dict:
     replay never has to guess how a price was spelled. `raw` remains authoritative and
     untouched (invariant 3); this sits beside it.
     """
+    invalid = []
+
+    def bad(field, value, reason):
+        invalid.append({"field": field, "value": str(value)[:120], "reason": reason})
+
     if channel == "orderbook_delta":
-        return {"price_dollars": canon_price(msg.get("price_dollars")),
-                "side": msg.get("side"),
-                "delta_fp": msg.get("delta_fp")}
+        price = canon_price(msg.get("price_dollars"))
+        if price is None:
+            bad("price_dollars", msg.get("price_dollars"), "not a non-negative decimal")
+        amount = canon_qty(msg.get("delta_fp"))
+        if amount is None:
+            bad("delta_fp", msg.get("delta_fp"), "not a decimal")
+        side = msg.get("side")
+        if side not in ("yes", "no"):
+            bad("side", side, "not 'yes' or 'no'")
+        out = {"price_dollars": price, "side": side, "delta_fp": amount}
+        if invalid:
+            out["invalid"] = invalid
+        return out
+
     if channel == "orderbook_snapshot":
         out = {}
         for side in ("yes", "no"):
-            levels = msg.get(f"{side}_dollars_fp") or []
-            out[side] = [[canon_price(lv[0]), lv[1]] for lv in levels if len(lv) >= 2]
+            levels = []
+            for lv in msg.get(f"{side}_dollars_fp") or []:
+                if not isinstance(lv, (list, tuple)) or len(lv) < 2:
+                    bad(f"{side}_dollars_fp", lv, "level is not a [price, size] pair")
+                    continue
+                price, size = canon_price(lv[0]), canon_size(lv[1])
+                if price is None:
+                    bad(f"{side}_dollars_fp.price", lv[0], "not a non-negative decimal")
+                    continue
+                if size is None:
+                    bad(f"{side}_dollars_fp.size", lv[1], "not a non-negative decimal")
+                    continue
+                if size == "0":
+                    continue          # a zero resting size is not a level
+                levels.append([price, size])
+            out[side] = levels
+        if invalid:
+            out["invalid"] = invalid
         return out
+
     return {}
 
 
@@ -155,15 +234,15 @@ def decision_body(boundary_at: str, model_id: str, model_version: str,
 
 
 def intent_body(client_order_id: str, market_ticker: str, side: str, action: str,
-                count: int, price_dollars: str, order_type: str,
+                count, price_dollars: str, order_type: str,
                 decision_event_id=None) -> dict:
     return {
         "client_order_id": client_order_id,
         "market_ticker": market_ticker,
         "side": side,
         "action": action,
-        "count": count,
-        "price_dollars": str(price_dollars),
+        "count": canon_qty(count),
+        "price_dollars": canon_price(price_dollars),
         "order_type": order_type,
         "decision_event_id": decision_event_id,
         "submitted_at": now(),
@@ -186,9 +265,9 @@ def execution_body(kind: str, market_ticker: str, raw: dict, received_at: str,
         "market_ticker": market_ticker,
         "side": side,
         "action": action,
-        "count": count,
+        "count": canon_qty(count),
         "price_dollars": canon_price(price_dollars),
-        "fee_dollars": canon_price(fee_dollars),
+        "fee_dollars": canon_money(fee_dollars),
         "venue_ts_ms": venue_ts_ms,
         "received_at": received_at,
         "raw": raw,

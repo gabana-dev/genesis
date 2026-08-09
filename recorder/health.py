@@ -17,6 +17,7 @@ def report(path) -> dict:
     counts_by_class = Counter()
     counts_by_type = Counter()
     gaps, reconnects, errors, anomalies, malformed = [], [], [], [], []
+    uninterpretable = []
     subscriptions = []
     runs = []
     first_t = last_t = None
@@ -48,6 +49,8 @@ def report(path) -> dict:
                 errors.append({"at": t, **body})
             elif typ == "TIMESTAMP_ANOMALY":
                 anomalies.append({"at": t, **body})
+            elif typ == "UNINTERPRETABLE_FIELD":
+                uninterpretable.append({"at": t, **body})
             elif typ == "MALFORMED_MESSAGE":
                 malformed.append({"at": t, "detail": body.get("detail")})
             elif typ in ("RECORDER_STARTED", "RECORDER_STOPPED"):
@@ -76,6 +79,7 @@ def report(path) -> dict:
         "errors": errors,
         "timestamp_anomalies": anomalies,
         "malformed_messages": malformed,
+        "uninterpretable_fields": uninterpretable,
         "recorder_runs": runs,
         "clean_shutdowns": len(stops),
         "starts": len(starts),
@@ -126,6 +130,9 @@ def _completeness(path, first_t, last_t):
                                   f"{body.get('missing_to')}")
             elif typ == "DUPLICATE_MESSAGE" and body.get("conflict"):
                 open_for([mt], t, f"conflicting duplicate at seq {body.get('seq')}")
+            elif typ == "UNINTERPRETABLE_FIELD":
+                open_for([mt], t, "uninterpretable field(s): "
+                         + ", ".join(f.get("field", "?") for f in body.get("fields") or []))
             elif typ in ("CONNECTION_OPENED", "RECORDER_STARTED", "CONNECTION_CLOSED"):
                 open_for(list(open_iv.keys()) or [None], t, typ)
                 open_iv.setdefault(None, {"market_ticker": None, "from": t, "to": None,
@@ -182,6 +189,7 @@ def render(rep: dict) -> str:
         f"errors               {len(rep['errors'])}",
         f"timestamp anomalies  {len(rep['timestamp_anomalies'])}",
         f"malformed messages   {len(rep['malformed_messages'])}",
+        f"uninterpretable      {len(rep.get('uninterpretable_fields') or [])}",
         f"recorder starts      {rep['starts']}   clean shutdowns: {rep['clean_shutdowns']}",
         f"unclean shutdown     {rep['unclean_shutdown_suspected']}",
         f"integrity verified   {rep['integrity_verified']}",

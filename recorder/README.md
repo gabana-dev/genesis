@@ -9,7 +9,6 @@ environment prospectively and preserves an auditable record of:
 > requested → what actually happened → what was eventually paid.
 
 Specification, written before the implementation: [`SPEC.md`](SPEC.md).
-Motivating study: [`../research/prospective-observability-study.md`](../research/prospective-observability-study.md).
 
 ## Scope
 

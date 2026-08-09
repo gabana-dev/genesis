@@ -4,7 +4,6 @@
 **Classification:** engineering under
 [`../research/decisions/0003-engineering-posture-real-data.md`](../research/decisions/0003-engineering-posture-real-data.md).
 **Import + build. No novelty claimed.**
-**Motivating study:** [`../research/prospective-observability-study.md`](../research/prospective-observability-study.md).
 
 **Scope: the recorder only.** No strategy, no model, no signal, no backtest, no order
 submission, no counterfactual fill simulation, no profitability claim. Those are out of scope by
@@ -162,10 +161,49 @@ the venue omits them. Extraction never mutates `raw`.
    `recorder_run`. Two runs never appear as one continuous observation.
 8. **Hash chain.** `hash = sha256(canonical_json(event_without_hash) || prev_hash)`. The first
    event's `prev_hash` is 64 zeros.
-9. **Canonical prices, enforced at ingestion.** Every price is normalised to one decimal
-   string (`Decimal.normalize`, no exponent) and stored in `world.canonical` **at ingestion**,
-   beside the verbatim `raw`. `"0.50"`, `"0.5000"` and numeric `0.5` are one book key. Replay
-   reads the canonical view, never the raw spelling.
+9. **Canonical decimals, enforced at ingestion.** Every price **and every quantity** is
+   normalised to one decimal string (`Decimal.normalize`, no exponent) and stored in
+   `world.canonical` **at ingestion**, beside the verbatim `raw`. `"0.50"`, `"0.5000"` and
+   numeric `0.5` are one book key. Replay reads the canonical view, never the raw spelling.
+
+   **Quantities are decimals, not integers.** Live public REST data for `KXBTC15M` returns
+   order-book sizes as decimal strings with fractional values — `"0.01"`, `"5.01"`, `"191.00"` —
+   under a `tapered_deci_cent` price-level structure with tick steps of `0.0010`. Every
+   quantity is therefore carried as `Decimal` through book state, position state, fills and
+   settlement, and rendered as a canonical decimal string. **Float is never used for a
+   quantity or a price**, and a quantity is never coerced to `int`.
+
+   *Provenance of this rule: the fractional-quantity shape is **observed REST evidence**
+   (`orderbook_fp`). The WebSocket shape (`yes_dollars_fp` / `delta_fp`) is **unobserved**; that
+   it matches is **inferred** from the shared `_fp` convention, not established. Supporting
+   decimals costs nothing if the WS turns out to send integers, so the recorder accepts both.*
+
+   **Zero is always `"0"`.** `-0.00`, `0.00` and `-0.0` collapse to one key; a signed zero
+   would otherwise split a level in two.
+
+15. **Validity is by role, not by type.** Sharing a representation does not mean sharing
+    validity rules:
+
+    | Role | Sign | Canonicaliser |
+    |---|---|---|
+    | price — what one unit costs | non-negative | `canon_price` |
+    | size — a resting quantity at a level | non-negative | `canon_size` |
+    | qty — a delta amount, a position change | signed | `canon_qty` |
+    | money — cash, fees, realised P&L | signed | `canon_money` |
+
+    Venue range policy (Kalshi binary contracts trade in [0,1]) is deliberately **not**
+    enforced: it is the venue's rule, it can change, and encoding it would silently reject real
+    data if it did.
+
+16. **An uninterpretable field makes the projection incomplete.** A value the recorder cannot
+    interpret — an unparseable price, a non-decimal quantity, a negative resting size, an
+    unrecognised side, a malformed level — is **never dropped, defaulted, or rounded into
+    something plausible**. The observation is still recorded (we did see the message), a
+    `UNINTERPRETABLE_FIELD` anomaly names the offending fields, the value is not applied, and
+    the book is marked `complete: false` until the next fully-interpretable snapshot.
+
+    A zero resting size is not an uninterpretable value — it is simply not a level, and is
+    dropped from a snapshot exactly as a delta pops a level at zero.
 10. **Replay is a pure function of the log.** Projections take the log and nothing else.
 11. **Duplicates are never applied twice.** A repeated `venue_seq` is recorded as a
     `DUPLICATE_MESSAGE` anomaly carrying the payload, and no second OBSERVATION is emitted. If

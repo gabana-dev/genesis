@@ -34,7 +34,10 @@ def order_book_at(path, market_ticker, at=None):
     Completeness is lost at a SEQUENCE_GAP or CONNECTION_OPENED and regained only at the next
     authoritative snapshot for that market.
     """
-    book = {"yes": defaultdict(int), "no": defaultdict(int)}
+    # Sizes are Decimal, never int and never float. Kalshi's public order book carries
+    # fractional decimal-string quantities ("0.01", "191.00") under a tapered_deci_cent price
+    # structure, so integer coercion both crashes and would lose sub-unit size.
+    book = {"yes": defaultdict(lambda: Decimal("0")), "no": defaultdict(lambda: Decimal("0"))}
     complete, reason, last_seq, applied = False, "no snapshot seen", None, 0
     current_run = None
 
@@ -60,6 +63,11 @@ def order_book_at(path, market_ticker, at=None):
                 complete = False
                 reason = (f"sequence gap {body.get('missing_from')}-{body.get('missing_to')}"
                           f" before a new snapshot")
+            elif (typ == "UNINTERPRETABLE_FIELD"
+                  and body.get("market_ticker") in (market_ticker, None)):
+                complete = False
+                reason = ("uninterpretable field(s): "
+                          + ", ".join(f.get("field", "?") for f in body.get("fields") or []))
             elif (typ == "DUPLICATE_MESSAGE" and body.get("conflict")
                   and body.get("market_ticker") in (market_ticker, None)):
                 # Two different payloads claimed the same sequence number. Which one the
@@ -84,28 +92,46 @@ def order_book_at(path, market_ticker, at=None):
         # one are canonicalised here so a mixed-vintage log still resolves to single keys.
         canon = world.get("canonical") or E.canonical_view(typ, msg)
 
+        bad_fields = canon.get("invalid")
+
         if typ == SNAPSHOT:
-            book = {"yes": defaultdict(int), "no": defaultdict(int)}
+            book = {"yes": defaultdict(lambda: Decimal("0")),
+                    "no": defaultdict(lambda: Decimal("0"))}
             for side in ("yes", "no"):
                 for price, size in canon.get(side) or []:
-                    if price is not None:
-                        book[side][price] = int(size)
-            complete, reason = True, None
+                    book[side][price] = E.to_decimal(size)
+            if bad_fields:
+                # Some levels could not be interpreted, so this snapshot does not
+                # re-establish a known-complete book.
+                complete = False
+                reason = (f"uninterpretable field(s) in snapshot: "
+                          f"{', '.join(f['field'] for f in bad_fields)}")
+            else:
+                complete, reason = True, None
             last_seq = world.get("venue_seq")
             applied += 1
 
         elif typ == DELTA:
             side = canon.get("side")
             price = canon.get("price_dollars")
-            delta = int(canon.get("delta_fp") or 0)
-            if side in book and price is not None:
-                book[side][price] = book[side].get(price, 0) + delta
+            delta = E.to_decimal(canon.get("delta_fp"))
+            if bad_fields:
+                # The delta cannot be applied and must not be silently skipped: the book
+                # from here on is missing a change the venue actually made.
+                complete = False
+                reason = (f"uninterpretable field(s) in delta: "
+                          f"{', '.join(f['field'] for f in bad_fields)}")
+                last_seq = world.get("venue_seq")
+            elif side in book and price is not None:
+                book[side][price] = book[side].get(price, Decimal("0")) + delta
+                # Exactly zero (or negative) removes the level. Decimal makes "exactly" mean
+                # exactly: a 0.001 residue survives where float arithmetic might not.
                 if book[side][price] <= 0:
                     book[side].pop(price, None)
-            last_seq = world.get("venue_seq")
-            applied += 1
+                last_seq = world.get("venue_seq")
+                applied += 1
 
-    return {"book": {s: dict(v) for s, v in book.items()},
+    return {"book": {s: {p: E.canon_size(q) for p, q in v.items()} for s, v in book.items()},
             "complete": complete, "reason": reason,
             "last_seq": last_seq, "events_applied": applied}
 
@@ -120,7 +146,7 @@ def account_state_at(path, at=None):
     cash = Decimal("0")
     fees = Decimal("0")
     realised = Decimal("0")
-    positions = defaultdict(int)
+    positions = defaultdict(lambda: Decimal("0"))
     cost_basis = defaultdict(lambda: Decimal("0"))
     open_orders = {}
     fills = []
@@ -137,7 +163,7 @@ def account_state_at(path, at=None):
             open_orders[body["client_order_id"]] = {
                 "market_ticker": body["market_ticker"], "side": body["side"],
                 "action": body["action"], "count": body["count"],
-                "price_dollars": body["price_dollars"], "filled": 0,
+                "price_dollars": body["price_dollars"], "filled": "0",
                 "intent_event_id": ev["event_id"],
             }
 
@@ -169,9 +195,9 @@ def account_state_at(path, at=None):
                 continue
 
             if kind in ("fill", "partial_fill"):
-                count = int(body.get("count") or 0)
-                price = Decimal(body.get("price_dollars") or "0")
-                fee = Decimal(body.get("fee_dollars") or "0")
+                count = E.to_decimal(body.get("count"))
+                price = E.to_decimal(body.get("price_dollars"))
+                fee = E.to_decimal(body.get("fee_dollars"))
                 if action == "buy":
                     cash -= price * count
                     positions[key] += count
@@ -187,37 +213,40 @@ def account_state_at(path, at=None):
                 cash -= fee
                 fees += fee
                 fills.append({"event_id": ev["event_id"], "client_order_id": coid,
-                              "count": count, "price_dollars": str(price),
-                              "fee_dollars": str(fee), "market_ticker": key[0]})
+                              "count": E.canon_qty(count),
+                              "price_dollars": E.canon_price(price),
+                              "fee_dollars": E.canon_money(fee), "market_ticker": key[0]})
                 if order:
-                    order["filled"] += count
-                    if order["filled"] >= order["count"] or kind == "fill":
+                    filled = E.to_decimal(order["filled"]) + count
+                    order["filled"] = E.canon_qty(filled)
+                    if filled >= E.to_decimal(order["count"]) or kind == "fill":
                         open_orders.pop(coid, None)
 
             elif kind in ("cancel", "reject"):
                 open_orders.pop(coid, None)
 
             elif kind == "settlement":
-                payout = Decimal(body.get("price_dollars") or "0")
-                count = int(body.get("count") or 0)
-                fee = Decimal(body.get("fee_dollars") or "0")
+                payout = E.to_decimal(body.get("price_dollars"))
+                count = E.to_decimal(body.get("count"))
+                fee = E.to_decimal(body.get("fee_dollars"))
                 cash += payout * count
                 cash -= fee
                 fees += fee
-                held = positions.get(key, 0)
+                held = positions.get(key, Decimal("0"))
                 realised += payout * count - cost_basis.get(key, Decimal("0"))
                 cost_basis[key] = Decimal("0")
-                positions[key] = held - count if held >= count else 0
+                positions[key] = held - count if held >= count else Decimal("0")
                 settlements.append({"event_id": ev["event_id"], "market_ticker": key[0],
-                                    "payout_dollars": str(payout), "count": count,
+                                    "payout_dollars": E.canon_price(payout),
+                                    "count": E.canon_qty(count),
                                     "observed": True, "independently_verified": False})
 
     return {
-        "cash_dollars": str(cash),
-        "fees_dollars": str(fees),
-        "realised_pnl_dollars": str(realised),
-        "positions": {f"{m}|{s}": c for (m, s), c in positions.items() if c},
-        "reserved_collateral_dollars": str(_reserved(open_orders)),
+        "cash_dollars": E.canon_money(cash),
+        "fees_dollars": E.canon_money(fees),
+        "realised_pnl_dollars": E.canon_money(realised),
+        "positions": {f"{m}|{s}": E.canon_qty(c) for (m, s), c in positions.items() if c},
+        "reserved_collateral_dollars": E.canon_money(_reserved(open_orders)),
         "open_orders": open_orders,
         "fills": fills,
         "settlements": settlements,
@@ -232,5 +261,6 @@ def _reserved(open_orders):
     total = Decimal("0")
     for o in open_orders.values():
         if o["action"] == "buy":
-            total += Decimal(o["price_dollars"]) * (o["count"] - o["filled"])
+            remaining = E.to_decimal(o["count"]) - E.to_decimal(o["filled"])
+            total += E.to_decimal(o["price_dollars"]) * remaining
     return total

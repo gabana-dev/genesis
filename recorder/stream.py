@@ -157,9 +157,19 @@ class Ingestor:
 
         self._check_clock(msg.get("ts_ms"), received_at, market_ticker, channel)
 
-        return self.log.append(
-            E.WORLD, channel,
-            E.observation_body(raw, received_at, self.connection_id, channel))
+        body = E.observation_body(raw, received_at, self.connection_id, channel)
+        ev = self.log.append(E.WORLD, channel, body)
+
+        # A field the recorder cannot interpret is recorded, never dropped and never
+        # defaulted. The observation stands -- we did see the message -- but the anomaly
+        # makes the projection incomplete rather than plausibly wrong.
+        invalid = (body.get("world", {}).get("canonical") or {}).get("invalid")
+        if invalid:
+            self.log.append(E.RECORDER, "UNINTERPRETABLE_FIELD",
+                            {"channel": channel, "market_ticker": market_ticker,
+                             "seq": seq, "observation_event_id": ev["event_id"],
+                             "received_at": received_at, "fields": invalid})
+        return ev
 
     def _check_clock(self, venue_ts_ms, received_at, market_ticker, channel):
         """Record disagreement between the clocks. Never reconcile them."""
