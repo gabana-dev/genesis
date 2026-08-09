@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+.venv/
+
+# Development-period run logs. The per-origin result records in rdb_data/results/ are the
+# artifact; stdout is not.
+rdb_data/*.log
+
+# The holdout is not downloaded and must never arrive here by accident. If the design is
+# ever frozen and the holdout opened, this entry is removed deliberately, not silently.
+rdb_data/raw_holdout/
