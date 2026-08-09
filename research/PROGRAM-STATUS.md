@@ -13,7 +13,24 @@ drills into the milestones of whichever phase is current.
 
 ---
 
-## Current Phase
+## Current Phase — superseded 2026-08-09
+
+**Research programme CLOSED; engineering ACTIVE.** Both decision records were ratified
+2026-08-09: [`decisions/0002-close-the-genesis-research-program.md`](decisions/0002-close-the-genesis-research-program.md)
+(closure) and [`decisions/0003-engineering-posture-real-data.md`](decisions/0003-engineering-posture-real-data.md)
+(engineering posture). The research-triage phase described below is history; it is preserved
+rather than rewritten, per DR0002 (7).
+
+Active engineering: **RDB-1**,
+[`experiments/0006-rdb-1-real-data-bridge.md`](experiments/0006-rdb-1-real-data-bridge.md) —
+import + build, no novelty claimed, development period complete, holdout unopened. Adaptation
+returned a large stable positive for the rolling window; the model is indistinguishable from
+persistence at its best.
+
+Undecided and the researcher's: whether to open the holdout, and what the next capability is.
+No sequence of milestones is pre-authorized (DR0003 §10).
+
+## Superseded — the research-triage phase
 
 **Research triage (2026-08-08).** Not a laboratory phase. A literature-reconciliation pass
 ([`prior-art-and-opportunity-map.md`](prior-art-and-opportunity-map.md)) established that

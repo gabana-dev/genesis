@@ -11,7 +11,19 @@ territory at session granularity — what changed most recently, not the overall
 
 ## Phase
 
-**Phase 0 — building the laboratory.** See [`../canon/roadmap.md`](../canon/roadmap.md).
+**Research programme: CLOSED (2026-08-09).** **Engineering: ACTIVE.**
+
+Ratified 2026-08-09:
+[`../research/decisions/0002-close-the-genesis-research-program.md`](../research/decisions/0002-close-the-genesis-research-program.md)
+closes the cognitive-architecture research program (Option D, completed learning vehicle);
+[`../research/decisions/0003-engineering-posture-real-data.md`](../research/decisions/0003-engineering-posture-real-data.md)
+permits disciplined engineering against real, externally recorded environments, claiming no
+novelty. Both facts hold simultaneously and neither may be stated without the other.
+
+`canon/` is unchanged by both records — including
+[`../canon/roadmap.md`](../canon/roadmap.md), which still reads *Phase 0 — build the laboratory
+(current)*. Phases are Type-1 (researcher-authored); reconciling the roadmap with the ratified
+closure is the researcher's, and is **not** done here.
 
 ## Exists
 
@@ -171,10 +183,33 @@ territory at session granularity — what changed most recently, not the overall
 - **Not a failure.** The milestones established that the machinery works and exposed where the
   program was manufacturing necessity.
 
+## Ratified, and RDB-1 (2026-08-09)
+
+- **DR0002 ratified**, including three narrow amendments made in draft the same day: point (6)
+  narrowed to withdraw *PsTally* specifically rather than real environments in general; point (8)
+  now states no *research* direction is selected while engineering is active; a scope note
+  records that the environment-first gate ruled on **Genesis-authored simulators** and never
+  ruled on externally recorded data.
+- **DR0003 ratified** — the engineering posture. Externally recorded environments permitted;
+  authored simulators barred; classification stated before each run; no novelty claimable; no
+  retrospective promotion of engineering into research; no pre-authorized sequence of milestones.
+- **RDB-1 development period complete** —
+  [`../research/experiments/0006-rdb-1-real-data-bridge.md`](../research/experiments/0006-rdb-1-real-data-bridge.md).
+  Public AEMO NSW1 demand, 140,256 obs, 729 daily origins, 48-step horizon, both training-slice
+  arms. Code in `rdb/`, per-origin records in `rdb_data/results/`, analysis in `rdb/report.py`.
+- **Result:** adaptation matters (+101.59 MAE for rolling over expanding, boot95
+  [+65.20, +141.72], stable across years and seasons); the model is **indistinguishable from
+  persistence** at its best (−15.96, [−49.32, +19.51]); slice governs accuracy, specification
+  governs calibration; both arms carry a fat-tail miscalibration signature on an easy series.
+- **Holdout unopened.** 2023-01 → 2026-06 not downloaded; `rdb_data/DESIGN_FROZEN` absent;
+  `ingest`/`series` raise `HoldoutLocked`.
+- **Not decided:** whether to open the holdout; what the next capability is. Both the
+  researcher's, one step at a time, chosen from evidence.
+
 ## Frozen
 
 - `0002` Emergence, `0003` Time, `constitution.md`, `ontology.md`, the caring fork.
 
 ---
 
-*Last updated: 2026-08-08.*
+*Last updated: 2026-08-09.*

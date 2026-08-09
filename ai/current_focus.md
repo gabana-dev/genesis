@@ -6,144 +6,94 @@
 
 ## Now
 
-**Research triage — a turning point, not a lab.** A literature-reconciliation pass
-(2026-08-08) established that Genesis's foundations are established science, not discoveries.
-See [`../research/prior-art-and-opportunity-map.md`](../research/prior-art-and-opportunity-map.md).
-The capability-construction phase is **over**; we do not climb the POMDP/RL ladder as research.
+**The research program is closed. The laboratory remains capable of doing disciplined
+engineering.**
 
-**The honest state, plainly:** the novel-cognitive-architecture thesis collapsed into
-established science; the axiology/install thesis is an old philosophical problem (Hume's
-is/ought), likely ill-posed; the **Research OS is the strongest surviving candidate
-contribution, but its novelty and value are both unproven.**
+Two decision records were ratified on 2026-08-09 and together they define the whole of the
+current state:
 
-**Open decision (the researcher's, not yet made):** which project is Genesis now —
-(1) a methodology project (validate the Research OS), (2) a normal research project
-(reflexive/performative decision-making, adjacent, crowded), (3) a modest philosophy project
-(axiology, likely non-resolving), or (4) a completed learning vehicle. To be recorded as the
-first entry in `research/decisions/`.
+- [`../research/decisions/0002-close-the-genesis-research-program.md`](../research/decisions/0002-close-the-genesis-research-program.md)
+  — **RATIFIED.** The cognitive-architecture thesis is retired (established science,
+  independently re-derived); the axiology/install question is retired as philosophy, not a
+  Genesis objective; the Research OS is useful but its novelty is unvalidated and unclaimed; the
+  toy-milestone sequence is closed at M2; PsTally is not a Genesis phase. **No research
+  direction is selected.** Reopening requires a genuinely unresolved problem arriving from real
+  constraints and surviving the prior-art gate — nothing internal reopens it.
+- [`../research/decisions/0003-engineering-posture-real-data.md`](../research/decisions/0003-engineering-posture-real-data.md)
+  — **RATIFIED.** Engineering against real, *externally recorded* environments is permitted,
+  labelled as engineering, claiming nothing. Genesis-authored simulators remain barred. Every
+  milestone states its import/build classification before it runs. Accumulated engineering is
+  never retrospectively recast as research.
 
-## The research cycle
+**Active work: RDB-1**, the real-data bridge.
+[`../research/experiments/0006-rdb-1-real-data-bridge.md`](../research/experiments/0006-rdb-1-real-data-bridge.md).
+Classification **import + build, no novelty claimed**. Public AEMO NSW1 data under a frozen
+protocol. Development period complete; **the holdout is unopened.**
 
-Every cycle now follows:
+## What RDB-1 established (development period only)
 
-```
-Question → Contemplation (researchers + Claude) → Draft (researchers) →
-Guardian Review (Claude) → Revision → Accepted Research
-```
+- **Adaptation matters, decisively.** Rolling 26 weeks beats an expanding window by +101.59 MAE,
+  block-bootstrap 95% [+65.20, +141.72]. Stable across every year and season; largest in summer.
+- **The model does not reliably beat "yesterday at this clock time."** Rolling vs persistence
+  straddles zero (−15.96, [−49.32, +19.51]). Expanding fails to beat seasonal-naive at all.
+- **Slice and specification are separable.** The training slice moved accuracy ~24% and moved
+  calibration essentially not at all. Both arms carry the same fat-tail signature: intervals too
+  wide at 50%, too narrow at 95% — on a smooth, well-behaved series.
+- **Nothing consumes the forecast.** No cost, no decision, no consequence for being wrong — the
+  condition [`0005`](../research/experiments/0005-sparse-observation-decision-relevance.md) §E
+  identified as making usefulness undemonstrable.
 
-Claude's role in Contemplation is to sharpen and pressure-test — surface tensions,
-point at what the conceptual landscape or canon already implies, check whether a
-question is well-formed. Not to steer toward an answer. That boundary is the same
-form/substance line as always ([`collaboration.md`](collaboration.md)), extended one
-step earlier in the cycle than before.
+## Open — the researcher's, not yet decided
 
-## How the next question is chosen — superseded, see below
+1. **Whether to open the RDB-1 holdout** (2023-01 → 2026-06). One-way in practice. The lock is
+   technical: the months are not downloaded and `ingest`/`series` raise `HoldoutLocked` unless
+   `rdb_data/DESIGN_FROZEN` exists.
+2. **What the next capability is.** Chosen from what the evidence exposed, one step at a time.
+   **No sequence is pre-authorized** — DR0003 (10) forbids adopting a roadmap of future
+   milestones in advance, and DR0001 classifies the capability graph as **F — abandon**.
 
-The uncertainty-reduction criterion above is superseded by the leverage rule adopted
-2026-08-07. It's not wrong, just subsumed: leverage is uncertainty-reduction made
-concrete against the remaining architecture, rather than assessed in the abstract.
+An environment distinction is on record but selects nothing:
+[`../research/journal/2026-08-09-real-data-is-not-a-simulator.md`](../research/journal/2026-08-09-real-data-is-not-a-simulator.md)
+notes that the environment-first gate ruled on Genesis-*authored* simulators and never ruled on
+externally recorded data. DR0003 permits considering a harder recorded target; **it selects
+none.**
 
-## Phase: capability construction (recognized 2026-08-07)
+## What "better" means
 
-Genesis has left the foundations-validation phase. The pipeline is proven (belief-necessity
-travelled it end-to-end into canon). The question is no longer "is the theory true enough to
-build on" but **"which experiment permanently adds the next architectural capability?"** We
-are assembling the architecture of Genesis one earned capability at a time — each earned
-through experiment before it becomes permanent. This is a research-guided engineering
-project now, not a validation project.
+A milestone succeeds when the system becomes **more capable, more adaptive, more measurable, or
+more grounded in reality** — not when a score improves. A well-measured failure exposing a real
+limitation is a success. A score improvement obtained by choosing a friendlier target is not.
+(DR0003, "What better means here".)
 
-## Standing rule: the capability-construction gate (adopted 2026-08-07, supersedes the leverage gate)
+## Standing rules still in force
 
-Every proposed laboratory must answer, explicitly, before it proceeds:
+- **Prior-art gate first.** Anything classified import (A) in
+  [`../research/prior-art-and-opportunity-map.md`](../research/prior-art-and-opportunity-map.md)
+  gets no laboratory.
+- **Environment-first gate** (DR0002, preserved there, deliberately **not canon**). Full force
+  against any environment Genesis would author.
+- **Protocol discipline**, undiminished for engineering: contract fixed in advance, checksummed
+  snapshots, leakage controls, serious baselines, paired intervals on per-origin records,
+  technical holdout locks, and disclosure of which analysis choices were fixed when.
+- **The form/substance boundary** ([`collaboration.md`](collaboration.md)). Unchanged by any of
+  the above. Claude does not author substance or set direction.
 
-1. **What hypothesis does it test?**
-2. **What uncertainty does it eliminate?**
-3. **What permanent architectural capability does it earn?** — *paired with a compression
-   check:* is this capability new machinery, or the belief-core re-aimed at a new target
-   (per the [architectural roadmap](../research/architectural-roadmap.md))? If it claims to
-   be new machinery, it carries the Architectural Compression Principle's burden of proof.
-   Most labs earn a validated *application/reach*, not a new primitive.
-4. **Which future laboratories become possible because this capability now exists?** —
-   *the primary question.* A capability compounds; choose the one that unlocks the most.
+## Superseded, kept on record
 
-A laboratory must earn a permanent capability (or genuinely falsify an accepted one). If it
-only re-validates something already stable without earning new reach, defer it.
+The capability-construction gate and the frozen Method of Discovery remain in the history
+(journal entries of 2026-08-07 and the `0001` triage) but no longer govern selection: the
+prior-art rule subsumes them, and no laboratory runs for anything classified import.
 
-## Standing rule: the Method of Discovery is frozen (adopted 2026-08-07)
-
-Seven steps, self-tested down from an original eight, documented across
-[`../research/journal/2026-08-07-update-operator-invariants.md`](../research/journal/2026-08-07-update-operator-invariants.md)
-and the entries around it. Treat it as stable. Don't refine it in isolation — use it on
-real architectural questions. Only revise it if a concrete investigation exposes a
-genuine failure in practice.
-
-## Immediate next step
-
-**Transitioned to literature-grounded system construction** (2026-08-08). The system goal is
-intact (belief → learn → act → adapt → eventually markets); it is reached by *importing*
-established machinery, not rediscovery. Working roadmap:
-[`../research/system-roadmap.md`](../research/system-roadmap.md). Old capability graph retired.
-
-**Milestone 1 — DONE** (2026-08-08):
-[`../research/experiments/0004-minimal-closed-loop.md`](../research/experiments/0004-minimal-closed-loop.md),
-`src/closed_loop.py`, `tests/test_closed_loop.py`. The first closed loop Genesis has built —
-belief → action → changed world → new evidence → updated belief. Integration validity
-**passed** (the action-conditioned Predict keeps the belief on a state the agent is moving;
-the Update-only ablation loses alignment). Behavioral utility **did not materialize** — the
-memoryless baseline matches it, and beats it slightly at noise 0.7. Recorded as a split
-result, not a win.
-
-**Milestone 2 — DONE** (2026-08-08):
-[`../research/experiments/0005-sparse-observation-decision-relevance.md`](../research/experiments/0005-sparse-observation-decision-relevance.md),
-`src/sparse_loop.py`, `tests/test_sparse_loop.py`. Sparse observations made belief
-behaviorally load-bearing: the predictive agent beats a stale-observation agent running the
-*identical* policy by +0.810 [+0.796, +0.824] at gap 5, ≈0 at the p=1 control. It fails as
-predicted — the stale agent cannot detect its own arrival, overshoots, and never declares.
-Slip condition inconclusive; p=3 excluded by the pre-registered wall rule.
-
-**But:** the throwaway null agent — waits for fresh evidence, holds still otherwise — is *more
-accurate* than the belief agent (0.889 vs 0.810) at 7× the steps. Nothing charges for time, so
-patience beats knowledge.
-
-**Milestone 3 — proposed, design-reviewed, REJECTED. The toy sequence is closed at M2.**
-A cost on time would have answered a question already available in closed form from M2's data
-(λ* ≈ 0.0068), could not preserve the identical-policy principle, and would have made belief win
-by construction. Draft decision:
-[`../research/decisions/0002-close-the-genesis-research-program.md`](../research/decisions/0002-close-the-genesis-research-program.md)
-— **awaiting review; canon deliberately untouched.**
-
-**The lesson that closed the sequence:** every capability Genesis added met a cheap
-environmental substitute, and the reflex was to modify the environment until the substitute
-failed. That is capability-demonstration engineering, not research — the `0001`
-manufactured-necessity failure mode displaced from the capability onto the environment.
-**Existence, correctness and usefulness are three separate claims**, and usefulness is only
-demonstrable against a cost, so an environment can always be built to make any capability look
-necessary. Building it demonstrates nothing.
-
-**Next:** no experiment by default. A drafted **environment-first gate** now precedes the
-research gate (environment justified before capability). Applied to Genesis's own market goal it
-returns *no justified environment* — so the laboratory sequence stops. Three phase options are
-on the table in `0002` (recommended: deploy the machinery against a real environment and label
-it engineering, not research). **Researcher's decision; nothing proceeds until it is made.**
-
-DR0001's formal direction decision remains open; this construction direction is the accepted
-*working* posture, not a formal closure of that decision.
-
-Note: the capability-construction gate above and the Method-of-Discovery freeze remain on
-record as history, but the gate is now subordinate to the prior-art rule — *no laboratory at
-all* for anything classified as import (A) in the opportunity map.
-
-## Not in focus right now — abandoned or frozen
+## Not in focus
 
 - **Abandoned (F):** primitive-counting; the "differentiator sentence" search; re-deriving
-  established estimation/control theory as if it were discovery; the capability graph as a
-  *research* roadmap (it is a dependency map).
-- **Import if needed (A), never as research:** dynamic-state filtering (was "Lab 3"),
-  unsupervised obs-model, closed-loop RL, causal inference.
-- **Frozen:** `0002` Emergence, `0003` Time, `constitution.md`, `ontology.md`.
+  established estimation/control theory as discovery; the capability graph as a research roadmap.
+- **Import if needed (A), never as research:** dynamic-state filtering, unsupervised
+  observation-model learning, closed-loop RL, causal inference.
+- **Frozen:** `0002` Emergence, `0003` Time, `constitution.md`, `ontology.md`, the caring fork.
 - **Open but unchosen (D/E):** Research-OS validation; reflexive/performative decision-making;
-  the axiology/install problem.
+  the axiology/install problem. Retired as Genesis objectives by DR0002.
 
 ---
 
-*Last updated: 2026-08-08.*
+*Last updated: 2026-08-09.*

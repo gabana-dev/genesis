@@ -1,7 +1,8 @@
 # 0002 — Close the Genesis cognitive-architecture research program
 
 **Date:** 2026-08-08
-**Status:** **draft — awaiting researcher ratification.** Nothing here is written into `canon/`.
+**Status:** **RATIFIED by the researcher, 2026-08-09**, including the amendments of that date.
+Nothing here is written into `canon/`.
 **Reversibility:** one-way in practice. Reopening would require a genuine research problem
 arriving from outside, not a decision to resume.
 **Closes:** the open direction question in [`0001`](0001-research-triage-reframe.md) — **Option
@@ -9,6 +10,12 @@ D, completed learning vehicle**, is selected.
 **Supersedes:** this record's own earlier draft (the toy-milestone closure and its Option A
 recommendation), preserved in git history at `85a8c5e` under the filename
 `0002-close-the-toy-milestone-sequence.md`.
+**Amended 2026-08-09, in draft, before ratification.** Three narrow corrections —
+points (6) and (8) and the gate's scope note — made because RDB-1 was built and run *after*
+this record was drafted, leaving it factually stale about the repository it describes. **No
+conclusion of this record is reversed, and none of the RDB-1 results reopen the research
+program.** See [`0003-engineering-posture-real-data.md`](0003-engineering-posture-real-data.md)
+and [`../journal/2026-08-09-real-data-is-not-a-simulator.md`](../journal/2026-08-09-real-data-is-not-a-simulator.md).
 
 ---
 
@@ -77,13 +84,29 @@ mood.
    hardware/session reconciliation; fleet networking) proceed as ordinary product engineering,
    tracked in PsTally. Genesis does not own PsTally, did not produce those findings, and takes
    no credit for them.
-6. **DR0002's earlier Option A is superseded.** "Deploy the Genesis machinery against a real
-   environment" is withdrawn as a Genesis phase, for the reason in (5).
+6. **DR0002's earlier Option A is superseded as it applied to PsTally.** Deploying the Genesis
+   machinery *against PsTally* is withdrawn as a Genesis phase, for the reason in (5): PsTally
+   is a real product whose problems are solved by ordinary engineering tracked in its own repo.
+   **This point withdraws PsTally specifically. It is not a general ruling against real
+   environments**, which this record never examined — the environment audit it relied on
+   assessed a Genesis-authored market simulator (see the scope note under the gate, below).
+   What may and may not be done in a real, externally recorded environment is settled
+   separately in [`0003-engineering-posture-real-data.md`](0003-engineering-posture-real-data.md),
+   not here.
 7. **Genesis's experiments, journals, and methodological lessons are preserved in full** — the
    negative results especially. Nothing is deleted or retrospectively smoothed.
 8. **No new research direction is selected.** Not to keep the project alive, not as a gesture,
-   not as a placeholder. The absence of a next direction is the accurate state, and it is
+   not as a placeholder. The absence of a *research* direction is the accurate state, and it is
    recorded as such.
+   **What is active is engineering, not research.** RDB-1
+   ([`../experiments/0006-rdb-1-real-data-bridge.md`](../experiments/0006-rdb-1-real-data-bridge.md))
+   is a live milestone classified **import + build, no novelty claimed**, run against public
+   AEMO data under a frozen protocol with an unopened holdout. It was built after this record
+   was drafted. It is not a research direction, is not offered as one, and nothing in its
+   results reopens the program — its findings are established method applied to public data,
+   and the one tempting candidate (tail miscalibration of a Gaussian predictive distribution)
+   is squarely addressed by existing literature. **The research program is closed. The
+   laboratory remains capable of doing disciplined engineering.**
 
 ## What Genesis established
 
@@ -161,10 +184,32 @@ framing the PsTally audit), which is not yet enough.
 > **If the environment must be altered to make the capability necessary, the alteration is the
 > claim under examination — and it is almost certainly a manufactured one.**
 
+**Scope note (added 2026-08-09, in draft).** When this gate was applied to Genesis's market
+goal and returned *no justified environment*, the environment under assessment was a
+**Genesis-authored market simulator**. The recorded objection was specific to that: "a
+hand-built market simulator would rediscover the price-impact function that was typed into
+it." Both halves of the gate's force — that the environment can be altered until the
+capability looks necessary, and that recovering typed-in dynamics demonstrates nothing —
+depend on Genesis being the *author* of the environment.
+
+**The gate therefore ruled on authored simulators. It did not rule on externally recorded
+real-world environments**, such as the AEMO public data used by RDB-1, which Genesis did not
+author, cannot tune, and cannot make easier by wanting it to be. That was an unexamined gap,
+not a decision. It is recorded in
+[`../journal/2026-08-09-real-data-is-not-a-simulator.md`](../journal/2026-08-09-real-data-is-not-a-simulator.md)
+and governed by [`0003-engineering-posture-real-data.md`](0003-engineering-posture-real-data.md).
+The gate's force against authored environments is undiminished.
+
 ## Status of the repository after ratification
 
-`canon/` unchanged. `research/` and `src/` preserved as a completed record. The roadmap and the
-`ai/` trackers to be updated to reflect closure — **on ratification, not before.**
+`canon/` unchanged. `research/` and `src/` preserved as a completed record **of the research
+program**. The roadmap and the `ai/` trackers to be updated to reflect closure — **on
+ratification, not before.**
+
+Those trackers must record closure and the active engineering milestone *together*, or they
+will assert something false: the research program is closed, and RDB-1 is running. `rdb/` and
+`rdb_data/` are not part of the preserved research record — they are engineering under
+[`0003`](0003-engineering-posture-real-data.md).
 
 ## Source
 
