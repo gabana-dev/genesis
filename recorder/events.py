@@ -177,7 +177,11 @@ def canonical_view(channel: str, msg: dict) -> dict:
         # Absolute level assignment. A quantity of "0" is a REMOVAL, not an error and not a
         # missing level -- unlike a snapshot, where a zero size is simply not a level.
         out = {"absolute": True}
-        for key, name in (("b", "bids"), ("a", "asks")):
+        # The WS stream names the level arrays b/a; the REST snapshot names them bids/asks.
+        # Reading only b/a silently canonicalised every REST anchor to an empty book.
+        keys = (("b", "bids"), ("a", "asks")) if channel == "depthUpdate" \
+            else (("bids", "bids"), ("asks", "asks"))
+        for key, name in keys:
             levels = []
             for lv in msg.get(key) or []:
                 if not isinstance(lv, (list, tuple)) or len(lv) < 2:

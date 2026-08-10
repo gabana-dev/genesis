@@ -171,7 +171,24 @@ class Ingestor:
         # A field the recorder cannot interpret is recorded, never dropped and never
         # defaulted. The observation stands -- we did see the message -- but the anomaly
         # makes the projection incomplete rather than plausibly wrong.
-        invalid = (body.get("world", {}).get("canonical") or {}).get("invalid")
+        canon = body.get("world", {}).get("canonical") or {}
+        if channel == "depthSnapshot":
+            n_b, n_a = len(canon.get("bids") or []), len(canon.get("asks") or [])
+            self.log.append(E.RECORDER, "ANCHOR_RECEIVED",
+                            {"market_ticker": market_ticker, "seq": seq,
+                             "canonicalised_bids": n_b, "canonicalised_asks": n_a,
+                             "anchor_valid": bool(n_b and n_a),
+                             "observation_event_id": ev["event_id"],
+                             "received_at": received_at})
+            if not (n_b and n_a):
+                self.log.append(E.RECORDER, "ANCHOR_INVALID",
+                                {"market_ticker": market_ticker, "seq": seq,
+                                 "canonicalised_bids": n_b, "canonicalised_asks": n_a,
+                                 "detail": "snapshot canonicalised to an empty or one-sided "
+                                           "book; it establishes no completeness",
+                                 "received_at": received_at})
+
+        invalid = canon.get("invalid")
         if invalid:
             self.log.append(E.RECORDER, "UNINTERPRETABLE_FIELD",
                             {"channel": channel, "market_ticker": market_ticker,

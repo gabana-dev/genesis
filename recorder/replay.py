@@ -87,9 +87,18 @@ def order_book_at(path, market_ticker, at=None):
             continue
 
         world = body.get("world", {})
+        request = body.get("observation", {}).get("request") or {}
+
+        # ANTI-CIRCULARITY (BAV-1 contract section 3). A comparison probe is evidence only:
+        # it must never enter the reconstruction it is used to evaluate, or the comparison
+        # would measure REST against itself. Keyed on probe_id presence -- a mechanical test,
+        # not a judgement made at analysis time.
+        if request.get("probe_id"):
+            continue
+
         # Association falls back to what Genesis requested only when the venue itself did
         # not name a market (Binance's REST snapshot). The two are kept distinguishable.
-        requested = (body.get("observation", {}).get("request") or {}).get("symbol")
+        requested = request.get("symbol")
         named = world.get("market_ticker")
         if named != market_ticker and not (named is None and requested == market_ticker):
             continue
@@ -127,8 +136,20 @@ def order_book_at(path, market_ticker, at=None):
                     value = E.to_decimal(size)
                     if value > 0:
                         book[side][price] = value
-            complete, reason = (False, "uninterpretable field(s) in depthSnapshot") \
-                if bad_fields else (True, None)
+            # INVARIANT 17. anchor_received != anchor_valid != anchor_applied. A snapshot
+            # that canonicalises to an empty or one-sided book establishes NOTHING: this is
+            # the defect that let cab4602 claim completeness from an anchor that never
+            # applied a single level.
+            anchor_valid = bool(book["bids"]) and bool(book["asks"])
+            if bad_fields:
+                complete, reason = False, "uninterpretable field(s) in depthSnapshot"
+            elif not anchor_valid:
+                complete, reason = False, ("anchor received but INVALID: canonicalised to "
+                                           f"{len(book['bids'])} bids / {len(book['asks'])} "
+                                           "asks; a snapshot must yield at least one of each "
+                                           "to establish completeness")
+            else:
+                complete, reason = True, None
             last_seq = world.get("venue_seq")
             applied += 1
 

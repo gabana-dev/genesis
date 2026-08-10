@@ -281,6 +281,22 @@ INTENT and EXECUTION schemas exist so real execution can later be recorded witho
 counterfactual fill simulation exists anywhere in the package — queue position is not observable,
 so no claim about an unplaced order is representable in the schema.
 
+17. **A snapshot cannot establish completeness unless it is a valid anchor.** Receiving a
+    snapshot message does not imply a usable anchor exists. Three states are distinct and
+    separately recorded:
+
+    | State | Meaning |
+    |---|---|
+    | `anchor_received` | A snapshot message arrived. `ANCHOR_RECEIVED` event, always emitted. |
+    | `anchor_valid` | It canonicalised into **at least one bid and at least one ask**. |
+    | `anchor_applied` | Replay applied it and, if valid, established completeness. |
+
+    An invalid anchor emits `ANCHOR_INVALID` and establishes **nothing** — `complete` stays
+    false with the reason attached.
+
+    *Provenance: added 2026-08-10 after the REST/WS key defect described in
+    [`README.md`](README.md#correction) let an empty anchor assert completeness.*
+
 ## 10. Completion criteria
 
 1. live WebSocket observation

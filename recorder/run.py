@@ -62,6 +62,65 @@ MANIFEST_TEMPLATE = {
 }
 
 
+def cmd_bav(args):
+    """BAV-1. Implements recorder/CONTRACT-book-agreement.md exactly."""
+    import asyncio
+    import hashlib
+    import pathlib
+
+    import bav
+    import binance
+    import dialects
+    import events as E
+
+    contract_path = pathlib.Path(__file__).resolve().parent / "CONTRACT-book-agreement.md"
+    contract_bytes = contract_path.read_bytes()
+    schedule = bav.build_schedule(args.seed)
+
+    manifest = {
+        "experiment": "BAV-1 Book Agreement Validation",
+        "contract_file": contract_path.name,
+        "contract_sha256": hashlib.sha256(contract_bytes).hexdigest(),
+        "run_commit": args.commit,
+        "sampling_seed": args.seed,
+        "environment": "Binance Spot (public market data, unauthenticated)",
+        "symbol": args.symbol.upper(),
+        "stream": "depth",
+        "n_slots": bav.N_SLOTS, "n_controlled": bav.N_CONTROLLED,
+        "warmup_slots": bav.WARMUP_SLOTS,
+        "dwell_s": bav.DWELL, "probe_offset_s": bav.PROBE_OFFSET,
+        "skew_exclude_ms": bav.SKEW_EXCLUDE_MS,
+        "thin_book_levels": bav.THIN_BOOK_LEVELS,
+        "required_usable_incomplete": bav.REQUIRED_USABLE_INCOMPLETE,
+        "controlled_slots": [x["slot"] for x in schedule if x["controlled"]],
+        "last_scheduled_action_s": max(t for t, _, _ in bav.timeline(schedule)),
+        "min_recording_s": args.min_seconds,
+        "declared_resolution": (
+            "Contract 12.1 requires a recording of at least 60 minutes; the 60-slot schedule "
+            "at this seed completes earlier. Recording continues to min_recording_s after the "
+            "last probe. No probe parameter, metric, exclusion or threshold is affected."),
+        "not_testing": ["trading", "prediction", "decision quality", "profitability",
+                        "Genesis environment selection", "hypothesis 0001"],
+        "binding_rule": ("Contract, thresholds, metrics, seed, schedule, controlled protocol "
+                         "and exclusions are FIXED. No metric may be added after seeing "
+                         "results. No probe may be repaired, reinterpreted or rerun."),
+        "started_at": None,
+    }
+
+    with EventLog(args.log) as log:
+        ing = Ingestor(log, dialect=dialects.BINANCE)
+        manifest["started_at"] = E.now()
+        ing.started(manifest)
+        try:
+            asyncio.run(bav.run(ing, args.symbol, schedule,
+                                min_seconds=args.min_seconds))
+        except KeyboardInterrupt:
+            ing.error("interrupted", "KeyboardInterrupt")
+        finally:
+            ing.stopped("BAV-1 run complete")
+    print(health.render(health.report(args.log)))
+
+
 def cmd_binance(args):
     """Public market data only. No account, no credentials, no orders."""
     import asyncio
@@ -152,6 +211,12 @@ def main(argv=None):
     bn.add_argument("--seconds", type=float, default=1800.0)
     bn.add_argument("--reconnect-after", type=float, default=None, dest="reconnect_after")
     bn.set_defaults(fn=cmd_binance)
+
+    bv = sub.add_parser("bav"); bv.add_argument("log"); bv.add_argument("symbol")
+    bv.add_argument("--seed", type=int, required=True)
+    bv.add_argument("--commit", default="unknown")
+    bv.add_argument("--min-seconds", type=float, default=3600.0, dest="min_seconds")
+    bv.set_defaults(fn=cmd_bav)
 
     v = sub.add_parser("verify"); v.add_argument("log"); v.set_defaults(fn=cmd_verify)
 

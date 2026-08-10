@@ -69,6 +69,43 @@ Checks — **this project uses its own runner and is not pytest-compatible**
 .venv/bin/python tests/run_all.py            # every suite
 ```
 
+## Correction — supersedes part of commit `cab4602` (2026-08-10)
+
+**The commit is not amended. The historical artifact stands.** This note supersedes part of its
+interpretation.
+
+**The defect.** Binance's WebSocket stream names the level arrays `b` / `a`; its REST snapshot
+names them `bids` / `asks`. `canonical_view` read only `b` / `a`, so **every `depthSnapshot`
+anchor canonicalised to an empty book.** Replay then set `complete: true` on the strength of a
+snapshot that had applied no levels at all.
+
+**Withdrawn from the 30-minute run of 2026-08-09:**
+
+- the claim that the book was reconstructed from a valid REST anchor plus 1,786 updates — the
+  anchor contributed nothing, and the book was built from accumulated `depthUpdate` messages
+  alone;
+- all completeness claims resting on those anchors, including the reported **98.8% healthy
+  time** and the closing of incomplete intervals at each anchor.
+
+**Still valid from that run**, because none of it depends on the anchor:
+
+- integrity: 1,797 events, hash chain and checkpoint both verified;
+- replay determinism: identical across three evaluations;
+- sequence handling: 1,785 of 1,786 messages contiguous under Binance's published rule;
+- the single discontinuity at the forced reconnect, and the recorder's correct refusal to
+  claim a gap across it;
+- zero errors, zero uninterpretable fields, zero malformed messages, zero timestamp anomalies;
+- the S-1 and S-2 findings, which were about health reporting and the re-anchor procedure.
+
+**How it was caught.** By the BAV-1 tests, written before BAV-1 was run. The 30-minute run
+passed cleanly *because nothing ever checked whether its claims were true* — which is the
+specific gap BAV-1 exists to close, demonstrated on the run that motivated it.
+
+**Fixed by** the dual-key canonicalisation and **invariant 17** (`SPEC.md`): a snapshot
+cannot establish completeness unless it canonicalises into a book with at least one bid and
+one ask. `anchor_received`, `anchor_valid` and `anchor_applied` are now distinct states, and
+`ANCHOR_RECEIVED` / `ANCHOR_INVALID` events record them.
+
 ## The two guarantees
 
 **Known incompleteness beats fabricated completeness.** Sequence gaps, reconnects, restarts,
