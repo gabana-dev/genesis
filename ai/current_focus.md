@@ -50,7 +50,7 @@ protocol. Development period complete; **the holdout is unopened.**
    RDB-1 answered its question; no design was ever frozen, so the holdout would evaluate
    nothing. It stays sealed and the lock stays in place — a holdout kept open indefinitely
    stops being one.
-2. **What the next capability is.** Chosen from what the evidence exposed, one step at a time.
+4. **What the next capability is.** Chosen from what the evidence exposed, one step at a time.
    **No sequence is pre-authorized** — DR0003 (10) forbids adopting a roadmap of future
    milestones in advance, and DR0001 classifies the capability graph as **F — abandon**.
 
@@ -126,7 +126,15 @@ BAV-1 skew investigation and is the most strategically useful measurement the pr
    at daily scale only VR ≤ 0.851 was detectable, and 80% power against VR = 0.95 would need
    **68 years** of history. The overlap question is **open**, and the variance ratio cannot
    ever settle it at that horizon. A structural limit of the same kind as the 291 ms floor.
-   **Long Q3 recording started 2026-08-10**, `~/genesis-evidence/q3/btcusdt-q3.jsonl`.
+   **Long Q3 recording started 2026-08-10**, `~/genesis-evidence/q3/btcusdt-q3.jsonl`,
+   7 days, ends ~2026-08-17 17:00.
+3. **Phase 3 open — EXEC-1**, [`../market/CONTRACT-execution.md`](../market/CONTRACT-execution.md),
+   **FROZEN 2026-08-10 before the data exists**,
+   `sha256 11c6a8ec684a69a453d450d4500b2bae60ee05fcc8067912598855ad911cb351`. Answers Q3:
+   what execution costs, and what portion of the 3 bps maker advantage survives adverse
+   selection. Instrument [`../market/fills.py`](../market/fills.py) built and tested first.
+   Predictions X1-X7 and the four decision trials are declared in the ledger and outstanding.
+   **Nothing to do until the recording completes.**
 3. One decision, one real cost, against a do-nothing baseline
 4. Paper trading at deployable size — fills from recorded depth, latency from the measured
    distribution, using the existing DECISION -> INTENT -> EXECUTION schema
