@@ -59,6 +59,15 @@ Type 2 and Type 3 work is *proposed*, and stands only once accepted.
 This refines the form/substance division above; it does not replace it. Substance is
 always Type 1.
 
+## Engineering standards
+
+How the code itself must be written is a separate standing instruction:
+[`engineering-standards.md`](engineering-standards.md) — proper data structures and algorithms,
+proper programming practice, refactoring, and testing, binding on all Genesis code whoever
+writes it. It is not a matter of taste: in a research repository, sloppy engineering does not
+merely age badly, it produces wrong results that look right. Every rule there cites the
+incident in this repository that produced it.
+
 ## The line, in one sentence
 
 If a change would alter *what Genesis believes, aims at, or means* — it is substance, and

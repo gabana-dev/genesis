@@ -191,6 +191,9 @@ limitation is a success. A score improvement obtained by choosing a friendlier t
 - **Protocol discipline**, undiminished for engineering: contract fixed in advance, checksummed
   snapshots, leakage controls, serious baselines, paired intervals on per-origin records,
   technical holdout locks, and disclosure of which analysis choices were fixed when.
+- **Engineering standards** ([`engineering-standards.md`](engineering-standards.md)). Proper
+  DSA, programming practice, refactoring and testing, on all Genesis code. Standing instruction
+  of 2026-08-10.
 - **The form/substance boundary** ([`collaboration.md`](collaboration.md)). Unchanged by any of
   the above. Claude does not author substance or set direction.
 
