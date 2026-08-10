@@ -79,6 +79,58 @@ notes that the environment-first gate ruled on Genesis-*authored* simulators and
 externally recorded data. DR0003 permits considering a harder recorded target; **it selects
 none.**
 
+## Direction (researcher, 2026-08-10)
+
+**Genesis is for financial markets. Everything built from here pushes toward paper trading**,
+with the foundation and architecture orchestrated properly first. Market literacy is the
+researcher's own task and is not a Genesis work item.
+
+### Hard constraints — measured, not assumed
+
+| Constraint | Value | What it eliminates |
+|---|---|---|
+| Latency floor, Nairobi to Binance | **~291 ms**, median ~430 ms | **all sub-minute strategies** — HFT, latency arb, microstructure scalping |
+| Round trip cost | 0.20% spot · 0.10% futures taker · 0.04% futures maker | anything whose edge is smaller than its cost |
+| BTC daily volatility | ~1-2% | sets the horizon at which cost is affordable |
+| Solo team, small capital | — | capacity-constrained and breadth strategies |
+
+**Surviving design space: horizons of hours to days, few instruments studied deeply,
+counterparties who are structurally price-insensitive.** The latency figure came from the
+BAV-1 skew investigation and is the most strategically useful measurement the project owns.
+
+### Phase gates
+
+0. Trustworthy observation — **COMPLETE.** BAV-1, run 3, 2026-08-10:
+   [`../research/experiments/0007-bav-1-book-agreement-validation.md`](../research/experiments/0007-bav-1-book-agreement-validation.md).
+   The completeness label predicts agreement with an independent channel — 97.5% vs 66.7% in
+   the pre-registered stratum, Fisher exact p = 0.0165. Fidelity and self-knowledge measured
+   separately and not merged.
+1. Market literacy — the researcher's own
+2. **Measure the environment, do not trade it** — **ACTIVE.** Contract drafted, not frozen:
+   [`../market/CONTRACT-measurement.md`](../market/CONTRACT-measurement.md). Headline
+   deliverable is the break-even hit-rate table `p* = 1/2 + c/2m` per horizon and fee tier.
+   Note the correction recorded there: the constraint table below counts **fees only** and
+   therefore understates true round-trip cost.
+3. One decision, one real cost, against a do-nothing baseline
+4. Paper trading at deployable size — fills from recorded depth, latency from the measured
+   distribution, using the existing DECISION -> INTENT -> EXECUTION schema
+5. Pre-registered hypothesis search — trial counter, deflated Sharpe, held-out untouched
+6. Edge-decay monitoring — the completeness machinery pointed at strategies
+7. Real capital, small
+
+**LLM enters at Phase 5** for hypothesis generation, anomaly explanation, unstructured events
+and the research record. **Never the signal.** **Agents: none until Phase 5**, then one at a
+time, each justified by a measured decision the current system gets wrong.
+
+### Standing questions for any strategy proposal
+
+- Who is on the other side, and why are they losing? No answer means noise, or we are the
+  ones being harvested.
+- How many trials have been run? Two hundred tests produce several brilliant-looking accidents.
+- What does it cost at the fee tier actually available?
+
+**Largest unbuilt component: the fill/execution simulator.** It is where edges die.
+
 ## Kill criteria (researcher, 2026-08-09)
 
 Stated so that abandoning a line of work is a planned outcome rather than a failure, and so
@@ -136,4 +188,4 @@ prior-art rule subsumes them, and no laboratory runs for anything classified imp
 
 ---
 
-*Last updated: 2026-08-09.*
+*Last updated: 2026-08-10.*

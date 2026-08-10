@@ -1,0 +1,34 @@
+{
+ "n_trials": 60,
+ "cells": {
+  "incomplete_with_book / natural": 46,
+  "incomplete_with_book / deliberate": 14
+ },
+ "usable_incomplete": 60,
+ "required_usable_incomplete": 10,
+ "question_b_status": "REPORTED",
+ "complete_lowskew_n": 0,
+ "complete_lowskew_m1_rate": null,
+ "complete_lowskew_median_rel_error": null,
+ "incomplete_m1_rate": 0.7,
+ "incomplete_median_rel_error": null,
+ "skew_buckets": {
+  "300-1000ms": {
+   "n": 56,
+   "m1": 40
+  },
+  "1000-2000ms": {
+   "n": 4,
+   "m1": 2
+  }
+ },
+ "excluded_n": 0,
+ "excluded_reasons": {},
+ "thresholds": {
+  "m1_rate_min": 0.95,
+  "median_rel_error_max": 0.01,
+  "note": "pre-committed engineering acceptance thresholds; not natural or universal boundaries"
+ },
+ "scope_note": "A null on the controlled condition is a null AT THE PRE-REGISTERED 5-SECOND STALENESS INTERVAL. It does not establish that completeness status is non-informative at other staleness durations or under naturally occurring interruptions.",
+ "limitation": "Validates consistency between two Binance-delivered representations. Does not establish that either is ground truth."
+}
