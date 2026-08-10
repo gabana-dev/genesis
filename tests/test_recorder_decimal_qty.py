@@ -153,7 +153,7 @@ def account_arithmetic_exact_with_fractional_counts(tmp):
     assert s["open_orders"]["o1"]["filled"] == "0.01", s["open_orders"]
     assert Decimal(s["reserved_collateral_dollars"]) == Decimal("0.00114"), \
         s["reserved_collateral_dollars"]
-    assert s["complete"] is True, s["reasons"]
+    assert s["all_executions_resolved"] is True, s["reasons"]
     return "fractional fill arithmetic exact; reserved collateral on the unfilled remainder"
 
 

@@ -9,6 +9,7 @@ book. Silence about incompleteness is the failure mode this module exists to pre
 from collections import defaultdict
 from decimal import Decimal
 
+import completeness as C
 import events as E
 from log import read
 
@@ -42,7 +43,7 @@ def order_book_at(path, market_ticker, at=None):
     book = {"yes": defaultdict(lambda: Decimal("0")), "no": defaultdict(lambda: Decimal("0")),
             "bids": defaultdict(lambda: Decimal("0")), "asks": defaultdict(lambda: Decimal("0"))}
     complete, reason, last_seq, applied = False, "no snapshot seen", None, 0
-    current_run = None
+    rule = C.CompletenessRule()
 
     for ev in read(path):
         # Iterate in log order and FILTER, never break. Receipt clocks can step backwards
@@ -53,34 +54,14 @@ def order_book_at(path, market_ticker, at=None):
 
         cls, typ, body = ev["event_class"], ev["event_type"], ev.get("body", {})
 
-        # A change of recorder_run means the recorder was not running for some interval.
-        # Whether or not the venue's sequence numbers reveal it, that is a real hole, and
-        # completeness is not restored until the next authoritative snapshot.
-        if current_run is not None and ev.get("recorder_run") != current_run:
-            complete = False
-            reason = "recorder run changed: observation was interrupted"
-        current_run = ev.get("recorder_run")
+        # The single source of truth (completeness.py). replay does not decide this.
+        outcome = rule.observe(ev)
+        if C.affects(outcome, market_ticker):
+            complete, reason = False, outcome["reason"]
+        elif outcome["restores"] in (market_ticker, C.ALL) and outcome["restores"] is not None:
+            complete, reason = True, None
 
         if cls == E.RECORDER:
-            if typ == "SEQUENCE_GAP" and body.get("market_ticker") in (market_ticker, None):
-                complete = False
-                reason = (f"sequence gap {body.get('missing_from')}-{body.get('missing_to')}"
-                          f" before a new snapshot")
-            elif (typ == "UNINTERPRETABLE_FIELD"
-                  and body.get("market_ticker") in (market_ticker, None)):
-                complete = False
-                reason = ("uninterpretable field(s): "
-                          + ", ".join(f.get("field", "?") for f in body.get("fields") or []))
-            elif (typ == "DUPLICATE_MESSAGE" and body.get("conflict")
-                  and body.get("market_ticker") in (market_ticker, None)):
-                # Two different payloads claimed the same sequence number. Which one the
-                # venue meant is unknowable from the record, so the book is not trustworthy.
-                complete = False
-                reason = (f"conflicting duplicate at seq {body.get('seq')}: "
-                          f"two different payloads share one sequence number")
-            elif typ in ("CONNECTION_OPENED", "RECORDER_STARTED"):
-                complete = False
-                reason = f"{typ}: sequence continuity not established"
             continue
 
         if cls != E.WORLD:
@@ -116,14 +97,6 @@ def order_book_at(path, market_ticker, at=None):
             for side in ("yes", "no"):
                 for price, size in canon.get(side) or []:
                     book[side][price] = E.to_decimal(size)
-            if bad_fields:
-                # Some levels could not be interpreted, so this snapshot does not
-                # re-establish a known-complete book.
-                complete = False
-                reason = (f"uninterpretable field(s) in snapshot: "
-                          f"{', '.join(f['field'] for f in bad_fields)}")
-            else:
-                complete, reason = True, None
             last_seq = world.get("venue_seq")
             applied += 1
 
@@ -136,20 +109,7 @@ def order_book_at(path, market_ticker, at=None):
                     value = E.to_decimal(size)
                     if value > 0:
                         book[side][price] = value
-            # INVARIANT 17. anchor_received != anchor_valid != anchor_applied. A snapshot
-            # that canonicalises to an empty or one-sided book establishes NOTHING: this is
-            # the defect that let cab4602 claim completeness from an anchor that never
-            # applied a single level.
-            anchor_valid = bool(book["bids"]) and bool(book["asks"])
-            if bad_fields:
-                complete, reason = False, "uninterpretable field(s) in depthSnapshot"
-            elif not anchor_valid:
-                complete, reason = False, ("anchor received but INVALID: canonicalised to "
-                                           f"{len(book['bids'])} bids / {len(book['asks'])} "
-                                           "asks; a snapshot must yield at least one of each "
-                                           "to establish completeness")
-            else:
-                complete, reason = True, None
+            # Invariant 17 (anchor validity) is enforced by completeness.py, not here.
             last_seq = world.get("venue_seq")
             applied += 1
 
@@ -160,9 +120,6 @@ def order_book_at(path, market_ticker, at=None):
             # first message establishes only the levels it mentions; completeness for this
             # dialect is asserted by sequence continuity, not by a snapshot.
             if bad_fields:
-                complete = False
-                reason = (f"uninterpretable field(s) in depthUpdate: "
-                          f"{', '.join(f['field'] for f in bad_fields)}")
                 last_seq = world.get("venue_seq")
             else:
                 for side in ("bids", "asks"):
@@ -182,11 +139,6 @@ def order_book_at(path, market_ticker, at=None):
             price = canon.get("price_dollars")
             delta = E.to_decimal(canon.get("delta_fp"))
             if bad_fields:
-                # The delta cannot be applied and must not be silently skipped: the book
-                # from here on is missing a change the venue actually made.
-                complete = False
-                reason = (f"uninterpretable field(s) in delta: "
-                          f"{', '.join(f['field'] for f in bad_fields)}")
                 last_seq = world.get("venue_seq")
             elif side in book and price is not None:
                 book[side][price] = book[side].get(price, Decimal("0")) + delta
@@ -319,7 +271,7 @@ def account_state_at(path, at=None):
         "settlements": settlements,
         "unresolved": unresolved,
         "reasons": reasons,
-        "complete": not unresolved,
+        "all_executions_resolved": not unresolved,
     }
 
 

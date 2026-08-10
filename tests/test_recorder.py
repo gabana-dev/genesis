@@ -189,7 +189,7 @@ def test_account_replay_from_events_only(tmp):
                                 price_dollars="1.00", fee_dollars="0.00")
     s2 = replay.account_state_at(path)
     assert s2["cash_dollars"] == "3.97", s2["cash_dollars"]       # -3.03 + 7.00
-    assert s2["complete"] is True, s2["reasons"]
+    assert s2["all_executions_resolved"] is True, s2["reasons"]
     assert s2["settlements"][0]["observed"] is True
     assert s2["settlements"][0]["independently_verified"] is False
     return "position, cash, fees, reserved collateral and settlement replayed from log alone"

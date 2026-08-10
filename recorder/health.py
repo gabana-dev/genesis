@@ -8,6 +8,7 @@ recorder did not fully observe is not evidence, and this report is what makes th
 
 from collections import Counter
 
+import completeness as C
 import events as E
 from log import read, verify
 from replay import _ts
@@ -121,6 +122,7 @@ def _completeness(path, first_t, last_t):
     """
     open_iv = {}
     intervals = []
+    rule = C.CompletenessRule()
 
     def open_for(markets, at, reason):
         for m in markets:
@@ -128,31 +130,25 @@ def _completeness(path, first_t, last_t):
                 open_iv[m] = {"market_ticker": m, "from": at, "to": None,
                               "reason": reason, "open_ended": True}
 
+    def close_for(market, at):
+        for k in (market, None):
+            iv = open_iv.pop(k, None)
+            if iv is not None:
+                iv["to"], iv["open_ended"] = at, False
+                intervals.append(iv)
+
     for ev in read(path):
         t = _ts(ev)
-        cls, typ, body = ev["event_class"], ev["event_type"], ev.get("body", {})
-
-        if cls == E.RECORDER:
-            mt = body.get("market_ticker")
-            if typ == "SEQUENCE_GAP":
-                open_for([mt], t, f"sequence gap {body.get('missing_from')}-"
-                                  f"{body.get('missing_to')}")
-            elif typ == "DUPLICATE_MESSAGE" and body.get("conflict"):
-                open_for([mt], t, f"conflicting duplicate at seq {body.get('seq')}")
-            elif typ == "UNINTERPRETABLE_FIELD":
-                open_for([mt], t, "uninterpretable field(s): "
-                         + ", ".join(f.get("field", "?") for f in body.get("fields") or []))
-            elif typ in ("CONNECTION_OPENED", "RECORDER_STARTED", "CONNECTION_CLOSED"):
-                open_for(list(open_iv.keys()) or [None], t, typ)
-                open_iv.setdefault(None, {"market_ticker": None, "from": t, "to": None,
-                                          "reason": typ, "open_ended": True})
-        elif cls == E.WORLD and typ in ("orderbook_snapshot", "depthSnapshot"):
-            mt = body.get("world", {}).get("market_ticker")
-            for k in (mt, None):
-                iv = open_iv.pop(k, None)
-                if iv is not None:
-                    iv["to"], iv["open_ended"] = t, False
-                    intervals.append(iv)
+        # The single source of truth (completeness.py). health does not decide this.
+        outcome = rule.observe(ev)
+        if outcome["invalidates"] == C.ALL:
+            open_for(list(open_iv.keys()) or [None], t, outcome["reason"])
+            open_iv.setdefault(None, {"market_ticker": None, "from": t, "to": None,
+                                      "reason": outcome["reason"], "open_ended": True})
+        elif outcome["invalidates"]:
+            open_for([outcome["invalidates"]], t, outcome["reason"])
+        elif outcome["restores"]:
+            close_for(None if outcome["restores"] == C.ALL else outcome["restores"], t)
 
     intervals.extend(open_iv.values())
     intervals.sort(key=lambda i: i["from"])

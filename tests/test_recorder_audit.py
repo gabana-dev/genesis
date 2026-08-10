@@ -177,7 +177,7 @@ def p4_unknown_fill_side_is_not_booked(tmp):
     s = replay.account_state_at(path)
     assert s["positions"] == {}, s["positions"]
     assert s["cash_dollars"] == "0", s["cash_dollars"]
-    assert s["complete"] is False
+    assert s["all_executions_resolved"] is False
     assert any("unresolved" in r or "side" in r for r in s["reasons"]), s["reasons"]
     assert len(s["unresolved"]) == 1
     return "out-of-band fill is unresolved, not silently booked as a buy"
@@ -199,7 +199,7 @@ def p5_no_side_settles_correctly(tmp):
     assert s["positions"] == {}, s["positions"]
     # canonical decimals strip trailing zeros: 0.40 -> 0.4, 1.00 -> 1, and -2 + 5 -> 3
     assert s["cash_dollars"] == "3", s["cash_dollars"]
-    assert s["complete"] is True, s["reasons"]
+    assert s["all_executions_resolved"] is True, s["reasons"]
     return "NO position settles and clears; no implicit YES default"
 
 
@@ -210,7 +210,7 @@ def p5_settlement_without_side_is_unresolved(tmp):
         Ingestor(log).execution(kind="settlement", market_ticker=T, raw={},
                                 received_at=E.now(), count=5, price_dollars="1.00")
     s = replay.account_state_at(path)
-    assert s["complete"] is False and s["cash_dollars"] == "0", s
+    assert s["all_executions_resolved"] is False and s["cash_dollars"] == "0", s
     return "settlement lacking a side is unresolved rather than assumed"
 
 
