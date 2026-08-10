@@ -233,6 +233,79 @@ def amihud_rises_when_price_moves_more_per_dollar():
     return "Amihud is higher for the thinner market"
 
 
+# ---- the Book cache ------------------------------------------------------------------------
+# Cached best-price invalidation is the subtlest code in market/. A bug here would not crash
+# -- it would silently return a stale best price and corrupt every fill in EXEC-1. Each check
+# compares the cache against a full recomputation, which is the thing it replaces.
+
+@check
+def book_cache_matches_a_full_scan_under_random_updates():
+    import random
+    import book as bk
+    rng = random.Random(20260810)
+    b = bk.Book()
+    ref_bids, ref_asks = {}, {}
+    for _ in range(4000):
+        side = rng.choice(("bids", "asks"))
+        price = round(rng.uniform(99.0, 101.0), 2)
+        size = rng.choice((0.0, 0.0, rng.uniform(0.1, 10.0)))
+        b.set(side, price, size)
+        ref = ref_bids if side == "bids" else ref_asks
+        if size <= 0:
+            ref.pop(round(price, 8), None)
+        else:
+            ref[round(price, 8)] = size
+        want_bb = max(ref_bids) if ref_bids else None
+        want_ba = min(ref_asks) if ref_asks else None
+        assert b.best_bid == want_bb, (b.best_bid, want_bb)
+        assert b.best_ask == want_ba, (b.best_ask, want_ba)
+    return "cached best matches a full scan across 4,000 random inserts and removals"
+
+
+@check
+def removing_the_best_level_invalidates_the_cache():
+    import book as bk
+    b = bk.Book()
+    for p in (99.98, 99.99, 100.00):
+        b.set("bids", p, 1.0)
+    assert b.best_bid == 100.00
+    b.set("bids", 100.00, 0.0)                 # remove the best
+    assert b.best_bid == 99.99, b.best_bid
+    b.set("bids", 99.98, 0.0)                  # remove a NON-best: cache must survive
+    assert b.best_bid == 99.99, b.best_bid
+    return "removing the best recomputes; removing any other level does not disturb the cache"
+
+
+@check
+def a_price_computed_by_arithmetic_hits_the_same_key():
+    """
+    fills.py posts at best - n*tick. If float arithmetic lands one ulp off the parsed key,
+    size_at returns 0 and the order silently never fills.
+    """
+    import book as bk
+    b = bk.Book()
+    for p in ("100.00", "99.99", "99.95"):
+        b.set("bids", float(p), 3.0)
+    for n, want in ((0, 100.00), (1, 99.99), (5, 99.95)):
+        price = round(100.00 - n * 0.01, 8)
+        assert b.size_at("bids", price) == 3.0 * want, (n, price)
+    return "prices derived as best - n*tick resolve to the parsed level, not to zero"
+
+
+@check
+def snapshot_clears_stale_levels_and_cache():
+    import book as bk
+    b = bk.Book()
+    b.set("bids", 100.0, 1.0)
+    b.set("asks", 101.0, 1.0)
+    b.clear()
+    assert b.best_bid is None and b.best_ask is None and not b.ready()
+    b.set("bids", 50.0, 1.0)
+    b.set("asks", 51.0, 1.0)
+    assert b.best_bid == 50.0 and b.best_ask == 51.0 and b.ready()
+    return "a snapshot clears levels and both cached bests"
+
+
 # ---- book arithmetic ---------------------------------------------------------------------
 
 @check

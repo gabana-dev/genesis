@@ -94,21 +94,8 @@ class Order:
     mid_before_fill: float = None
 
 
-def _mid(bids, asks):
-    bb, ba = bk.best(bids, asks)
-    return (bb + ba) / 2.0
-
-
-def _touch(bids, asks, side):
-    bb, ba = bk.best(bids, asks)
-    return bb if side == BUY else ba
-
-
-def _size_at(levels, price):
-    for p, q in levels.items():
-        if abs(float(p) - price) < 1e-9:
-            return float(q) * price
-    return 0.0
+def _mid(b):
+    return (b.best_bid + b.best_ask) / 2.0
 
 
 def simulate(path, market, orders, latency_ms=MEASURED_LATENCY_MS,
@@ -125,17 +112,18 @@ def simulate(path, market, orders, latency_ms=MEASURED_LATENCY_MS,
     filled = []
     max_markout = max(markout_ms)
 
-    for t_iso, bids, asks in bk.walk(path, market, every_ms=every_ms):
+    for t_iso, b in bk.stream(path, market, every_ms=every_ms):
         t = bk._ms(t_iso)
-        mid = _mid(bids, asks)
+        mid = _mid(b)
 
         # decisions: record what the strategy WOULD have seen, then put the order in flight
         while pending and pending[0].decided_at_ms <= t:
             o = pending.pop(0)
             o.mid_at_decision = mid
+            touch = b.best_bid if o.side == BUY else b.best_ask
             o.intended_price = (o.price if o.price is not None else
-                                _touch(bids, asks, o.side)
-                                - o.offset_ticks * o.tick * (1 if o.side == BUY else -1))
+                                round(touch - o.offset_ticks * o.tick
+                                      * (1 if o.side == BUY else -1), 8))
             o.arrives_at_ms = o.decided_at_ms + latency_ms
             live.append(o)
 
@@ -147,24 +135,22 @@ def simulate(path, market, orders, latency_ms=MEASURED_LATENCY_MS,
                 # it exists now, at the price it was told to post at.
                 o.posted_price = o.intended_price
                 o.mid_at_post = mid
-                o.queue_ahead = _size_at(bids if o.side == BUY else asks, o.posted_price)
+                o.queue_ahead = b.size_at("bids" if o.side == BUY else "asks", o.posted_price)
                 o.last_size = o.queue_ahead
                 continue
 
-            book_side = bids if o.side == BUY else asks
-            opp = asks if o.side == BUY else bids
-            here = _size_at(book_side, o.posted_price)
+            side_key = "bids" if o.side == BUY else "asks"
+            here = b.size_at(side_key, o.posted_price)
 
             # Did the market reach our price? For a resting bid, the opposing best must come
-            # down to our level.
-            best_opp = min(float(p) for p in opp) if o.side == BUY else max(float(p) for p in opp)
+            # down to our level. Cached best -- O(1), not a scan over ~4,800 levels.
+            best_opp = b.best_ask if o.side == BUY else b.best_bid
             crossed = (best_opp <= o.posted_price) if o.side == BUY else (best_opp >= o.posted_price)
             if crossed and not o.reached:
                 o.reached, o.reached_at_ms = True, t
 
             # CERTAIN fill: the level is gone and the book has moved past it.
-            best_same = (max(float(p) for p in book_side) if o.side == BUY
-                         else min(float(p) for p in book_side))
+            best_same = b.best_bid if o.side == BUY else b.best_ask
             traded_through = (best_same < o.posted_price) if o.side == BUY else \
                              (best_same > o.posted_price)
             if here == 0.0 and traded_through:
