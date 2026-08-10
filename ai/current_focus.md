@@ -114,6 +114,12 @@ BAV-1 skew investigation and is the most strategically useful measurement the pr
    deliverable is the break-even hit-rate table `p* = 1/2 + c/2m` per horizon and fee tier.
    Note the correction recorded there: the constraint table below counts **fees only** and
    therefore understates true round-trip cost.
+   **RESULT 2026-08-10:** [`../research/experiments/0008-measure-1-cost-of-being-right.md`](../research/experiments/0008-measure-1-cost-of-being-right.md).
+   Q1 finds linear structure at minute scale (VR 0.89 at 60m, p 9e-06, same direction in 8 of
+   8 years) and none at 4h+. Q2 finds affordability only at 4h+. **The two do not overlap.**
+   Kill condition not triggered -- 4h futures maker 58.7%, 1d futures maker 52.8%. Spread is
+   one tick and impact at $10k is 0.00002%, so fees are 500-2,000x the non-fee cost:
+   **cost binds, depth does not.** Q3 (fills, latency, adverse selection) entirely unmeasured.
 3. One decision, one real cost, against a do-nothing baseline
 4. Paper trading at deployable size — fills from recorded depth, latency from the measured
    distribution, using the existing DECISION -> INTENT -> EXECUTION schema

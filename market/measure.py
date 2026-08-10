@@ -84,18 +84,31 @@ def measure_F(segs):
 
 
 def measure_F_by_year(segs, rows):
-    """Stability across years. An answer that is not stable across years is not an answer."""
+    """
+    Stability across years. An answer that is not stable across years is not an answer.
+
+    Sliced by CALENDAR YEAR FIRST, then segmented within the year. An earlier version
+    assigned each segment to the year of its first bar, which put the 1,225-day segment
+    spanning 2021-2025 into "2021" and produced four rows that were not years at all.
+    """
     out = {}
-    years = sorted({_seg_year(s) for s in segs})
-    for y in years:
-        sub = [s for s in segs if len(s) > 1440 and _seg_year(s) == y]
-        if not sub:
+    yrs = year_of(data.open_time(rows))
+    for y in sorted(set(yrs.tolist())):
+        year_rows = rows[yrs == y]
+        if len(year_rows) < 2880:
             continue
-        r = segment_returns(sub, 60)
-        if len(r) < 500:
-            continue
-        vr, z, p = stats.variance_ratio(r, 24)          # 1h base, q=24 -> daily
-        out[str(y)] = {"n": int(len(r)), "vr": vr, "z2": z, "p": p}
+        d = np.diff(data.open_time(year_rows)).astype(np.int64)
+        cuts = [0] + [int(i) + 1 for i in np.flatnonzero(d != data.MINUTE_MS)] + [len(year_rows)]
+        ysegs = [year_rows[a:b] for a, b in zip(cuts, cuts[1:]) if b - a > 1440]
+        row = {}
+        for base_k, q, label in ((1, 60, "1m_x60"), (60, 24, "1h_x24")):
+            r = segment_returns(ysegs, base_k)
+            if len(r) < 500:
+                continue
+            vr, z, p = stats.variance_ratio(r, q)
+            row[label] = {"n": int(len(r)), "vr": vr, "z2": z, "p": p}
+        if row:
+            out[str(y)] = row
     return out
 
 
