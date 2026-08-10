@@ -39,8 +39,16 @@ def binance_extract(raw: dict) -> dict:
     # name "depthSnapshot" so replay can tell an anchor from an update; the payload itself
     # is still stored verbatim.
     if "lastUpdateId" in raw and "e" not in raw:
+        # D-A (BAV-1 run 1). `lastUpdateId` is a point-in-time marker, NOT a position in a
+        # sequenced stream: consecutive REST fetches are not consecutive stream members, and
+        # the id jumps by thousands between them. Treating it as a sequence made every fetch
+        # after the first emit a SEQUENCE_GAP, and because REST payloads carry no symbol those
+        # gaps had market_ticker=None and so invalidated EVERY market. In run 1 that marked
+        # all 60 probes incomplete and left no baseline to compare against.
+        # The value is preserved verbatim in world.raw and used as the reconciliation anchor;
+        # it is simply not a stream sequence.
         return {"channel": "depthSnapshot", "market": raw.get("symbol"),
-                "seq_first": raw.get("lastUpdateId"), "seq_last": raw.get("lastUpdateId"),
+                "seq_first": None, "seq_last": None,
                 "venue_ts_ms": None, "subscription_id": None, "msg": raw}
     return {
         "channel": raw.get("e") or "unknown",

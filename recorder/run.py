@@ -101,6 +101,47 @@ def cmd_bav(args):
             "last probe. No probe parameter, metric, exclusion or threshold is affected."),
         "not_testing": ["trading", "prediction", "decision quality", "profitability",
                         "Genesis environment selection", "hypothesis 0001"],
+        # Recorded BEFORE the run, so it is a known limitation rather than an excuse
+        # constructed from the result.
+        "known_limitation_declared_in_advance": {
+            "condition": "Contract section 13 PASS requires >=95% of complete trials with "
+                         "skew_ms < 300 to achieve M1.",
+            "expectation": "STRUCTURALLY UNEVALUABLE on the current fetch path. The <300ms "
+                           "regime is not reachable from this environment; the denominator "
+                           "is expected to be empty again.",
+            "independent_measurement_2026_08_10": {
+                "method": "standalone timed REST requests, no recorder involved",
+                "api_v3_time_28B_new_conn": "n=40 min 291.2ms p50 297.0ms, 23/40 under 300ms",
+                "depth_limit5_367B_new_conn": "n=25 min 291.4ms p50 314.2ms, 9/25 under 300ms",
+                "depth_limit1000_62KB_new_conn_SAME_AS_BAV": "n=30 min 321.9ms p50 331.6ms, "
+                                                             "0/30 under 300ms",
+                "depth_limit1000_persistent_conn": "n=20 min 244.9ms p50 248.1ms, "
+                                                   "14/20 under 300ms",
+                "conclusion": "~291ms floor is network RTT + DNS + TLS; the 62KB payload adds "
+                              "only ~30ms; connection reuse would save ~84ms. Run 1's skew "
+                              "(min 327ms, 0/60 under 300ms) was not anomalous.",
+            },
+            "decisions_taken": [
+                "The 300ms threshold is NOT changed. It was an engineering proxy with no "
+                "empirical basis, but replacing one arbitrary number with another because "
+                "the first proved inconvenient would be worse.",
+                "The fetch mechanism is NOT changed to persistent connections. That may be a "
+                "legitimate future instrument improvement, but introducing it here would add "
+                "a third variable and confound attribution of any difference to D-A/D-B.",
+            ],
+            "consequence": "PASS is expected to be reported as structurally unevaluable. "
+                           "Question B does NOT depend on this threshold: it is a "
+                           "within-stratum comparison and remains answerable in the "
+                           "300-1000ms band, which held 56 of 60 trials in run 1.",
+        },
+        "run_1_defects_corrected": {
+            "D-A": "REST snapshots were given a stream sequence from lastUpdateId, so every "
+                   "fetch after the first emitted a SEQUENCE_GAP with market_ticker=None, "
+                   "which invalidated every market and left zero complete trials.",
+            "D-B": "REST price keys were raw while replay keys were canonical, so set "
+                   "intersection was empty by construction and M3/M4/M5/M6 measured nothing.",
+            "scope": "Only these two fixes were applied. No contract condition changed.",
+        },
         "binding_rule": ("Contract, thresholds, metrics, seed, schedule, controlled protocol "
                          "and exclusions are FIXED. No metric may be added after seeing "
                          "results. No probe may be repaired, reinterpreted or rerun."),

@@ -232,7 +232,14 @@ def _ms(a, b):
 
 
 def _levels(side_pairs):
-    return {p: Decimal(q) for p, q in side_pairs if Decimal(q) > 0}
+    """
+    D-B (BAV-1 run 1). REST prices arrive raw ("65153.99000000"); replay keys are canonical
+    ("65130"). Comparing the two as strings gave an empty intersection by construction, so
+    M3/M4/M5/M6 measured nothing while M1/M2 -- which convert to Decimal first -- still
+    worked. Contract section 6 defines the interval over price SETS, so canonicalising here
+    is conformance, not a redefinition. SPEC invariant 9 requires it independently.
+    """
+    return {E.canon_price(p): Decimal(q) for p, q in side_pairs if Decimal(q) > 0}
 
 
 def _rest_book(payload):

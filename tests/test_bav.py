@@ -285,6 +285,107 @@ def cells_keep_natural_and_deliberate_separate(tmp):
     return "natural and deliberate are never pooled in the cells"
 
 
+# ---- BAV-1 run-1 defects: D-A and D-B ---------------------------------------------------
+# Both were found by analysing run 1 (commit 30132f3) and are recorded in the run-1 report.
+# Written BEFORE the fixes.
+
+@check
+def da_rest_snapshot_emits_no_sequence_gap(tmp):
+    """
+    D-A. A REST snapshot's lastUpdateId is a point-in-time marker, not a stream sequence
+    position. Treating it as one made every REST fetch after the first emit a gap.
+    """
+    path = os.path.join(tmp, "da1.jsonl")
+    snap = lambda uid: {"lastUpdateId": uid, "bids": [["100.0", "1.0"]], "asks": [["101.0", "2.0"]]}
+    with EventLog(path) as log:
+        i = Ingestor(log, dialect=dialects.BINANCE)
+        i.observe(snap(98391910027), request={"symbol": SYM, "role": "anchor"})
+        i.observe(snap(98391923744), request={"symbol": SYM, "role": "anchor"})
+        i.observe(snap(98392505321), request={"symbol": SYM, "probe_id": "BAV-001"})
+    gaps = [e for e in read_all(path) if e["event_type"] == "SEQUENCE_GAP"]
+    assert gaps == [], f"REST snapshots must not produce sequence gaps: {[g['body'] for g in gaps]}"
+    return "distant lastUpdateId values across REST fetches emit no SEQUENCE_GAP"
+
+
+@check
+def da_rest_snapshot_does_not_mark_book_incomplete(tmp):
+    """D-A consequence: gaps with market_ticker None invalidated every market."""
+    path = os.path.join(tmp, "da2.jsonl")
+    anchor = {"lastUpdateId": 500, "bids": [["100.0", "1.0"]], "asks": [["101.0", "2.0"]]}
+    upd = {"e": "depthUpdate", "E": 1, "s": SYM, "U": 501, "u": 501,
+           "b": [["100.0", "3.0"]], "a": []}
+    probe = {"lastUpdateId": 90000, "bids": [["100.0", "9.0"]], "asks": [["101.0", "9.0"]]}
+    with EventLog(path) as log:
+        i = Ingestor(log, dialect=dialects.BINANCE)
+        i.observe(anchor, request={"symbol": SYM, "role": "anchor"})
+        i.observe(upd)
+        i.observe(probe, request={"symbol": SYM, "probe_id": "BAV-001"})
+    b = replay.order_book_at(path, SYM)
+    assert b["complete"] is True, f"a probe must not make the book incomplete: {b['reason']}"
+    assert b["book"]["bids"] == {"100": "3"}, b["book"]
+    return "a comparison probe leaves completeness and the book untouched"
+
+
+@check
+def da_depth_stream_gap_detection_still_works(tmp):
+    """D-A fix must not disable real gap detection on the depth stream."""
+    path = os.path.join(tmp, "da3.jsonl")
+    with EventLog(path) as log:
+        i = Ingestor(log, dialect=dialects.BINANCE)
+        i.observe({"e": "depthUpdate", "E": 1, "s": SYM, "U": 10, "u": 20,
+                   "b": [["100.0", "1.0"]], "a": [["101.0", "1.0"]]})
+        i.observe({"e": "depthUpdate", "E": 2, "s": SYM, "U": 50, "u": 60,
+                   "b": [["100.0", "2.0"]], "a": []})
+    gaps = [e["body"] for e in read_all(path) if e["event_type"] == "SEQUENCE_GAP"]
+    assert len(gaps) == 1 and (gaps[0]["missing_from"], gaps[0]["missing_to"]) == (21, 49), gaps
+    return "real depthUpdate gaps are still detected (21..49)"
+
+
+@check
+def db_rest_and_replay_prices_are_comparable(tmp):
+    """
+    D-B. REST keys are raw ('65153.99000000'); replay keys are canonical ('65130').
+    Set intersection was empty by construction, so M3/M4/M5/M6 measured nothing.
+    """
+    from decimal import Decimal
+    rest_bids, rest_asks = bav._rest_book(
+        {"bids": [["100.00000000", "1.00000000"], ["99.50000000", "2.00000000"]],
+         "asks": [["101.00000000", "3.00000000"]]})
+    assert set(rest_bids) == {"100", "99.5"}, set(rest_bids)
+    assert set(rest_asks) == {"101"}, set(rest_asks)
+    assert rest_bids["100"] == Decimal("1"), rest_bids
+    return "REST price keys canonicalise to the same form replay uses"
+
+
+@check
+def db_identical_books_score_perfect(tmp):
+    from decimal import Decimal
+    rest_bids, rest_asks = bav._rest_book(
+        {"bids": [["100.00000000", "1.00000000"]], "asks": [["101.00000000", "2.00000000"]]})
+    replay_book = {"bids": {"100": "1"}, "asks": {"101": "2"}}
+    out = bav.compare(replay_book, rest_bids, rest_asks)
+    assert out["m1_best_bid_ask_agree"] is True and out["m2_spread_agree"] is True, out
+    assert out["m3_jaccard_bids"] == 1.0 and out["m3_jaccard_asks"] == 1.0, out
+    assert out["m4_rel_median_bids"] == 0.0, out["m4_rel_median_bids"]
+    assert out["m6_abs_median_bids"] == 0.0, out["m6_abs_median_bids"]
+    assert out["m5_replay_only_bids"] == 0 and out["m5_rest_only_bids"] == 0, out
+    return "identical books give M3=1.0 and M4/M6=0 instead of empty sets"
+
+
+@check
+def db_m3_zero_with_m1_true_is_now_impossible(tmp):
+    """The exact internal contradiction that exposed D-B in run 1."""
+    from decimal import Decimal
+    rest_bids, rest_asks = bav._rest_book(
+        {"bids": [["100.00000000", "1.00000000"], ["99.00000000", "1.00000000"]],
+         "asks": [["101.00000000", "1.00000000"], ["102.00000000", "1.00000000"]]})
+    replay_book = {"bids": {"100": "1", "99": "1"}, "asks": {"101": "1", "102": "1"}}
+    out = bav.compare(replay_book, rest_bids, rest_asks)
+    assert out["m1_best_bid_ask_agree"] is True, out
+    assert out["m3_jaccard_bids"] > 0, "M1 true with M3 zero is the run-1 contradiction"
+    return "M1 agreement and M3 overlap can no longer contradict each other"
+
+
 def main():
     tmp = tempfile.mkdtemp(prefix="genesis-bav-")
     failed = 0

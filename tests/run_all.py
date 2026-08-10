@@ -27,6 +27,8 @@ SUITES = [
     "test_recorder_audit.py",
     "test_recorder_decimal_qty.py",
     "test_recorder_validity.py",
+    "test_recorder_binance.py",
+    "test_bav.py",
     "test_rdb_series.py",
     "test_closed_loop.py",
     "test_sparse_loop.py",
