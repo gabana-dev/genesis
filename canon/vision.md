@@ -1,3 +1,85 @@
+> ## SUPERSESSION NOTICE — 2026-08-10
+>
+> **The document below is the original Genesis vision, written at the start of the project.
+> It is preserved unchanged as project history. It no longer describes the direction Genesis
+> is pursuing.**
+>
+> This is a supersession notice, not an amendment. Nothing in the text below has been
+> altered, corrected or removed. Its contradictions with the current direction are part of
+> the record and are left visible deliberately.
+>
+> ### What was retired
+>
+> [`0002 — Close the Genesis cognitive-architecture research program`](../research/decisions/0002-close-the-genesis-research-program.md)
+> retired the thesis at the centre of the text below: that Genesis would discover minimal
+> cognitive principles and build an artificial knower. Its foundations — belief states,
+> recursive Bayesian updating, observation-model learning, filtering, closed-loop
+> model-based agency — were found to be established science that Genesis had independently
+> re-derived. See also
+> [`0001 — Research triage reframe`](../research/decisions/0001-research-triage-reframe.md).
+>
+> The framing of Genesis as an **ongoing research program** was retired with it. Genesis is
+> not currently a research program pursuing that thesis, and the document below should not be
+> read as a live statement of intent.
+>
+> ### What Genesis is exploring now
+>
+> Not an artificial knower. Not a cognitive architecture.
+>
+> The question is whether a **structure** can:
+>
+> - observe a live environment,
+> - represent what it has actually observed,
+> - distinguish evidence from assumption,
+> - recognise when its knowledge is incomplete,
+> - make claims about what it knows,
+> - test those claims against evidence independent of the reconstruction path,
+> - detect when its claims outrun its evidence,
+> - and revise when evidence contradicts them.
+>
+> Quality of knowing is treated as a property of **that structure**, not of a knower inside
+> it. Whether the structure must eventually perform comparison, revision or reasoning
+> autonomously is an open design question, not a requirement.
+>
+> The current work is **engineering and validation** under
+> [`0003 — Engineering posture for real, externally recorded environments`](../research/decisions/0003-engineering-posture-real-data.md),
+> claiming no novelty.
+>
+> ### Two questions, both open
+>
+> Stated in full in [`roadmap.md`](roadmap.md):
+>
+> **1. Can Genesis reliably know what is happening?**
+> **2. Can that capability produce something practically or financially valuable?**
+>
+> Question 1 is what is currently being investigated. **Question 2 has barely been tested.**
+>
+> **No application has been selected.** Genesis is not a trading system and must not be
+> framed as one. The venue used for validation is a validation environment, not a
+> destination — the one point on which the document below still holds exactly, and it is
+> worth preserving:
+>
+> > *"Markets are not the purpose of Genesis. They are the first experimental environment."*
+>
+> ### A negative outcome remains legitimate
+>
+> That the epistemic machinery works and **no meaningful application or economic value
+> emerges** is a permitted result, recorded in the kill criteria
+> ([`../ai/current_focus.md`](../ai/current_focus.md)). It would be a finding, not a failure
+> of discipline, and it must not be pre-empted by inventing an application to make the
+> project look promising.
+>
+> ### Read instead
+>
+> [`0002`](../research/decisions/0002-close-the-genesis-research-program.md) ·
+> [`0003`](../research/decisions/0003-engineering-posture-real-data.md) ·
+> [`roadmap.md`](roadmap.md) · [`../ai/current_focus.md`](../ai/current_focus.md)
+>
+> This notice does not restate the vision. It marks which parts of the text below are
+> history.
+
+---
+
 # Vision
 
 > **Type 1 · Research** — authored by the researchers. Claude maintains form only:
