@@ -1,13 +1,13 @@
-# Two arguments against the same target
+# Arguments against the same target
 
-**2026-08-10. An observation. It decides nothing and selects nothing.**
+**2026-08-10, extended 2026-08-11. An observation. It decides nothing and selects nothing.**
 
 Recorded because it emerged in discussion rather than from an experiment, and would otherwise
 exist nowhere. It is written down so that it can be examined later, not acted on now.
 
 ---
 
-## The two arguments
+## The first two arguments
 
 **One is measured.** The MEASURE-1 power analysis
 ([`../experiments/0008-measure-1-cost-of-being-right.md`](../experiments/0008-measure-1-cost-of-being-right.md) §8)
@@ -44,6 +44,56 @@ has vastly more effective observations at every horizon, so the power wall does 
 way. Liquidity and execution quality are measurable directly from recordings Genesis already
 owns. Whether any of that is worth pursuing is the researcher's decision and is not taken here.
 
+## A third argument, added 2026-08-11
+
+Same discussion, different premises again. **What a venue publishes freely maps where the
+competition is not.**
+
+Binance gives away full order-book depth, the diff stream, and seven years of historical klines,
+to anyone, unauthenticated. It does so because a limit order book cannot perform its function in
+private -- displayed liquidity is the mechanism -- and because its revenue is fees on volume, so
+freely available data is customer acquisition for the product rather than the product. The
+contrast with equities exchanges, which sell market data as a major revenue line, is competitive
+rather than technical.
+
+What Binance does **not** publish is therefore the informative part:
+
+- **queue position** within a price level
+- **trade attribution** -- whether an observed size decrease was a fill or a cancellation
+- **low latency**, which is sold or granted by physical proximity
+
+So the shape of the free data marks the contested ground. Anything freely published is by
+construction already priced in, which is Hayek's argument arriving from a third direction.
+
+**This one is uncomfortable, and the discomfort is the point.** The scarce resources are closed
+to Genesis as well. Queue position and trade attribution are not published to anyone, and the
+latency floor is ~291 ms from Nairobi, which is geography and not an engineering problem. Free
+data is priced in; scarce data is unavailable. Stated plainly, that makes "no edge found" the
+*likely* outcome rather than merely the honest one to prepare for. Recorded now, while it costs
+nothing, rather than after a disappointing number.
+
+**What survives is not an information edge.** Two things:
+
+1. **The data is free; using it correctly is not.** MEASURE-1 found three properties of
+   Binance's public klines that silently corrupt any analysis built on them -- halt-truncated
+   bars, an unreliable `close_time`, and a millisecond-to-microsecond switch that would place
+   every 2025+ bar ~50,000 years in the future. All three sit in data that thousands of people
+   have downloaded. That is an **operational** advantage, not an informational one: weaker, but
+   real, and it is what Genesis has spent its existence building.
+
+2. **Scarce advantages decay with horizon.** A 291 ms disadvantage is fatal at one second and
+   irrelevant over three days; queue position decides everything for a market maker and nothing
+   for a position held a week. The advantages Genesis cannot obtain stop mattering as the
+   horizon lengthens -- the same hours-to-days region the measured constraints already implied,
+   reached from a different direction.
+
+The surviving region is narrow and not empty: **long horizons, less-contested targets,
+correctness as the advantage.**
+
+**Status of this argument.** It is reasoning about market structure, not a measurement. Three
+arguments agreeing is suggestive and is not evidence; two of the three are theoretical. It is
+recorded so it can be weighed after EXEC-1, not so it can harden into doctrine before it.
+
 ## One idea that came out of the same discussion
 
 Hayek's framing invites the losing question — *can the compression be decompressed?* — to which
@@ -76,9 +126,14 @@ beat "yesterday at this clock time." Noted so the idea is not rediscovered as no
 
 The Hayek reading, the philosophical position that prompted it, and any decision about targets
 are the researcher's. This entry contributes form only: it records that two independent
-arguments met, and what does and does not follow.
+arguments met — three, after 2026-08-11 — and what does and does not follow.
 
 ## Status
 
 Nothing changes. EXEC-1 remains frozen with four declared trials outstanding and a recording
 running to ~2026-08-17. This is to be re-read when Q3 closes, not before.
+
+The third argument sharpens what 17 August decides. The question is no longer only whether the
+maker advantage survives adverse selection. It is: **if Genesis's plausible advantage is
+operational rather than informational, is a trading system the right expression of it, or is the
+instrument itself the thing worth having?** The kill criteria already anticipate both answers.
