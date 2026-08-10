@@ -126,8 +126,12 @@ def event_hash(envelope: dict, prev_hash: str) -> str:
 
 
 def make_event(event_class: str, event_type: str, body: dict,
-               event_index: int, prev_hash: str, recorder_run: str) -> dict:
-    if event_class not in CLASSES:
+               event_index: int, prev_hash: str, recorder_run: str,
+               allowed=CLASSES) -> dict:
+    # `allowed` exists so the hash-chain machinery can serve a second domain -- the trial
+    # ledger -- without the recorder's five observation classes being widened to accommodate
+    # it. The chain is general; the vocabulary is not, and the two should not leak.
+    if event_class not in allowed:
         raise ValueError(f"unknown event class: {event_class}")
     envelope = {
         "event_index": event_index,

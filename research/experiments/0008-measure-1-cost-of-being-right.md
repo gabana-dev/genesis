@@ -268,3 +268,42 @@ bar more than a horizon step does: at 1d, moving from spot taker to futures make
 required hit rate from 64.0% to 52.8%. Execution is not a detail. It is the larger lever, which
 is why the fill/execution simulator — the largest unbuilt component — is the thing that decides
 whether any of this is real.
+
+
+## 9. Multiple-comparison correction — a second tightening, 2026-08-10
+
+The trial ledger ([`../../market/ledger.py`](../../market/ledger.py)) was built before any
+hypothesis search began and seeded with the trials this experiment had already run. Counting
+them honestly corrects §3 further.
+
+**Family: pooled variance ratio, 6 tests.** Bonferroni α = 0.0083.
+
+| Horizon | p | Survives correction |
+|---|---|---|
+| 15m | 9.8e−06 | **yes** |
+| 60m | 9.1e−06 | **yes** |
+| 5m | 0.0252 | **no** |
+| 4h, 1d, 3d | 0.09–0.66 | no |
+
+**Family: per-year variance ratio, 16 tests.** Bonferroni α = 0.0031.
+
+Only **2021** (p = 0.00019) survives. The 2024 (p = 0.031) and 2026 (p = 0.023) rejections do
+not. Benjamini-Hochberg agrees with Bonferroni in both families.
+
+**The corrected §3 claim.** Structure at 15m and 60m survives both the power analysis and the
+multiple-comparison correction, in two families, independently. Everything else weakens:
+
+- The 5m rejection fails on **both** grounds — underpowered for an effect that size, and it
+  does not survive six trials. It should not be cited.
+- "Individually significant in 3 of 8 years" becomes **1 of 8 after correction**.
+- The **8-of-8 sign consistency stands**, because it is a sign test rather than a threshold
+  on any single p-value, and it was not selected after the fact.
+
+Total trials on the ledger for this experiment: **23**, all pre-registered, none outstanding,
+chain verified.
+
+**What this demonstrates about the instrument, not the market.** Two mechanisms — power and
+multiple comparisons — were applied after the headline was written, and both moved it in the
+same direction: *less* was established than first reported. Neither was available at the time
+the original claim was made, which is the argument for having them in place before the next
+question rather than after it.

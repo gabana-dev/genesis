@@ -16,11 +16,12 @@ import os
 import uuid
 from pathlib import Path
 
-from events import GENESIS_HASH, event_hash, make_event, now
+from events import CLASSES, GENESIS_HASH, event_hash, make_event, now
 
 
 class EventLog:
-    def __init__(self, path, recorder_run=None):
+    def __init__(self, path, recorder_run=None, classes=None):
+        self.classes = classes or CLASSES
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self.recorder_run = recorder_run or str(uuid.uuid4())
@@ -70,7 +71,8 @@ class EventLog:
 
     def append(self, event_class, event_type, body) -> dict:
         ev = make_event(event_class, event_type, body,
-                        self._index, self._prev_hash, self.recorder_run)
+                        self._index, self._prev_hash, self.recorder_run,
+                        allowed=self.classes)
         line = json.dumps(ev, ensure_ascii=False)
         if self._fh is None:
             with open(self.path, "a", encoding="utf-8") as fh:
