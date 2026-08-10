@@ -89,6 +89,101 @@ First-principles derivation remains valuable for understanding, verification, an
 
 **Source:** [`../research/prior-art-and-opportunity-map.md`](../research/prior-art-and-opportunity-map.md).
 
+#### Standing on existing knowledge
+
+The paragraphs above state when Genesis must *not* build a laboratory. This states how Genesis
+is built.
+
+> **Before reinventing a capability, Genesis should determine whether established knowledge
+> already provides a suitable solution. If it does, Genesis should understand it, verify its
+> applicability, and use it. If it does not, then developing or adapting something new remains
+> possible. Novelty is not the objective; reliable capability is.**
+
+Importing is not a concession or a fallback. It is the ordinary path. A capability Genesis
+obtains from Kalman, from Bayes, or from a working library is worth exactly what one it derived
+alone is worth, and more if the derivation would have cost time the project does not have. Who
+reached a result first has no bearing on whether Genesis may build with it.
+
+The rule is not "never invent". It is: do not spend effort rediscovering what is already known
+when that knowledge can move Genesis forward. When the established work genuinely does not
+cover the problem, building something new is legitimate, and the prior-art review is what
+establishes that it does not.
+
+**Genesis does not need to reinvent knowledge in order to build something new with it.**
+
+#### Existing knowledge is a resource, not an authority
+
+Importing is not deference. **Established does not mean automatically applicable.** A method
+that has been found is not yet a method that works here. Five distinct steps lie between the
+two, and skipping any of them turns "use prior art" into "trust whatever we found":
+
+1. Find the established method.
+2. Understand what it actually claims, rather than what it is reputed to claim.
+3. Understand its assumptions and its stated limitations.
+4. Determine whether those assumptions hold in Genesis's environment.
+5. Test whether it actually works there, and record what the evidence says.
+
+Step 5 is not optional, and its failure is informative rather than embarrassing. RDB-1 imported
+a standard state-space model correctly and found it no better than persistence. That is a
+result about the environment, not a defect in the import.
+
+Where verification is the purpose, the classification is **Replication**. Where implementation
+is the purpose, it is **Import** or **Engineering validation**. Those distinctions stand
+unchanged.
+
+#### What DR0002 retired, and what it did not
+
+> **[`0002`](../research/decisions/0002-close-the-genesis-research-program.md) retired the
+> claim that Genesis was discovering novel cognitive principles. It did not retire the use of
+> established methods that may contribute to Genesis's capabilities.**
+
+DR0002 did not mean "if someone has already discovered it, Genesis should not use it". It meant
+that Genesis should not mistake independently rediscovering established science for discovering
+something novel.
+
+The constructive interpretation is the one intended: if someone has already solved part of a
+problem, Genesis should be capable of finding that work, understanding it, verifying that it
+applies, and building on it.
+
+Belief states, recursive Bayesian updating, observation-model learning, filtering and
+closed-loop agency remain available and may be used where they help. What DR0002 retired was
+the claim that independently deriving such established methods constituted a novel
+cognitive-architecture discovery by Genesis. **The methods were not rejected. The novelty claim
+was rejected.**
+
+#### Future direction: knowing what it needs to know
+
+**Direction, not requirement.** Nothing in this subsection is to be implemented now, and no
+autonomous research agent or literature-search system is being specified.
+
+The capability intended here is broader than searching for papers. As Genesis develops, it
+should become better at moving through a sequence of questions:
+
+```
+"I don't know how to solve this."
+        |
+"What exactly do I need to know, or be able to do?"
+        |
+"Has this already been solved somewhere?"
+        |
+"What existing knowledge, methods, mathematics, algorithms, experiments
+ or engineering techniques could help?"
+        |
+"Do they actually apply to my environment?"
+        |
+test, adapt, retain, reject, or revise
+```
+
+**Recognising what must be known is itself part of knowing better.**
+
+Today this sequence runs across the researchers, the AI collaborator, and this record. Whether
+any part of it should eventually be performed by Genesis itself is an open design question, not
+a commitment.
+
+> Genesis does not need to discover everything itself. It needs to become increasingly good at
+> figuring out what it needs, finding what humanity already knows, understanding the limits of
+> that knowledge, testing whether it applies, and then building on it.
+
 #### The research gate (mandatory)
 
 Before any proposed laboratory enters the roadmap, perform a prior-art check and classify it:
