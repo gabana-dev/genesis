@@ -205,12 +205,63 @@ to be unaffordable, and it survives none of Q2 or Q3. Recorded as an open questi
 nothing.
 
 **What this does not establish.** The variance ratio tests **linear** structure only —
-non-linear or conditional structure is untested and this says nothing about it. Absence of
-rejection at 4h+ is weak: 2,733 daily returns give limited power, and the daily VR interval
-comfortably contains values that would matter. One symbol, on the deepest crypto market in
-existence, from one location. All Q3 terms — fills at ~291 ms latency, adverse selection, the
-maker's curse — remain entirely unmeasured, and the maker column is an upper bound precisely
-because of that.
+non-linear or conditional structure is untested and this says nothing about it. One symbol, on
+the deepest crypto market in existence, from one location. All Q3 terms — fills at ~291 ms
+latency, adverse selection, the maker's curse — remain entirely unmeasured, and the maker
+column is an upper bound precisely because of that.
+
+**And the 4h+ null is far weaker than §3 makes it look. See §8, which corrects it.**
+
+## 8. Power analysis — a correction to §7, run 2026-08-10
+
+§7 above reported that structure and affordability do not overlap. The second half of that
+claim was not supported by the evidence, and this section corrects it.
+
+Minimum detectable effect at 80% power, two-sided 5%: `|VR − 1| ≥ 2.80 × se`.
+
+| Horizon | n | VR | 95% CI | se | Detectable only if | Verdict |
+|---|---|---|---|---|---|---|
+| 5m | 3,983,248 | 0.9809 | [0.9642, 0.9976] | 0.0085 | ≤ 0.976 or ≥ 1.024 | rejected, but **underpowered for an effect this small** — marginal |
+| 15m | 3,983,248 | 0.9357 | [0.9072, 0.9642] | 0.0145 | ≤ 0.959 or ≥ 1.041 | **well-powered rejection** |
+| 60m | 3,983,248 | 0.8933 | [0.8462, 0.9404] | 0.0240 | ≤ 0.933 or ≥ 1.067 | **well-powered rejection** |
+| 4h | 66,357 | 0.9628 | [0.9196, 1.0059] | 0.0220 | ≤ 0.938 or ≥ 1.062 | **blind** |
+| 1d | 66,357 | 0.9767 | [0.8721, 1.0813] | 0.0534 | ≤ 0.851 or ≥ 1.150 | **blind** |
+| 3d | 66,357 | 0.9487 | [0.7916, 1.1059] | 0.0802 | ≤ 0.775 or ≥ 1.225 | **blind** |
+
+At 4h and beyond the observed VR sits inside the zone the study could never have resolved.
+**The failure to reject at those horizons is absence of evidence, not evidence of absence.**
+At daily scale the smallest effect detectable is VR ≤ 0.851 — a *larger* mean reversion than
+the strongest thing found anywhere in this study (0.893 at 60m). The null is close to
+uninformative.
+
+### The structural limit
+
+How much history would settle it?
+
+| Horizon | Have | For 80% power against true VR = 0.95 | against VR = 0.90 |
+|---|---|---|---|
+| 4h | 7.6 y | **12 years** | 3 years |
+| 1d | 7.6 y | **68 years** | 17 years |
+| 3d | 7.6 y | **153 years** | 38 years |
+
+**The daily-horizon question cannot be settled by more BTCUSDT history.** Sixty-eight years of
+it does not exist and never will; the instrument is seven years old. This is a hard limit of
+the same kind as the ~291 ms latency floor — not a gap to be closed by working harder, but a
+boundary on what this route can ever resolve.
+
+### The corrected finding
+
+> **Established:** linear mean-reverting structure at 15m–60m, well-powered, directionally
+> consistent across 8 of 8 years.
+> **Established:** affordability begins at 4h.
+> **NOT established, and not establishable by this method:** whether structure exists at 4h and
+> beyond. The variance ratio is the wrong instrument at that horizon — it lacks the resolution
+> and cannot be given it.
+
+The overlap question is therefore **open**, not closed. Any claim about affordable horizons
+must come from evidence of a different kind — conditional, cross-sectional or event-based — or
+be accepted as unfalsifiable by this route. Recorded as a measured constraint on method, not as
+a result about markets.
 
 **What it changes.** The reachable region is **4 hours and longer**, and the fee tier moves the
 bar more than a horizon step does: at 1d, moving from spot taker to futures maker cuts the

@@ -45,9 +45,11 @@ protocol. Development period complete; **the holdout is unopened.**
 
 ## Open — the researcher's, not yet decided
 
-1. **Whether to open the RDB-1 holdout** (2023-01 → 2026-06). One-way in practice. The lock is
-   technical: the months are not downloaded and `ingest`/`series` raise `HoldoutLocked` unless
-   `rdb_data/DESIGN_FROZEN` exists.
+1. ~~Whether to open the RDB-1 holdout.~~ **CLOSED 2026-08-10** by
+   [`../research/decisions/0004-close-rdb-1.md`](../research/decisions/0004-close-rdb-1.md).
+   RDB-1 answered its question; no design was ever frozen, so the holdout would evaluate
+   nothing. It stays sealed and the lock stays in place — a holdout kept open indefinitely
+   stops being one.
 2. **What the next capability is.** Chosen from what the evidence exposed, one step at a time.
    **No sequence is pre-authorized** — DR0003 (10) forbids adopting a roadmap of future
    milestones in advance, and DR0001 classifies the capability graph as **F — abandon**.
@@ -120,6 +122,11 @@ BAV-1 skew investigation and is the most strategically useful measurement the pr
    Kill condition not triggered -- 4h futures maker 58.7%, 1d futures maker 52.8%. Spread is
    one tick and impact at $10k is 0.00002%, so fees are 500-2,000x the non-fee cost:
    **cost binds, depth does not.** Q3 (fills, latency, adverse selection) entirely unmeasured.
+   **Power correction (§8):** the 4h+ null is *absence of evidence*, not evidence of absence —
+   at daily scale only VR ≤ 0.851 was detectable, and 80% power against VR = 0.95 would need
+   **68 years** of history. The overlap question is **open**, and the variance ratio cannot
+   ever settle it at that horizon. A structural limit of the same kind as the 291 ms floor.
+   **Long Q3 recording started 2026-08-10**, `~/genesis-evidence/q3/btcusdt-q3.jsonl`.
 3. One decision, one real cost, against a do-nothing baseline
 4. Paper trading at deployable size — fills from recorded depth, latency from the measured
    distribution, using the existing DECISION -> INTENT -> EXECUTION schema
