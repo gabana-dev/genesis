@@ -107,7 +107,10 @@ BAV-1 skew investigation and is the most strategically useful measurement the pr
    separately and not merged.
 1. Market literacy — the researcher's own
 2. **Measure the environment, do not trade it** — **ACTIVE.** Contract drafted, not frozen:
-   [`../market/CONTRACT-measurement.md`](../market/CONTRACT-measurement.md). Headline
+   [`../market/CONTRACT-measurement.md`](../market/CONTRACT-measurement.md) — **FROZEN**
+   2026-08-10, `sha256 f74e8cf28f48fdd636b8ed0189a3522bdad136c8283fe222ef6a7c0e46b395d2`.
+   Three separated questions: is there directional structure (Q1), does it survive costs (Q2),
+   can Genesis capture it (Q3 — **out of scope, needs the fill simulator**). Headline
    deliverable is the break-even hit-rate table `p* = 1/2 + c/2m` per horizon and fee tier.
    Note the correction recorded there: the constraint table below counts **fees only** and
    therefore understates true round-trip cost.
