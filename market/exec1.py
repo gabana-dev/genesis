@@ -197,18 +197,97 @@ def advantage_lost(orders, horizon_ms: int = 60_000, pool: str = "certain") -> f
 
 def markout_series(orders, horizon_ms: int, pool: str = "certain") -> list[float]:
     """
-    Per-fill signed markouts, for interval estimation.
+    Per-fill signed markouts, in FILL-TIME order, for interval estimation.
 
     Returned as a raw series rather than a summary statistic because the confidence interval
     must come from a moving-block bootstrap: consecutive fills are not independent, and an IID
     interval on a dependent series is too narrow -- it would make a noisy number look settled.
+
+    The ordering is load-bearing, not cosmetic. A moving-block bootstrap resamples CONTIGUOUS
+    runs precisely to carry that dependence into the resample; hand it a series in arbitrary
+    order and the blocks contain unrelated observations, which reproduces the IID interval it
+    was chosen to avoid -- while still looking like a block bootstrap in the code.
+
+    Sorted on fill time rather than decision time because dependence lives in when fills
+    actually happened: two orders decided a minute apart can fill seconds apart, in a single
+    burst of the same move.
     """
     key = f"{horizon_ms}ms"
     if pool == "certain":
         pool_orders = [o for o in orders if o.outcome == "certain"]
     else:
         pool_orders = [o for o in orders if o.outcome in ("certain", "optimistic_only")]
-    return [o.markouts[key] for o in pool_orders if key in o.markouts]
+    have = [o for o in pool_orders if key in o.markouts]
+    have.sort(key=lambda o: (o.fill_at_ms if o.fill_at_ms is not None else o.decided_at_ms))
+    return [o.markouts[key] for o in have]
+
+
+def _fraction_lost(markouts) -> float:
+    """
+    The E3 statistic: the fraction of the maker advantage consumed by adverse selection.
+
+    Median, matching fills.summarise. A mean markout is dominated by the tail of large adverse
+    moves, and the question is what a typical fill costs, not what the worst ones do.
+    """
+    import numpy as np
+    return float(-np.median(markouts) / F.MAKER_ADVANTAGE)
+
+
+def advantage_lost_ci(orders, horizon_ms: int = 60_000, pool: str = "certain",
+                      alpha: float = 0.05, n_boot: int = 2000) -> dict | None:
+    """
+    E3 with a moving-block bootstrap interval.
+
+    WHY AN INTERVAL AT ALL
+        §6 turns E3 into a threshold decision at 1.0, and §9 warns that "a figure that is
+        unstable across days is not a figure". A point estimate of 0.95 and one of 0.95 whose
+        interval spans 0.4 to 1.6 support completely different actions, and only one of them
+        is honest about seven days of one instrument.
+
+    Returns None when there are too few fills to say anything -- block_bootstrap_ci needs at
+    least 8 observations and returns NaN below that. A NaN silently formatted into a report
+    reads as a number; None does not.
+    """
+    import numpy as np
+    from stats import block_bootstrap_ci
+
+    xs = markout_series(orders, horizon_ms, pool)
+    if len(xs) < 8:
+        return None
+
+    point = _fraction_lost(xs)
+    lo, hi = block_bootstrap_ci(xs, _fraction_lost, n_boot=n_boot, alpha=alpha)
+    if np.isnan(lo) or np.isnan(hi):
+        return None
+
+    return {
+        "horizon_ms": horizon_ms,
+        "pool": pool,
+        "n_fills": len(xs),
+        "fraction_of_advantage_lost": point,
+        "ci_low": lo,
+        "ci_high": hi,
+        "alpha": alpha,
+        # Stated so the reader can see the threshold sits inside the interval without having
+        # to compare two numbers themselves. NOT a verdict on §6: the kill condition is
+        # adjudicated as declared trial 3488b1e1, in the ledger, once.
+        "interval_contains_kill_threshold": lo <= 1.0 <= hi,
+        "block_length": max(2, int(round(len(xs) ** (1 / 3)))),
+        "method": "moving-block bootstrap (Kunsch 1989; Politis & Romano 1994), median statistic",
+    }
+
+
+def e3_by_day(orders, horizon_ms: int = 60_000, pool: str = "certain") -> dict[str, float | None]:
+    """
+    §9: "Results are reported by day as well as pooled. Seven days is short, and a figure that
+    is unstable across days is not a figure."
+
+    Per-day point estimates only -- seven days rarely leaves enough fills in a single day for a
+    bootstrap to mean much, and quoting a per-day interval built on 20 fills would dress up
+    noise as precision. The spread ACROSS days is the stability evidence here.
+    """
+    return {day: (advantage_lost(os_, horizon_ms=horizon_ms, pool=pool) if os_ else None)
+            for day, os_ in group_by_day(orders).items()}
 
 
 def report(orders, *, markout_ms=MARKOUT_MS) -> dict:

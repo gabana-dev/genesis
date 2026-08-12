@@ -253,6 +253,111 @@ def no_selection_logic_exists_in_the_grid():
     return "no signal, sizing, optimisation or P&L entered the grid"
 
 
+
+# ── Bootstrap intervals on E3 ───────────────────────────────────────────────────────────
+
+def _filled(markout, at, outcome="certain", horizon=60_000):
+    o = order(outcome=outcome, markouts={f"{horizon}ms": markout})
+    o.fill_at_ms = at
+    return o
+
+
+@check
+def an_interval_brackets_its_own_point_estimate():
+    os_ = [_filled(-0.00015, at=i * 1000.0) for i in range(40)]
+    r = E.advantage_lost_ci(os_)
+    assert r is not None
+    assert r["ci_low"] <= r["fraction_of_advantage_lost"] <= r["ci_high"], r
+    return "the point estimate always lies inside its own interval"
+
+
+@check
+def a_series_with_no_variation_gives_a_degenerate_interval():
+    # Every fill costs exactly 1.5 bps against a 3 bps advantage: 0.50, with nothing to
+    # resample away. An interval with width here would mean the bootstrap invented spread.
+    os_ = [_filled(-0.00015, at=i * 1000.0) for i in range(40)]
+    r = E.advantage_lost_ci(os_)
+    assert abs(r["fraction_of_advantage_lost"] - 0.5) < 1e-9, r
+    assert abs(r["ci_high"] - r["ci_low"]) < 1e-9, r
+    return "a constant series yields a zero-width interval at 0.50, not invented spread"
+
+
+@check
+def a_noisy_series_gives_a_wider_interval_than_a_quiet_one():
+    # Spread must be CONTINUOUS, not two alternating values. The median is robust: on a
+    # symmetric two-point series it lands between the clusters on almost every resample, so
+    # both "quiet" and "noisy" returned zero width and the comparison was between two
+    # identical numbers -- a test that would have passed whatever the bootstrap did.
+    import math
+    quiet = [_filled(-0.00015 + 0.000002 * math.sin(i), at=i * 1000.0) for i in range(120)]
+    noisy = [_filled(-0.00015 + 0.000200 * math.sin(i), at=i * 1000.0) for i in range(120)]
+    wq = E.advantage_lost_ci(quiet)
+    wn = E.advantage_lost_ci(noisy)
+    width_q = wq["ci_high"] - wq["ci_low"]
+    width_n = wn["ci_high"] - wn["ci_low"]
+    assert width_n > width_q, (width_q, width_n)
+    return f"dispersion widens the interval: {width_q:.4f} -> {width_n:.4f}"
+
+
+@check
+def too_few_fills_returns_none_not_a_nan():
+    # A NaN formatted into a report reads as a number. None cannot be mistaken for one.
+    os_ = [_filled(-0.00015, at=i * 1000.0) for i in range(5)]
+    assert E.advantage_lost_ci(os_) is None
+    return "fewer than 8 fills gives None rather than a NaN that would print as a figure"
+
+
+@check
+def the_interval_is_reproducible():
+    os_ = [_filled(-0.00015 + (0.0001 if i % 3 else -0.0001), at=i * 1000.0) for i in range(50)]
+    a = E.advantage_lost_ci(os_, n_boot=300)
+    b = E.advantage_lost_ci(os_, n_boot=300)
+    assert a == b, "the same input gave two different intervals"
+    return "a fixed seed makes the interval reproducible run to run"
+
+
+@check
+def the_series_is_ordered_by_fill_time():
+    # The whole reason for a MOVING-BLOCK bootstrap is that neighbouring fills are dependent.
+    # Out of order, each block holds unrelated observations and the interval silently collapses
+    # back to the IID one it was chosen to avoid -- while still looking like a block bootstrap.
+    late = _filled(-0.0009, at=9000.0)
+    early = _filled(-0.0001, at=1000.0)
+    mid = _filled(-0.0005, at=5000.0)
+    xs = E.markout_series([late, early, mid], 60_000)
+    assert xs == [-0.0001, -0.0005, -0.0009], xs
+    return "markouts come back in fill-time order, so the blocks mean what they claim"
+
+
+@check
+def the_threshold_flag_is_a_fact_not_a_verdict():
+    # Dispersion around 3 bps, so the interval genuinely straddles 1.0.
+    #
+    # A CONSTANT series at exactly 3 bps was the wrong fixture: it gives a zero-width interval
+    # at 0.9999999999999998, and `lo <= 1.0 <= hi` is then False by one float ulp. The fix is
+    # a fixture with real spread, NOT a tolerance around 1.0 -- widening the kill condition by
+    # epsilon to make a test pass is how a threshold quietly stops being the one in §6.
+    import math
+    os_ = [_filled(-0.0003 + 0.00012 * math.sin(i), at=i * 1000.0) for i in range(120)]
+    r = E.advantage_lost_ci(os_)
+    assert r["ci_low"] < 1.0 < r["ci_high"], r
+    assert r["interval_contains_kill_threshold"] is True, r
+    assert "conclusion" not in r and "falsified" not in repr(r).lower()
+    return "the report states whether 1.0 sits inside the interval, and nothing about what it means"
+
+
+@check
+def per_day_estimates_are_reported_separately():
+    a = _filled(-0.00015, at=ms(2026, 8, 10, 12, 0))
+    a.decided_at_ms = ms(2026, 8, 10, 12, 0)
+    b = _filled(-0.00060, at=ms(2026, 8, 11, 12, 0))
+    b.decided_at_ms = ms(2026, 8, 11, 12, 0)
+    d = E.e3_by_day([a, b])
+    assert set(d) == {"2026-08-10", "2026-08-11"}, d
+    assert abs(d["2026-08-10"] - 0.5) < 1e-9 and abs(d["2026-08-11"] - 2.0) < 1e-9, d
+    return "each day carries its own estimate, so an unstable figure cannot hide in the pool"
+
+
 if __name__ == "__main__":
     failures = 0
     for fn in _checks:
