@@ -1,8 +1,8 @@
 # Market prior-art audit
 
 **Date:** 2026-08-18
-**Status: SECOND PASS — the four candidate areas are covered. Still not a finished audit.**
-**Updated 2026-08-18** with the slow-D1 search and the completeness review.
+**Status: THIRD PASS — all five candidate areas covered. Still not a finished audit.**
+**Updated 2026-08-18** with the slow-D1 search, the completeness review, and the external-information branch.
 **Type: 2 (factual), assembled by the assistant. No direction is selected here.**
 
 Closes the material half of **C4**: `canon/architecture.md` designates
@@ -17,7 +17,7 @@ label it, move on."*
 
 ## Method and its limits — read before using any verdict below
 
-Nine web searches and three source documents read. That is a **survey, not an audit.** It is
+Twelve web searches and three source documents read. That is a **survey, not an audit.** It is
 enough to find the obvious prior art and nowhere near enough to establish that something is
 novel.
 
@@ -25,9 +25,10 @@ novel.
 only search summaries were seen, that is stated.
 
 > **A discipline note that applies to this document specifically.** The assistant produced
-> **three false "not found" findings in this repository today** — the Phase-5 constraint (C5),
-> `src/` being empty by rule (C2), and the vision statement (C3, withdrawn). Each was an
-> incomplete search reported as an absence.
+> **five false "not found" claims in a single day** — the Phase-5 constraint (C5), `src/` being
+> empty by rule (C2), the vision statement (C3, withdrawn), the recommendation of D1 without a
+> literature check, and the description of the external-information branch as untouched ground.
+> Each was an unchecked absence, asserted.
 >
 > **Therefore: nothing below claims novelty on the basis of not having found prior art.** An
 > unfound result is recorded as *unestablished*, never as *novel*. Any A–F verdict of "open"
@@ -141,6 +142,96 @@ Genesis reproduced it to four decimal places across five years.
 
 **Verdict: A — import.** Reproducing a standard baseline is validation, not a finding.
 *Confidence: high, from internal record.*
+
+---
+
+## External information — news, sentiment, on-chain, macro
+
+**Audited 2026-08-18, after the assistant twice described this branch as "the only genuinely
+untouched ground" and "the branch where a null would mean something new." Both statements were
+made without checking. Both were wrong.**
+
+### News and sentiment → returns
+
+Heavily worked, across venues and methods. Sentiment from Twitter predicts crypto spot returns;
+predictability is attributed *"mostly to social media sentiment rather than macroeconomic
+news"*; work exists on BTC and ETH futures specifically, on sentiment and the crypto risk
+premium via technical indicators, and on social-media sentiment through COVID.
+
+**Verdict: A — import.** *Confidence: moderate. Search summaries; no paper read in full.*
+
+**One acknowledged gap, and it is the same gap as the left branch.** The literature notes that
+*"the cryptocurrency literature on technical analysis has largely ignored drivers of technical
+analysis return adjusted by transaction costs"*, and that sentiment strategies producing excess
+returns *"did not take into consideration operational issues such as transaction costs"*.
+
+### On-chain
+
+The most worked region of the four, and the only one that is **operationally** crowded rather
+than merely academically crowded: exchange in/outflows, active addresses, whale transfers, with
+published work forecasting volatility spikes from whale transactions and using on-chain data to
+predict Bitcoin cycles.
+
+And the fact that matters most: **over 85% of crypto hedge funds already incorporate blockchain
+analytics into their investment process.** This is not an unexplored frontier — it is standard
+practice at institutions with capital, latency and data budgets Genesis does not have.
+
+**Verdict: A — import**, and the most contested of the four.
+
+### Fast news attribution — structurally closed, for the same reason D1 was
+
+The methodological problem is real, acknowledged, and its solution is hardware Genesis cannot
+have.
+
+> *"A large number of transactions and quote changes have identical timestamps"* — the provider
+> *"stamps the time on package arrival rather than when transactions were actually executed"*.
+> *"If your clock cannot resolve events with sufficient precision, you cannot definitively
+> reconstruct which order arrived first or whether a trade was reactive or anticipatory."*
+
+The remedies are PTP and GPS-synchronised network cards resolving to nanoseconds. Genesis
+observes from Nairobi with a measured **291 ms floor**. Attributing a price move to a news event
+at the resolution the problem requires is not available from here.
+
+This is the **same structural objection that closed D1**, arriving independently in a different
+literature: the part that would be worth doing needs precision Genesis has already measured
+itself out of.
+
+### What actually survives on this branch
+
+Slow news effects — daily and multi-day — do not need millisecond attribution. But at that
+horizon the effect is exactly what the sentiment literature already covers, and the only
+unanswered question is again **transaction costs**.
+
+---
+
+## The result across all five areas
+
+**Every area audited returns A — import.** Book state fast, book state slow, cross-section,
+volatility, external information. The map's two branches were drawn as asymmetric — audited on
+the left, untouched on the right. **They are not asymmetric. They are the same.**
+
+And the residual question is identical on both:
+
+> **What does a known effect do at a 291 ms latency floor, a ~4 h cost floor, and retail fee
+> tiers?**
+
+The literature does not answer this, not because it is hard, but because **no one else has these
+constraints**. That is a measurement, not a discovery, and it is the only thing left that is
+both unanswered and reachable.
+
+## A correction the assistant owes
+
+The right-hand branch was described as untouched ground on 2026-08-18, twice, in a map handed to
+the researcher as a basis for choosing direction. It was not checked before being described.
+
+That is the **fifth** instance today of the same error: **asserting an absence without
+searching for it.** The previous four — the Phase-5 constraint, `src/` being empty by rule, the
+vision statement, and the recommendation of D1 without a literature check — are recorded in C5,
+C2, C3 and this document's D1 section.
+
+The pattern is now well enough evidenced to state as a rule rather than an observation: *this
+assistant's claims about what does not exist should be treated as unverified until searched, in
+every domain, without exception.*
 
 ---
 
