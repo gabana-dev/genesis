@@ -260,6 +260,31 @@ experiments and five decision records have completed.
 **Decision required:** is Phase 0 complete? If so it needs marking, and "later phases" remains
 yours to author or to formally leave open.
 
+### C9 · `canon/research-methodology.md` does not describe the research method in use
+
+Added 2026-08-18, while placing DR0006.
+
+The canonical methodology document — 290 lines, designated authoritative — contains **zero**
+occurrences of: `contract`, `pre-registration`, `ledger`, `kill condition`, `sha256`, `frozen`.
+
+Every practice the project actually runs on is absent from the document that is supposed to
+define how it works. Frozen contracts with digests, kill conditions declared before data,
+declare-before-run trial accounting, multiple-comparison correction, the CONTEXT/trial
+boundary — all of it emerged after 2026-08-10 and none of it was written back.
+
+This is the same shape as C4: a canonical document that predates the practice it governs, still
+carrying authority it can no longer exercise. It also explains how a rule can be ratified and
+then lost — there is nowhere canonical that a person writing the next contract would look.
+
+`research/decisions/README.md` does not index the decision records either, so DR0001–DR0006 are
+discoverable only by listing the directory.
+
+**Decision required:** either `canon/research-methodology.md` is updated to describe the method
+in use (with Source links to the decision records that produced each practice, per the
+provenance rule), or it is marked superseded and the decision records become the operative
+description. DR0006 in particular needs somewhere canonical to live, or it will be as
+discoverable as the phase list was.
+
 ### C7 · A pattern worth naming
 
 Three assistant-memory claims were checked in two days and **all three failed**: the Phase-5
