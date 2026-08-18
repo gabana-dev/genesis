@@ -25,7 +25,28 @@ current state:
   milestone states its import/build classification before it runs. Accumulated engineering is
   never retrospectively recast as research.
 
-**Active work: RDB-1**, the real-data bridge.
+**Active work: EXEC-1 — closing out.** The seven-day BTCUSDT order-book recording finished
+2026-08-17 and all four declared trials are recorded; the ledger has **0 outstanding**.
+Contract [`../market/CONTRACT-execution.md`](../market/CONTRACT-execution.md),
+evidence [`../market/EVIDENCE.md`](../market/EVIDENCE.md).
+
+- **E3, the deliverable: 39.07% of the 3 bps maker advantage is lost at the touch at 60 s;
+  60.93% survives.** 95% CI [0.3676, 0.4139], Bonferroni 98.75% [0.3592, 0.4195] — both
+  exclude the 1.0 kill threshold. **§6 is not triggered**; the maker column of the MEASURE-1
+  break-even table stands. Stable across all 8 days.
+- **X5, X6, X7 all failed to establish separation**, and X5 ran opposite to its prediction.
+- **The finding that governs X3, X4, X6 and X7:** at a $63,476 median price with a $0.01 tick,
+  the declared 0–5 tick grid spans 0.0079 bps — **151× smaller** than the 1.19 bps adverse
+  move it was meant to modulate. Those nulls are properties of the grid as much as the market.
+  Recorded, not withdrawn.
+- Three engineering defects found at close:
+  [`../research/exec-1-recording-defects.md`](../research/exec-1-recording-defects.md).
+  D-3 (`health.py` had no CLI entry point and "verified" 3.4 GB in 0.3 s while reading nothing)
+  is **fixed**, with regression checks.
+
+**Remaining on EXEC-1:** the experiment record `0009` is unwritten, and nothing is committed.
+
+**Prior work: RDB-1**, the real-data bridge.
 [`../research/experiments/0006-rdb-1-real-data-bridge.md`](../research/experiments/0006-rdb-1-real-data-bridge.md).
 Classification **import + build, no novelty claimed**. Public AEMO NSW1 data under a frozen
 protocol. Development period complete; **the holdout is unopened.**

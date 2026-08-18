@@ -217,3 +217,62 @@ def render(rep: dict) -> str:
             lines.append(f"  {g['at']}  {g.get('market_ticker')}  "
                          f"missing {g.get('missing_from')}..{g.get('missing_to')}")
     return "\n".join(lines)
+
+
+def main(argv=None) -> int:
+    """
+    CLI. The exit status carries the verdict, because callers check status codes and a shell
+    script cannot read prose.
+
+        0  integrity verified
+        1  integrity NOT verified -- the chain is broken, or `verify` found problems
+        2  could not check at all -- bad usage, missing file, unreadable log
+
+    WHY THIS EXISTS, AND WHY IT DISTINGUISHES 1 FROM 2
+        `EVIDENCE.md` documented `python recorder/health.py <log>` as *the* way to verify an
+        archived log. This module had no entry point. Run exactly as documented it imported
+        cleanly, printed nothing, and exited **0** -- a documented integrity check that
+        returned success without reading a single event, and whose success was
+        indistinguishable from a real pass. Found 2026-08-17 against the EXEC-1 log, where it
+        "verified" 3.4 GB in 0.3 s; the real check takes ~7 minutes.
+
+        That is this project's own recurring failure -- a status claim the available evidence
+        does not support -- living inside the tool meant to catch it. It is the same shape as
+        BAV-1 run 2, where the recorder reported `complete` through fourteen disconnections it
+        had logged itself.
+
+        Hence the three-way exit. Collapsing "the log says it is broken" into "I could not
+        read the log" would rebuild a smaller version of the same defect: a caller that only
+        tests `!= 0` still learns something, but one that cannot tell a failed verification
+        from an absent one is back to trusting a verdict it cannot audit.
+    """
+    import argparse
+    import json
+    import os
+    import sys
+
+    ap = argparse.ArgumentParser(
+        prog="health.py",
+        description="Verify a Genesis event log and report what it does and does not cover.")
+    ap.add_argument("log", help="path to the .jsonl event log")
+    ap.add_argument("--json", action="store_true",
+                    help="emit the full report as JSON instead of the rendered text")
+    args = ap.parse_args(argv)          # argparse exits 2 on missing/bad arguments
+
+    if not os.path.exists(args.log):
+        print(f"health.py: no such log: {args.log}", file=sys.stderr)
+        return 2
+    try:
+        rep = report(args.log)
+    except Exception as e:                                  # noqa: BLE001
+        # Deliberately broad: any failure to build the report means the log was NOT checked,
+        # and that must never be reported as a pass.
+        print(f"health.py: could not read {args.log}: {e!r}", file=sys.stderr)
+        return 2
+
+    print(json.dumps(rep, indent=1, default=str) if args.json else render(rep))
+    return 0 if rep["integrity_verified"] else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
