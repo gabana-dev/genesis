@@ -12,7 +12,7 @@ Run: python3 tests/test_closed_loop.py
 import os
 import sys
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "lab"))
 
 from closed_loop import run
 

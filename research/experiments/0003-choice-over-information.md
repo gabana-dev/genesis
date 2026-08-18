@@ -4,7 +4,7 @@
 **Status:** done — but the environment did not discriminate the hypotheses (see Validation)
 
 Genesis's first introduction of **choice**: the agent selects which channel to observe.
-Code: [`../../src/laboratory3.py`](../../src/laboratory3.py) (self-contained), check:
+Code: [`../../lab/laboratory3.py`](../../lab/laboratory3.py) (self-contained), check:
 [`../../tests/test_laboratory3.py`](../../tests/test_laboratory3.py).
 
 ## Contract (pre-registered)

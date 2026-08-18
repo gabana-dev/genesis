@@ -13,7 +13,7 @@ Run:  python3 tests/test_laboratory3.py
 import os
 import sys
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "lab"))
 
 from laboratory3 import validate_environment, run_agent
 

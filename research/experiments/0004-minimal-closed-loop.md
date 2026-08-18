@@ -5,7 +5,7 @@
 
 The first milestone of the system-construction phase. **Integration, not discovery.** The
 first CLOSED loop Genesis has built: belief → action → changed world → new evidence →
-updated belief. Code: [`../../src/closed_loop.py`](../../src/closed_loop.py); check:
+updated belief. Code: [`../../lab/closed_loop.py`](../../lab/closed_loop.py); check:
 [`../../tests/test_closed_loop.py`](../../tests/test_closed_loop.py). Governed by
 [`../system-roadmap.md`](../system-roadmap.md). Interpretation:
 [`../journal/2026-08-08-first-closed-loop-belief-without-behavior.md`](../journal/2026-08-08-first-closed-loop-belief-without-behavior.md).

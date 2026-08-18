@@ -9,6 +9,37 @@ territory at session granularity — what changed most recently, not the overall
 
 ---
 
+## Current — 2026-08-18
+
+**The market line is where the project lives.** Everything below the "Superseded" rule is the
+cognitive-architecture era, preserved rather than rewritten.
+
+- **Code:** `recorder/` (2,605 lines) · `market/` (1,926) · `rdb/` (829) · `tests/` (4,815,
+  **19 suites, all passing**) · `status.py`, the orientation layer. `src/` holds the retired
+  Labs 1–3 and no longer matches its own README — recorded as C2.
+- **Experiments 0006–0009 complete:** RDB-1 (closed, holdout sealed), BAV-1 (p = 0.0165),
+  MEASURE-1 (structure 15m–60m; ≥4h unresolvable, 68 years needed), EXEC-1 (**60.93% of the
+  maker advantage survives**, 1.828 bps).
+- **Decision records to DR0006.** DR0005 authorised `status.py` — reports, may not decide.
+  **DR0006: no predictive experiment is declared unless its contract names the consumer, the
+  decision changed, a do-nothing baseline and a wiring kill condition.**
+- **Ledger:** 27 declared, 27 recorded, 0 outstanding, chain verified.
+- **Running:** 48-hour BTCUSDT recording with **book and trades on one clock**,
+  `~/genesis-evidence/q4/` — a soak test of the new aggTrade path. No contract, no question.
+- **Blocked on the researcher:** which direction next, and nine contradictions in
+  [`../research/CURRENT-STATE-2026-08-18.md`](../research/CURRENT-STATE-2026-08-18.md) §2.
+
+Note: the roadmap reconciliation flagged below on 2026-08-09 as "the researcher's, not done
+here" is **still open nine days later**, now recorded as C6 alongside the discovery that a
+second, operative phase list lives in [`current_focus.md`](current_focus.md).
+
+---
+
+## Superseded 2026-08-09 — the cognitive-architecture era
+
+Preserved per DR0002 (7). Everything from here down describes the project before the market
+line opened, and is retained as history.
+
 ## Phase
 
 **Research programme: CLOSED (2026-08-09).** **Engineering: ACTIVE.**

@@ -13,7 +13,7 @@ Genesis Laboratory 2. Two purposes at once (production + governance):
   representation. If the invariant survives, belief-necessity has earned *stability*, not
   just one successful implementation.
 
-Code: [`../../src/laboratory2.py`](../../src/laboratory2.py), `agents.py`
+Code: [`../../lab/laboratory2.py`](../../lab/laboratory2.py), `agents.py`
 (`LearningBeliefAgent`), `environment.py` (`reveal()`). Check:
 [`../../tests/test_laboratory2.py`](../../tests/test_laboratory2.py). Standard library only.
 

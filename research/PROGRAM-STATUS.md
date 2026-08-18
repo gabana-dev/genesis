@@ -13,22 +13,58 @@ drills into the milestones of whichever phase is current.
 
 ---
 
-## Current Phase — superseded 2026-08-09
+## Current — 2026-08-18
 
-**Research programme CLOSED; engineering ACTIVE.** Both decision records were ratified
+**Research programme CLOSED (DR0002); engineering ACTIVE (DR0003).** No research direction is
+selected. Every market result classifies itself as *import* or *engineering* — there are no
+research findings claimed.
+
+**Completed since the market line opened:**
+
+| | | |
+|---|---|---|
+| [BAV-1](experiments/0007-bav-1-book-agreement-validation.md) | 2026-08-10 | The recorder's completeness label **predicts** agreement with an independent channel, p = 0.0165. Fidelity and self-knowledge measured separately. |
+| [MEASURE-1](experiments/0008-measure-1-cost-of-being-right.md) | 2026-08-10 | Linear structure at 15m–60m, well-powered; affordability begins at 4h. **§8 retracted the overlap claim**: at ≥4h the test was blind, and 80% power at daily scale would need **68 years**. |
+| [EXEC-1](experiments/0009-exec-1-maker-advantage.md) | 2026-08-17 | **60.93% of the 3 bps maker advantage survives** adverse selection at the touch at 60s (1.828 bps). Kill condition not triggered. 580,658 events, 0 sequence gaps. X3/X4/X6/X7 nulls are **structural** — the 0–5 tick grid spans 151× less than the effect it was built to modulate. |
+
+**Decision records:** DR0004 closed RDB-1 and sealed the holdout · DR0005 authorised the
+orientation layer (`status.py`), which reports and may not decide · **DR0006 requires every
+predictive experiment's contract to name its consumer, the decision it changes, a do-nothing
+baseline and a wiring kill condition** — or it is not declared.
+
+**Ledger:** 27 declared, 27 recorded, **0 outstanding**, chain verified.
+
+**Running now:** a 48-hour BTCUSDT recording carrying **book *and* trades** on one clock
+(`~/genesis-evidence/q4/`), the first to include the aggTrade stream. It is a soak test of new
+code and carries no contract and no question — per DR0006 nothing predictive may be declared
+against it.
+
+**Open and the researcher's:** which direction, if any, comes next — and nine documented
+contradictions between what this repository claims and what it contains, listed in
+[`CURRENT-STATE-2026-08-18.md`](CURRENT-STATE-2026-08-18.md) §2. None have been silently
+resolved.
+
+---
+
+## Superseded 2026-08-09 — the RDB-1 phase
+
+Preserved rather than rewritten, per DR0002 (7). **This described the state on 9 August and was
+already superseded when written; RDB-1 was closed by DR0004 on 2026-08-10.**
+
+Both decision records were ratified
 2026-08-09: [`decisions/0002-close-the-genesis-research-program.md`](decisions/0002-close-the-genesis-research-program.md)
 (closure) and [`decisions/0003-engineering-posture-real-data.md`](decisions/0003-engineering-posture-real-data.md)
-(engineering posture). The research-triage phase described below is history; it is preserved
-rather than rewritten, per DR0002 (7).
+(engineering posture).
 
-Active engineering: **RDB-1**,
+Active engineering at that time: **RDB-1**,
 [`experiments/0006-rdb-1-real-data-bridge.md`](experiments/0006-rdb-1-real-data-bridge.md) —
 import + build, no novelty claimed, development period complete, holdout unopened. Adaptation
 returned a large stable positive for the rolling window; the model is indistinguishable from
 persistence at its best.
 
-Undecided and the researcher's: whether to open the holdout, and what the next capability is.
-No sequence of milestones is pre-authorized (DR0003 §10).
+Undecided at that time: whether to open the holdout — **since decided, it stays sealed
+(DR0004)** — and what the next capability is. No sequence of milestones is pre-authorized
+(DR0003 §10).
 
 ## Superseded — the research-triage phase
 

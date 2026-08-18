@@ -8,7 +8,7 @@ performance and not novelty (the claim is known POMDP theory) — it is **archit
 validation**: can Reception, Update, and a belief-state be implemented cleanly and directly
 from the canon, and does the implementation behave as the theory predicts?
 
-Code: [`../../src/`](../../src/) (`environment.py`, `genesis.py`, `agents.py`,
+Code: [`../../lab/`](../../lab/) (`environment.py`, `genesis.py`, `agents.py`,
 `laboratory.py`), check in [`../../tests/test_laboratory.py`](../../tests/test_laboratory.py).
 Descends from [`../../canon/architecture.md`](../../canon/architecture.md) Part B. Standard
 library only.

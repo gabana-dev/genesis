@@ -45,8 +45,14 @@ it).
     should believe. E.g. [`what-makes-a-good-hypothesis.md`](../research/explorations/what-makes-a-good-hypothesis.md),
     [`patterns-emerging-across-investigations.md`](../research/explorations/patterns-emerging-across-investigations.md).
 - **`ai/`** — working memory for AI collaborators; state that survives a session boundary.
-- **`src/`, `tests/`** — implementation and its validation. Empty by design until the
-  foundations are ready.
+- **`recorder/`, `market/`, `rdb/`** — the implementation. Added after DR0003 permitted
+  engineering against real recorded environments; not anticipated by this document, which
+  predates them.
+- **`lab/`** — the retired cognitive-architecture laboratories (experiments 0001–0005), moved
+  from `src/` on 2026-08-18 and kept runnable as history. `src/` was reserved by rule for a
+  cognitive-architecture implementation that DR0002 retired; it held these files instead, and
+  this line described it as empty for nine days while it was not.
+- **`tests/`** — validation. 19 suites.
 
 ### The pipeline (two parallel streams)
 
@@ -119,5 +125,6 @@ Each element descends from a specific earned result:
 
 **What Laboratory 1 validates:** that Reception, Update, and a belief-state can be
 implemented *cleanly and directly from this spec* — i.e., that the canon is precise enough
-to become software. It lives in [`../src/`](../src/) with its check in
-[`../tests/`](../tests/). Its purpose is architectural validation, not performance.
+to become software. It lives in [`../lab/`](../lab/) — moved there from `src/` on 2026-08-18 —
+with its check in [`../tests/`](../tests/). Its purpose is architectural validation, not
+performance.

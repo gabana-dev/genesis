@@ -15,7 +15,7 @@ Run:  python3 tests/test_laboratory.py   (prints PASS/FAIL, exits non-zero on fa
 import os
 import sys
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "lab"))
 
 from laboratory import run
 

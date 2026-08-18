@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-08
 **Status:** contract pre-registered and approved to build (rulings 1–9 incorporated below).
-Code: [`../../src/sparse_loop.py`](../../src/sparse_loop.py); check:
+Code: [`../../lab/sparse_loop.py`](../../lab/sparse_loop.py); check:
 [`../../tests/test_sparse_loop.py`](../../tests/test_sparse_loop.py).
 
 Follows [`0004-minimal-closed-loop.md`](0004-minimal-closed-loop.md). Milestone 1 established

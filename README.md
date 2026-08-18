@@ -7,12 +7,21 @@
 
 ## This repository is the laboratory, not the system.
 
-There is no cognitive architecture here yet, and that is deliberate. We are preparing
-the laboratory: the structure, memory, and working discipline that a long research
-effort needs before the first line of the system is written.
+**Superseded 2026-08-09.** The original framing below — "there is no cognitive architecture
+here yet, and that is deliberate" — described the first three days. The cognitive-architecture
+thesis was retired by
+[DR0002](research/decisions/0002-close-the-genesis-research-program.md) as established science,
+and the project now does disciplined engineering against real recorded environments
+([DR0003](research/decisions/0003-engineering-posture-real-data.md)), claiming no novelty.
 
-**The one rule right now:** do not implement cognitive architecture. `src/` and `tests/`
-stay empty until the foundations in `canon/` and `research/` are ready.
+**What is actually here:** a market event recorder with a hash-chained log and completeness
+labels *validated to carry information* (p = 0.0165); measurement and execution machinery; a
+trial ledger where every test is declared before it is run and cannot be un-declared; four
+completed experiments; and ~11,000 lines of Python under 19 passing test suites.
+
+Start with [`research/CURRENT-STATE-2026-08-18.md`](research/CURRENT-STATE-2026-08-18.md) —
+what is established, what is falsified, what is unknown, and nine contradictions this
+repository has recorded against itself.
 
 ---
 
@@ -23,8 +32,12 @@ stay empty until the foundations in `canon/` and `research/` are ready.
 | `canon/` | The canon. Stable, shared, authoritative — what we currently believe and how we've agreed to work. | Slow |
 | `research/` | The living record. Everything thought, tried, decided, and questioned — append-mostly, chronological. | Fast |
 | `ai/` | Working memory for AI collaborators — the state that must survive a session boundary. | Every session |
-| `src/` | The implementation. Empty by design. | Not yet |
-| `tests/` | Validation of the implementation. Empty by design. | Not yet |
+| `recorder/` | The event recorder — hash-chained log, completeness labels, venue dialects. | Active |
+| `market/` | Measurement and execution — estimators, fill simulator, trial ledger. | Active |
+| `rdb/` | The RDB-1 real-data bridge. Closed ([DR0004](research/decisions/0004-close-rdb-1.md)). | Closed |
+| `lab/` | Retired cognitive-architecture laboratories, kept runnable. Was `src/`. | Historical |
+| `tests/` | 19 suites, all passing. | Active |
+| `status.py` | The orientation layer — reports, never decides ([DR0005](research/decisions/0005-orientation-layer.md)). | Active |
 
 ### Where to start reading
 
