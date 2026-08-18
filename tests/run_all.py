@@ -38,6 +38,7 @@ SUITES = [
     "test_fills.py",
     "test_holons.py",
     "test_holon_volatility.py",
+    "test_holon_cross_section.py",
     "test_rdb_series.py",
     "test_closed_loop.py",
     "test_sparse_loop.py",
