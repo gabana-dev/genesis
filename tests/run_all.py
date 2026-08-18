@@ -28,6 +28,7 @@ SUITES = [
     "test_recorder_decimal_qty.py",
     "test_recorder_validity.py",
     "test_health_cli.py",
+    "test_status.py",
     "test_completeness.py",
     "test_recorder_binance.py",
     "test_bav.py",
