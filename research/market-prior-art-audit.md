@@ -1,7 +1,8 @@
-# Market prior-art audit — first pass
+# Market prior-art audit
 
 **Date:** 2026-08-18
-**Status: FIRST PASS — incomplete. Not a finished audit.**
+**Status: SECOND PASS — the four candidate areas are covered. Still not a finished audit.**
+**Updated 2026-08-18** with the slow-D1 search and the completeness review.
 **Type: 2 (factual), assembled by the assistant. No direction is selected here.**
 
 Closes the material half of **C4**: `canon/architecture.md` designates
@@ -16,7 +17,7 @@ label it, move on."*
 
 ## Method and its limits — read before using any verdict below
 
-Four web searches and two source documents read. That is a **first pass, not an audit.** It is
+Nine web searches and three source documents read. That is a **survey, not an audit.** It is
 enough to find the obvious prior art and nowhere near enough to establish that something is
 novel.
 
@@ -84,12 +85,32 @@ economic value of precisely this prediction is eroded by precisely this constrai
 make it worth doing — acting on the prediction fast enough to matter — is the one Genesis
 structurally cannot have.
 
-### What this does *not* rule out
+### The slow version — searched 2026-08-18, and it closes too
 
-The literature above operates at second-to-minute horizons where latency dominates.
-MEASURE-1 places affordability at **≥4 h**. Whether a *slow* version exists — book state
-informing a decision hours out, where 291 ms is irrelevant — was not searched for and is
-**unestablished, not open.** It would need its own audit.
+The literature above operates where latency dominates. MEASURE-1 places affordability at
+**≥4 h**, so the surviving question was whether a *slow* version exists: book state informing a
+decision hours out, where 291 ms is irrelevant.
+
+**Two findings, and they point the same way.**
+
+**One — microstructure signal does not survive to that horizon.** The alpha in microstructure
+signals *"decays extremely rapidly, often within microseconds"*. And specifically on this asset:
+Bitcoin volatility forecasting work found short-term book features sufficient, with **40 and 50
+minutes of order-book features producing no improvement**. The information is gone long before
+four hours.
+
+**Two — and where liquidity *is* predictable at daily scale, it is a mature field using the
+estimator Genesis already built.** Realized-illiquidity forecasting is established: the slow
+decay of the realized Amihud autocorrelation is modelled with **HAR** — the same heterogeneous
+autoregressive specification Genesis implemented for volatility — alongside Engle's
+Multiplicative Error Model and VAR analyses, with production infrastructure at NYU Stern's
+V-Lab.
+
+So the slow version is not an unexplored gap between two literatures. It is **occupied, by a
+mature field, using machinery already in this repository.**
+
+**Verdict: A — import**, at both speeds. *Confidence: moderate-high. Search summaries; the
+Realized Illiquidity paper was not read in full.*
 
 ---
 
@@ -123,21 +144,63 @@ Genesis reproduced it to four decimal places across five years.
 
 ---
 
-## The recorder — inconclusive, and deliberately left so
+## The recorder and BAV-1 — reviewed 2026-08-18
 
-Both outside readers independently flagged the recorder as the quietly impressive component:
-a gap-honest, integrity-verified logger whose completeness label was *validated* to carry
-information (p = 0.0165) rather than assumed to.
+Both outside readers independently flagged the recorder as the quietly impressive component: a
+gap-honest, integrity-verified logger whose completeness label was *validated* to carry
+information (p = 0.0165) rather than assumed to. Neither could say whether that was novel.
 
-One search found that dataset-quality metrics — clock drift, dropped messages, duplicate
-payloads, reconnect gaps, stale book state, out-of-order events — are treated as first-class
-concerns in current work. It did **not** surface anything doing the specific thing BAV-1 did:
-measuring whether a self-reported completeness label *predicts* agreement with an independent
-channel.
+**Searched three framings. The answer was in the third, and it is the most interesting result
+in this audit.**
 
-**Verdict: none. Unestablished.** One search is not evidence of absence, and this document's
-own discipline note forbids reading it as such. If the researcher wants this question answered,
-it needs a real review — and it is the one area where the answer might not be "import."
+**1 — Market data engineering.** Dataset-quality metrics are treated as first-class concerns in
+current work: clock drift, dropped messages, duplicate payloads, reconnect gaps, stale book
+state, out-of-order events. Gap-aware recording is standard. But this is *detection*, not
+validation of the detector.
+
+**2 — General data quality.** Completeness and accuracy are treated as **separate dimensions,
+assessed independently**. Completeness is measured by population rates against required
+attributes; accuracy requires *"a reference point: what is the ground truth?"* Nothing in this
+framing treats a completeness flag as a *predictor* of accuracy. That is the BAV-1 question, and
+it is not a standard question here.
+
+**3 — Remote sensing and earth observation. This is where it lives.** Satellite products carry
+quality flags stating whether data are *"of good, acceptable or unreliable qualities"*, and
+validating those flags against independent in-situ measurement is a mature practice with its
+own infrastructure — match-up databases, HYPERNETS, NOAA's VIIRS and MODIS validation
+programmes.
+
+**So BAV-1's method is not new. It is the match-up-database validation pattern from earth
+observation, independently re-derived and applied to market data.**
+
+**Verdict: A — import**, from remote sensing rather than from finance.
+*Confidence: moderate. Three searches, no paper read in full.*
+
+### Two things worth keeping, neither of them a novelty claim
+
+**The field being imported from says its own version is often done badly.** Flag effectiveness
+*"varies and often lacks rigorous assessment"*, and validation is *"performed with little (if
+any) assessment on their impacts to both the quality and quantity of the matchup dataset as a
+whole."* BAV-1 did assess exactly that — it reported cell counts, exclusions, strata, and the
+power limitation, and it separated fidelity from completeness rather than merging them. Doing
+an established thing more carefully than the field that established it is not a contribution,
+but it is not nothing either.
+
+**BAV-1 is more honest about its reference than the pattern it re-derives.** Remote-sensing
+match-ups validate against in-situ ground truth. BAV-1 explicitly refuses that framing:
+*"Neither channel is ground truth. This validates consistency between two Binance-delivered
+representations."* The imported pattern assumes a privileged reference; BAV-1 states it does not
+have one.
+
+### The pattern this repeats
+
+DR0002 closed the cognitive-architecture programme on finding that its foundations were
+established science, independently re-derived. **This is the same finding, a second time, in a
+different field.** The project's most distinctive-looking asset is a competent re-derivation of
+earth-observation validation practice.
+
+That is worth recording plainly, because it is the second instance of a pattern and the first
+was significant enough to close a research programme.
 
 ---
 
@@ -165,13 +228,18 @@ which Genesis has already measured itself out of.
 
 ## What would make this a real audit
 
-1. Read Fischer & Krauss, and the liquidity-withdrawal and Hawkes papers, rather than summaries.
-2. Search the **slow** version of D1 explicitly — book state informing decisions at ≥4 h.
-3. Search the breadth-stability question at half-year resolution.
-4. A proper review of the completeness-validation question, which is the only one that might
-   not return "import".
-5. Give the results to someone statistically literate who is not the researcher or an assistant
-   — the "no second pair of eyes" gap an outside reader named.
+- [x] ~~Search the **slow** version of D1 — book state at ≥4 h.~~ Done. Closes as import.
+- [x] ~~Review the completeness-validation question.~~ Done. Closes as import, from remote
+      sensing.
+- [ ] Read Fischer & Krauss, the Realized Illiquidity paper, and the Hawkes and
+      liquidity-withdrawal papers in full, rather than summaries.
+- [ ] Search the breadth-stability question at half-year resolution — the one narrow
+      measurement Genesis holds that has not been checked against anything.
+- [ ] Search whether the match-up validation pattern has been applied to **market data**
+      specifically. Established in earth observation; unknown in finance.
+- [ ] Give the statistics to someone literate who is neither the researcher nor an assistant —
+      the "no second pair of eyes" gap an outside reader named.
 
-Until then this is a first pass, and the verdicts above are provisional in exactly the way the
-confidence markings say.
+Nine searches and three sources read. Every verdict above is provisional in exactly the way its
+confidence marking says, and no verdict of "novel" or "open" appears anywhere in this document
+— by design, and for the reason given in the discipline note.
