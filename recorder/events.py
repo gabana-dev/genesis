@@ -322,7 +322,7 @@ def canonical_view(channel: str, msg: dict) -> dict:
 
 
 def observation_body(raw: dict, received_at: str, connection_id: str,
-                     extracted: dict, request=None) -> dict:
+                     extracted: dict, request=None, instrument=None) -> dict:
     """
     `extracted` comes from a dialect. `raw` is stored verbatim and never rewritten.
 
@@ -330,15 +330,24 @@ def observation_body(raw: dict, received_at: str, connection_id: str,
     knowledge, not the venue's statement, so it belongs on the observation side and never
     inside `world`. Binance's REST depth snapshot carries no symbol; writing one into
     `world.market_ticker` would attribute to the venue something it did not say.
+
+    `instrument` sits on the same side, and for the same reason. Binance spot and Binance
+    USD-M futures both call the symbol `BTCUSDT`; nothing in either payload distinguishes
+    them. Which one this is, is a fact about the connection Genesis opened, not a statement
+    the venue made -- so it is recorded as Genesis's knowledge. It is omitted entirely when
+    unset, so single-venue logs are byte-identical to those written before it existed.
     """
     channel = extracted["channel"]
+    observation = {
+        "received_at": received_at,
+        "connection_id": connection_id,
+        "subscription_id": extracted.get("subscription_id"),
+        "request": request,
+    }
+    if instrument is not None:
+        observation["instrument"] = instrument
     return {
-        "observation": {
-            "received_at": received_at,
-            "connection_id": connection_id,
-            "subscription_id": extracted.get("subscription_id"),
-            "request": request,
-        },
+        "observation": observation,
         "world": {
             "raw": raw,
             "venue_seq": extracted.get("seq_first"),

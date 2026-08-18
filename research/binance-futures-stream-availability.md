@@ -231,6 +231,34 @@ having the stream or inferring from it alone.
 
 ## 9. A second measurement, found while smoke-testing: receipt timestamps from Nairobi
 
+> ### CORRECTION, same day — §9 mis-attributed its cause
+>
+> **This section blamed the link. The dominant cause was a defect in the recorder, and the
+> defect was mine.** `rest_snapshot` is blocking `urllib` called inside an async coroutine
+> (D-5, below). While it ran, it froze the whole event loop and every other connection with
+> it. From Nairobi those fetches take 30–90 s, which is precisely the 60–63 s drift reported
+> below.
+>
+> After the fix, the same command, from the same location, over the same link, in the same
+> 180 s:
+>
+> | | before D-5 fix | after |
+> |---|---|---|
+> | timestamp anomalies | **768** | **0** |
+> | errors | 1 | **0** |
+> | healthy time | 0.0 % | **93.4 %** |
+>
+> **What survives.** Nairobi's REST instability is real and independently measured — a live
+> `api.binance.com` call took 30.7 s during this session, and the latency table in §7 stands.
+>
+> **What does not.** The conclusion *"`received_at` is unreliable from this location"* was
+> over-attributed. The recorder was stalling itself, and a slow link only set the size of the
+> stall. On present evidence receipt timestamps are usable from here; the earlier claim was a
+> code defect wearing a geography costume.
+>
+> The original text is preserved below because its measurements are correct and only the
+> cause assigned to them was wrong.
+
 The 120 s smoke test recorded **212 timestamp anomalies inside a 4.6 s wall-clock window**, all
 carrying drift of 60.0–63.3 s. The venue clock was not the problem: an independent check
 against `api.binance.com/api/v3/time` put local offset at −0.4 to −0.6 s, and `sntp` reported
@@ -253,3 +281,88 @@ That relies on one assumption which Genesis has **not** verified and does not cu
 way to verify: that Binance's spot and USD-M futures matching engines timestamp against
 synchronised clocks. Recorded as an assumption, not a finding. If it is wrong, every lead-lag
 number at sub-second resolution is wrong by the offset.
+
+*(The assumption stands. The attribution of the anomalies to the link does not — see the
+correction at the head of this section.)*
+
+---
+
+## 10. T0.2, and two defects that only a multi-connection recording could expose
+
+Building spot + perp on one clock surfaced two defects in the recorder core. Both were
+invisible with a single connection, and both were found by looking at a real recording rather
+than by reasoning about the code.
+
+### D-4 — one Ingestor cannot serve two connections
+
+The `Ingestor` holds sequence state and `connection_id` as instance fields. Two concurrent
+connections sharing one therefore:
+
+1. **Blinded each other's gap detection.** `connection_opened` clears `_last_seq` for *every*
+   stream, so a reconnect on the liquidation feed disabled gap detection on the depth feed for
+   its next message. Loss of detection, reported as health.
+2. **Misattributed lifecycle events.** A 90 s futures recording logged **both**
+   `CONNECTION_CLOSED` events against the depth connection and none against the liquidation
+   connection — a log stating that one connection closed twice and the other never closed.
+   A false record, not a missing one.
+
+Fixed by one Ingestor per connection, sharing one `EventLog`. Six regression checks in
+`tests/test_multi_connection.py`, each written against the behaviour the real recording showed.
+
+### The instrument dimension
+
+Binance spot and USD-M futures both call the symbol `BTCUSDT`, with unrelated sequence number
+spaces. Merged into one log they collide on the sequence key `("cm", channel, market)` and the
+recorder reports a gap on nearly every message — a healthy recording that looks destroyed.
+
+`instrument` is therefore threaded through the sequence key and recorded on the **observation**
+side of the body, not inside `world`. Which venue a connection points at is a fact about what
+Genesis opened, not a statement the venue made — the same reasoning that already keeps
+`request` out of `world`. It is omitted entirely when unset, so every prior recording and
+BAV-1's validated behaviour are untouched.
+
+### D-5 — a blocking call inside the event loop
+
+`rest_snapshot` is synchronous `urllib` called from an async coroutine. With one connection
+that only delayed that connection. With three sharing a loop it **froze all of them** for the
+length of the fetch, and from Nairobi a fetch takes 30–90 s.
+
+Measured damage in the first three-connection run: one connection's subscription ack arrived
+**81 s** after its connection opened, another took **80 s** to open, 768 timestamp anomalies,
+and pong timeouts that killed connections the venue had no complaint about.
+
+The severity is not the delay. **T0.2's entire premise is that the order of events in the log
+is the real arrival order on one clock.** A stall that freezes two feeds while a third fetches
+destroys precisely that, and destroys it silently — the log would show a confident interleaving
+that was an artefact of which coroutine held the loop. Every lead-lag number computed from such
+a log would be measuring the recorder.
+
+Fixed with `asyncio.to_thread` around the network call only. `observe()` still runs on the loop
+thread, so appends stay strictly ordered.
+
+### The recording
+
+`recorder/run.py spot-perp` — three connections, two dialects, one hash chain:
+
+| Instrument | Channel | 180 s |
+|---|---|---|
+| `binance_futures` | `trade` | 8,208 |
+| `binance_spot` | `aggTrade` | 1,511 |
+| `binance_futures` | `depthUpdate` | 711 |
+| `binance_spot` | `depthUpdate` | 178 |
+| `binance_futures` | `forceOrder` | 59 |
+| both | `depthSnapshot` | 1 each |
+
+**Zero sequence gaps, zero timestamp anomalies, zero errors, integrity verified, 93.4 % healthy
+time**, 3 connections opened and 3 closed, each attributed to itself.
+
+### Still open, and deliberately not decided here
+
+`completeness.py` invalidates **all** markets on any `CONNECTION_CLOSED`, regardless of which
+connection closed. With three connections and Nairobi's reconnect rate, a perp reconnect marks
+the spot book incomplete even though spot was observed continuously throughout.
+
+The label is over-conservative rather than wrong, which is the safe direction — but at this
+reconnect rate it approaches carrying no information. Narrowing it means changing what Genesis
+means by *complete*, which is a question about the epistemic contract and not one to settle as
+a side effect of an engineering fix. **Recorded as open. It requires the researcher's decision.**

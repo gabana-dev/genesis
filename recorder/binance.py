@@ -120,15 +120,32 @@ async def record(ingestor, symbol, stop_after=None, reconnect_after=None, reconn
     forced_at = None if reconnect_after is None else time.time() + reconnect_after
     forced_done = False
 
-    def anchor():
+    async def anchor():
         """
         Re-fetch the REST snapshot. Binance's procedure requires this after EVERY (re)connect,
         not once at startup: a reconnect loses the update chain, and without a fresh
         lastUpdateId there is nothing to reconcile the resumed stream against. Recorded as an
         observation like any other -- it anchors the book, it does not repair it.
+
+        D-5, found in the first three-connection recording and the reason this is a coroutine.
+        `rest_snapshot` is BLOCKING urllib inside an async coroutine. With one connection that
+        merely delayed that connection. With several sharing an event loop it froze ALL of
+        them for the duration of the fetch -- and from Nairobi these fetches take 30-90
+        seconds. The measured damage in a 180 s run: one connection's ack arrived 81 s late,
+        another took 80 s to open, 768 timestamp anomalies, and pong timeouts that killed
+        connections the venue had no complaint about.
+
+        That is not merely slow. T0.2's entire premise is that the ORDER of events in this log
+        is the real arrival order on one clock. A stall that freezes two feeds while a third
+        fetches destroys exactly that, and would have done so silently -- the log would show a
+        confident interleaving that was an artefact of which coroutine held the loop.
+
+        Only the network call is moved off the loop. `observe()` still runs on the loop
+        thread, so appends stay strictly ordered and the no-await-inside-observe invariant
+        holds.
         """
         try:
-            snap = rest_snapshot(symbol, rest=rest_base)
+            snap = await asyncio.to_thread(rest_snapshot, symbol, 20, rest_base)
             ingestor.observe(snap, request={"url": rest_base.format(symbol=symbol.upper()),
                                             "symbol": symbol.upper()})
         except Exception as e:
@@ -181,7 +198,7 @@ async def record(ingestor, symbol, stop_after=None, reconnect_after=None, reconn
                                               markets if markets is not None
                                               else [symbol.upper()])
                 if snapshot:
-                    anchor()
+                    await anchor()
 
                 while True:
                     now = time.time()

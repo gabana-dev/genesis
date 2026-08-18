@@ -27,9 +27,32 @@ CLOCK_ANOMALY_MS = 60_000
 
 
 class Ingestor:
-    def __init__(self, log, connection_id=None, dialect=None):
+    def __init__(self, log, connection_id=None, dialect=None, instrument=None):
+        """
+        ONE INGESTOR PER CONNECTION. Several may share a single EventLog -- that is how two
+        venues are recorded on one clock in one hash chain -- but they must not share an
+        Ingestor, because per-connection state lives here.
+
+        D-4, found while building T0.2 and demonstrated in a real recording. When two
+        connections shared one Ingestor:
+
+          * `connection_opened` clears `_last_seq` for EVERY stream, so a reconnect on the
+            liquidation feed silently disabled gap detection on the depth feed for its next
+            message. Loss of detection, reported as health.
+          * `connection_id` is a single field, so lifecycle events were attributed to
+            whichever connection opened most recently. A 90-second futures recording logged
+            BOTH closes against the depth connection and none against the liquidation
+            connection -- a log saying one connection closed twice and the other never closed.
+
+        `instrument` disambiguates venues that reuse a symbol. Binance spot and USD-M futures
+        both say `BTCUSDT`, with unrelated sequence number spaces, so merging them into one
+        log without it would collide on the sequence key and emit a gap on nearly every
+        message. It is None for single-venue recordings, which keeps their keys and their
+        event bodies exactly as they were.
+        """
         self.log = log
         self.connection_id = connection_id or "unknown"
+        self.instrument = instrument
         # A dialect only reads a payload; it never rewrites one. Default is Kalshi, the
         # venue this recorder was written for.
         self.dialect = dialect or dialects.KALSHI
@@ -63,7 +86,14 @@ class Ingestor:
             # subscription_id lives under `observation`, not `world` -- reading it from the
             # wrong place silently orphans all resumed sequence state, because the live key
             # is ("sid", n) while the resumed key falls back to ("cm", channel, market).
-            sid = ev.get("body", {}).get("observation", {}).get("subscription_id")
+            obs = ev.get("body", {}).get("observation", {})
+            # In a shared log this Ingestor must resume ONLY its own instrument's state.
+            # Without this filter it would key another venue's sequence numbers under its
+            # own label -- the exact collision `instrument` exists to prevent, reintroduced
+            # at startup.
+            if obs.get("instrument") != self.instrument:
+                continue
+            sid = obs.get("subscription_id")
             key = self._seq_key(sid, world.get("channel") or "unknown",
                                 world.get("market_ticker"))
             self._last_seq[key] = world.get("venue_seq_last") or seq
@@ -114,7 +144,10 @@ class Ingestor:
     # ---- observation --------------------------------------------------------------
 
     def _seq_key(self, sid, channel, market_ticker):
-        return ("sid", sid) if sid is not None else ("cm", channel, market_ticker)
+        base = ("sid", sid) if sid is not None else ("cm", channel, market_ticker)
+        # Prefixed only when set, so every key written before instruments existed is
+        # unchanged and every prior log resumes exactly as it did.
+        return base if self.instrument is None else (self.instrument, *base)
 
     def observe(self, raw, received_at=None, request=None):
         """
@@ -165,7 +198,8 @@ class Ingestor:
 
         self._check_clock(ex.get("venue_ts_ms"), received_at, market_ticker, channel)
 
-        body = E.observation_body(raw, received_at, self.connection_id, ex, request)
+        body = E.observation_body(raw, received_at, self.connection_id, ex, request,
+                                  instrument=self.instrument)
         ev = self.log.append(E.WORLD, channel, body)
 
         # A field the recorder cannot interpret is recorded, never dropped and never

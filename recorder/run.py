@@ -196,6 +196,18 @@ def cmd_binance(args):
     print(health.render(health.report(args.log)))
 
 
+async def _gather(*coros):
+    """
+    Run several venue connections concurrently in ONE event loop, writing to ONE log.
+
+    Single-threaded by construction, and that is the point: `observe()` contains no await, so
+    no message can be appended inside another's append. The interleaving in the log is the
+    real arrival order on one clock, which is the whole premise of a cross-venue recording.
+    """
+    import asyncio
+    await asyncio.gather(*coros)
+
+
 def cmd_binance_futures(args):
     """
     Binance USD-M futures: perp depth, perp trades, and LIQUIDATIONS.
@@ -230,43 +242,135 @@ def cmd_binance_futures(args):
         "started_at": None,
     })
 
-    async def both(ing):
-        # One log, one clock, two connections. Concurrent coroutines in a single event loop:
-        # observe() does not await, so no message can interleave inside another's append.
-        await asyncio.gather(
-            binance.record(ing, args.symbol,
-                           stop_after=args.seconds,
-                           reconnect_after=args.reconnect_after,
-                           extra_streams=("trade",),
-                           ws_url=binance.FUTURES_PUBLIC_WS_URL,
-                           rest_url=binance.FUTURES_REST_SNAPSHOT),
-            binance.record(ing, args.symbol,
-                           stop_after=args.seconds,
-                           reconnect_after=args.reconnect_after,
-                           extra_streams=(),
-                           ws_url=binance.FUTURES_LIQUIDATION_WS_URL,
-                           snapshot=False,
-                           subscribed_as=("!forceOrder@arr",),
-                           # Empty, not a sentinel. This subscription is not scoped to any
-                           # market -- every liquidation carries its own symbol under `o.s`,
-                           # which the dialect reads. A placeholder ticker here would open a
-                           # completeness interval for a market that does not exist and can
-                           # never be anchored, i.e. permanent noise standing in for a fact
-                           # already stated in the manifest.
-                           markets=[]),
-        )
-
     with EventLog(args.log) as log:
-        ing = Ingestor(log, dialect=dialects.BINANCE_FUTURES)
+        # D-4: one Ingestor PER CONNECTION, sharing one log. See stream.Ingestor.__init__.
+        book = Ingestor(log, dialect=dialects.BINANCE_FUTURES, instrument="binance_futures")
+        liq = Ingestor(log, dialect=dialects.BINANCE_FUTURES, instrument="binance_futures")
         import events as E
         manifest["started_at"] = E.now()
-        ing.started(manifest)
+        book.started(manifest)
         try:
-            asyncio.run(both(ing))
+            asyncio.run(_gather(
+                binance.record(book, args.symbol,
+                               stop_after=args.seconds,
+                               reconnect_after=args.reconnect_after,
+                               extra_streams=("trade",),
+                               ws_url=binance.FUTURES_PUBLIC_WS_URL,
+                               rest_url=binance.FUTURES_REST_SNAPSHOT),
+                binance.record(liq, args.symbol,
+                               stop_after=args.seconds,
+                               reconnect_after=args.reconnect_after,
+                               extra_streams=(),
+                               ws_url=binance.FUTURES_LIQUIDATION_WS_URL,
+                               snapshot=False,
+                               subscribed_as=("!forceOrder@arr",),
+                               # Empty, not a sentinel. This subscription is not scoped to
+                               # any market -- every liquidation carries its own symbol under
+                               # `o.s`, which the dialect reads. A placeholder ticker would
+                               # open a completeness interval for a market that does not
+                               # exist and can never be anchored, i.e. permanent noise
+                               # standing in for a fact already in the manifest.
+                               markets=[]),
+            ))
         except KeyboardInterrupt:
             pass
         finally:
-            ing.stopped("run complete")
+            book.stopped("run complete")
+    print(health.render(health.report(args.log)))
+
+
+def cmd_spot_perp(args):
+    """
+    T0.2 -- Binance SPOT and USD-M FUTURES on one clock, in one log.
+    Public market data only. No account, no credentials, no orders.
+
+    THREE CONNECTIONS, TWO DIALECTS, ONE HASH CHAIN:
+      spot   depth + aggTrade      wss://stream.binance.com:9443/ws/
+      perp   depth + trade         wss://fstream.binance.com/public/ws/
+      perp   !forceOrder@arr       wss://fstream.binance.com/market/ws/
+
+    WHY ONE LOG AND NOT THREE. The question T0.2 exists to make answerable is whether
+    leveraged demand in the perpetual market carries information about subsequent spot
+    movement that spot does not already contain. That is a question about ORDER between two
+    venues. Three separate logs would each be internally ordered and mutually unordered,
+    and the alignment would have to be reconstructed afterwards -- reconstruction being
+    precisely what this recorder exists to keep distinguishable from observation. One log
+    records the interleaving as it happened.
+
+    WHY THE INSTRUMENT LABEL IS NOT COSMETIC. Spot and futures both call this symbol
+    `BTCUSDT`, and their sequence numbers are unrelated number spaces. Without an instrument
+    dimension on the sequence key they collide, and a healthy recording reports a gap on
+    nearly every message. See stream.Ingestor.
+
+    WHAT THIS RECORDING CANNOT SETTLE. Lead-lag between the two venues is measured on
+    `venue_ts_ms`, and Genesis has NOT verified that Binance's spot and futures matching
+    engines timestamp against synchronised clocks. It has no way to, from here. If they do
+    not, every sub-second lead-lag figure drawn from this log is wrong by that offset. The
+    assumption is carried in the manifest so no later reader has to rediscover it.
+    """
+    import asyncio
+
+    import binance
+    import dialects
+
+    manifest = dict(MANIFEST_TEMPLATE)
+    manifest.update({
+        "environment": ("Binance Spot + Binance USD-M Futures, recorded concurrently "
+                        "(public market data, unauthenticated)"),
+        "symbol": args.symbol.upper(),
+        "stream": "spot depth+aggTrade | perp depth+trade | perp !forceOrder@arr",
+        "duration_seconds": args.seconds,
+        "forced_reconnect_after_seconds": args.reconnect_after,
+        "instruments": ["binance_spot", "binance_futures"],
+        "continuity_rules": {
+            "binance_spot": "U == previous u + 1",
+            "binance_futures": "pu == previous u",
+        },
+        "liquidation_scope": ("!forceOrder@arr is VENUE-WIDE -- every USD-M symbol, not just "
+                              "the recorded one. Not this symbol's forced flow."),
+        "cross_venue_clock_assumption": (
+            "ASSUMPTION, NOT A FINDING, AND UNVERIFIED: that Binance spot and USD-M futures "
+            "timestamp against synchronised clocks. Cross-venue ordering in this log is "
+            "therefore trustworthy at venue-timestamp resolution only to the extent that "
+            "holds. `received_at` is NOT a substitute here -- see section 9 of "
+            "research/binance-futures-stream-availability.md."),
+        "started_at": None,
+    })
+
+    with EventLog(args.log) as log:
+        import events as E
+        # One Ingestor per connection (D-4), labelled by instrument so the two venues'
+        # sequence spaces cannot collide on a shared symbol.
+        spot = Ingestor(log, dialect=dialects.BINANCE, instrument="binance_spot")
+        perp = Ingestor(log, dialect=dialects.BINANCE_FUTURES, instrument="binance_futures")
+        liq = Ingestor(log, dialect=dialects.BINANCE_FUTURES, instrument="binance_futures")
+        manifest["started_at"] = E.now()
+        spot.started(manifest)
+        try:
+            asyncio.run(_gather(
+                binance.record(spot, args.symbol,
+                               stop_after=args.seconds,
+                               reconnect_after=args.reconnect_after,
+                               extra_streams=("aggTrade",)),
+                binance.record(perp, args.symbol,
+                               stop_after=args.seconds,
+                               reconnect_after=args.reconnect_after,
+                               extra_streams=("trade",),
+                               ws_url=binance.FUTURES_PUBLIC_WS_URL,
+                               rest_url=binance.FUTURES_REST_SNAPSHOT),
+                binance.record(liq, args.symbol,
+                               stop_after=args.seconds,
+                               reconnect_after=args.reconnect_after,
+                               extra_streams=(),
+                               ws_url=binance.FUTURES_LIQUIDATION_WS_URL,
+                               snapshot=False,
+                               subscribed_as=("!forceOrder@arr",),
+                               markets=[]),
+            ))
+        except KeyboardInterrupt:
+            pass
+        finally:
+            spot.stopped("run complete")
     print(health.render(health.report(args.log)))
 
 
@@ -327,6 +431,12 @@ def main(argv=None):
     bf.add_argument("--seconds", type=float, default=1800.0)
     bf.add_argument("--reconnect-after", type=float, default=None, dest="reconnect_after")
     bf.set_defaults(fn=cmd_binance_futures)
+
+    sp = sub.add_parser("spot-perp")
+    sp.add_argument("log"); sp.add_argument("symbol")
+    sp.add_argument("--seconds", type=float, default=1800.0)
+    sp.add_argument("--reconnect-after", type=float, default=None, dest="reconnect_after")
+    sp.set_defaults(fn=cmd_spot_perp)
 
     bn = sub.add_parser("binance"); bn.add_argument("log"); bn.add_argument("symbol")
     bn.add_argument("--seconds", type=float, default=1800.0)
