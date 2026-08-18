@@ -6,6 +6,30 @@
 > Genesis's work against prior art and classifies what, if anything, remains worth
 > researching. The researcher has not yet ratified the direction this implies. Living doc.
 
+> ### SCOPE — added 2026-08-18
+>
+> **This document covers cognitive architecture, axiology, and the Research OS.** It was
+> written on 2026-08-08, before the market line existed, and contains nothing on market
+> microstructure or financial econometrics.
+>
+> `canon/architecture.md` designates this document *"the authority on what is worth
+> researching."* For nine days that authority had no material on the only field Genesis was
+> working in — recorded as **C4** in
+> [`CURRENT-STATE-2026-08-18.md`](CURRENT-STATE-2026-08-18.md).
+>
+> **The market domain is surveyed separately:**
+> [`market-prior-art-audit.md`](market-prior-art-audit.md).
+>
+> Its five areas — book state (fast and slow), cross-sectional residual structure, volatility
+> predictability, external information, and the recorder's own completeness-validation method —
+> **all return A, import.** Twelve searches, three sources read, confidence marked per finding,
+> and no verdict of *novel* or *open* anywhere in it by design.
+>
+> **Those verdicts are not imported into this map's A–F classification.** That would be
+> adopting a direction, which is the researcher's. This is a pointer, not a merge. The
+> researcher's call is whether the market audit's findings become part of the authority this
+> document exercises, or remain a survey beside it.
+
 ## The rule this map enforces
 
 Before Genesis designs a laboratory around a capability, identify the established literature

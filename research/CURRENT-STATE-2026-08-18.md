@@ -213,7 +213,7 @@ marked as superseded* — and reported it as the current framing, without readin
 file. The same failure as C5: partial reading reported as a finding. Two in one document.
 
 **What survives as a real, smaller defect.** The notice says the two open questions are
-*"Stated in full in [`roadmap.md`](roadmap.md)"*. They are not in `canon/roadmap.md` at all —
+*"Stated in full in `roadmap.md`"*. They are not in `canon/roadmap.md` at all —
 that document knows only Phase 0. So the deferral points nowhere.
 
 The two questions, as the notice states them:
@@ -236,10 +236,15 @@ financial econometrics or market microstructure** — the only field Genesis has
 Its bottom line — *"Genesis is a research method in search of a problem worthy of it"* — was
 written before markets were adopted and has never been revisited against them.
 
-**Decision required:** either the map is extended with a market prior-art audit before any new
-direction is chosen, or its designation as "the authority" is narrowed to the cognitive-
-architecture question it actually covers. §3 below is *not* a substitute — it is a survey by an
-assistant, not an audited prior-art map.
+**Status 2026-08-18 — materially closed, one decision left.**
+The market survey now exists: [`market-prior-art-audit.md`](market-prior-art-audit.md), twelve
+searches across five areas, **all returning A — import**. The map now carries a scope note
+stating what it covers and pointing at it.
+
+**Decision required (the remaining half):** whether the market audit's verdicts are **imported
+into this map's A–F classification** — making them part of the authority `canon/architecture.md`
+designates — or remain a survey beside it. Merging them would adopt a direction, so it was not
+done. §3 below predates the audit and is superseded by it.
 
 ### C5 · The Phase-5 / LLM constraint — **this entry was wrong; corrected 2026-08-18**
 
