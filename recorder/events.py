@@ -204,6 +204,65 @@ def canonical_view(channel: str, msg: dict) -> dict:
             out["invalid"] = invalid
         return out
 
+    if channel == "forceOrder":
+        # A liquidation. The order sits under `o`, not flat -- reading the top level would
+        # yield an empty view with no error.
+        #
+        # SAMPLED, BY THE VENUE'S OWN RULE: only the largest liquidation per symbol in each
+        # 1000 ms window is published. This is an INDICATOR that forced flow occurred, never
+        # a count and never a sum. `venue_sampled` is carried on every record so a consumer
+        # cannot forget it, because the natural mistake -- totalling `qty` to get liquidated
+        # volume -- measures the sampling rule rather than the market and looks entirely
+        # reasonable while doing so.
+        o = msg.get("o") or {}
+        if not isinstance(o, dict) or not o:
+            bad("o", msg.get("o"), "liquidation order payload missing or not an object")
+        price = canon_price(o.get("ap") or o.get("p"))
+        if price is None:
+            bad("o.ap", o.get("ap"), "not a non-negative decimal")
+        qty = canon_size(o.get("z") or o.get("q"))
+        if qty is None:
+            bad("o.z", o.get("z"), "not a non-negative decimal")
+        side = o.get("S")
+        if side not in ("BUY", "SELL"):
+            bad("o.S", side, "not BUY or SELL")
+        out = {
+            "price": price,
+            "qty": qty,
+            # A liquidation SELL is a forced seller being taken out -- the liquidation engine
+            # sells. The side is the venue's, recorded as sent; no interpretation is applied.
+            "side": side if side in ("BUY", "SELL") else None,
+            "order_status": o.get("X"),
+            "trade_ms": o.get("T"),
+            "venue_sampled": "largest per symbol per 1000ms window; not a count or a sum",
+        }
+        if invalid:
+            out["invalid"] = invalid
+        return out
+
+    if channel == "trade":
+        # An individual futures trade. Same aggressor convention as aggTrade: `m` true means
+        # the BUYER was the maker, so the aggressor was the seller. Read, never inferred.
+        price = canon_price(msg.get("p"))
+        if price is None:
+            bad("p", msg.get("p"), "not a non-negative decimal")
+        qty = canon_size(msg.get("q"))
+        if qty is None:
+            bad("q", msg.get("q"), "not a non-negative decimal")
+        maker = msg.get("m")
+        if not isinstance(maker, bool):
+            bad("m", maker, "buyer-is-maker flag is not a boolean")
+        out = {
+            "price": price, "qty": qty,
+            "trade_id": msg.get("t"), "trade_ms": msg.get("T"),
+            "buyer_is_maker": maker if isinstance(maker, bool) else None,
+            "aggressor_side": (("sell" if maker else "buy")
+                               if isinstance(maker, bool) else None),
+        }
+        if invalid:
+            out["invalid"] = invalid
+        return out
+
     if channel == "aggTrade":
         # The aggressor side is READ, not inferred. Binance's `m` says whether the BUYER was
         # the maker; if so the aggressor was the seller. Every trade-signing heuristic in the

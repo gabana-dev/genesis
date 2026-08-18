@@ -32,6 +32,12 @@ import events as E
 WS_URL = "wss://stream.binance.com:9443/ws/{symbol}@depth"
 REST_SNAPSHOT = "https://api.binance.com/api/v3/depth?symbol={symbol}&limit=1000"
 
+# USD-M futures is a DIFFERENT HOST and a different continuity rule (see dialects
+# `binance_futures_extract`). Liquidations exist only here -- there is no spot equivalent --
+# so recording forced flow requires this connection, not an extra subscription on the spot one.
+FUTURES_WS_URL = "wss://fstream.binance.com/ws/{symbol}@depth"
+FUTURES_REST_SNAPSHOT = "https://fapi.binance.com/fapi/v1/depth?symbol={symbol}&limit=1000"
+
 # Depth payloads are large; the default 1MB frame limit is not enough for busy books.
 MAX_FRAME = 16 * 1024 * 1024
 
@@ -39,15 +45,15 @@ MAX_FRAME = 16 * 1024 * 1024
 SUBSCRIBE_ID = 1
 
 
-def rest_snapshot(symbol: str, timeout=20) -> dict:
+def rest_snapshot(symbol: str, timeout=20, rest=None) -> dict:
     """One unauthenticated GET. Returns the raw payload, unmodified."""
-    url = REST_SNAPSHOT.format(symbol=symbol.upper())
+    url = (rest or REST_SNAPSHOT).format(symbol=symbol.upper())
     with urllib.request.urlopen(url, timeout=timeout) as resp:
         return json.loads(resp.read().decode("utf-8"))
 
 
 async def record(ingestor, symbol, stop_after=None, reconnect_after=None, reconnect=True,
-                 extra_streams=("aggTrade",)):
+                 extra_streams=("aggTrade",), ws_url=None, rest_url=None):
     """
     Observe the depth stream, recording everything. Additional channels are SUBSCRIBEd on the
     same connection.
@@ -73,7 +79,9 @@ async def record(ingestor, symbol, stop_after=None, reconnect_after=None, reconn
     """
     import websockets
 
-    url = WS_URL.format(symbol=symbol.lower())
+    ws_base = ws_url or WS_URL
+    rest_base = rest_url or REST_SNAPSHOT
+    url = ws_base.format(symbol=symbol.lower())
     # D-1 (research/exec-1-recording-defects.md). These were computed from `loop.time()`, a
     # MONOTONIC clock, which on macOS does not advance while the host is asleep -- so
     # `--seconds N` bounded N seconds of WAKEFULNESS, not N seconds of elapsed time. The
@@ -95,8 +103,8 @@ async def record(ingestor, symbol, stop_after=None, reconnect_after=None, reconn
         observation like any other -- it anchors the book, it does not repair it.
         """
         try:
-            snap = rest_snapshot(symbol)
-            ingestor.observe(snap, request={"url": REST_SNAPSHOT.format(symbol=symbol.upper()),
+            snap = rest_snapshot(symbol, rest=rest_base)
+            ingestor.observe(snap, request={"url": rest_base.format(symbol=symbol.upper()),
                                             "symbol": symbol.upper()})
         except Exception as e:
             ingestor.error("rest_snapshot_failed", e)

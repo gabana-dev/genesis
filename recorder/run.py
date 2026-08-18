@@ -196,6 +196,56 @@ def cmd_binance(args):
     print(health.render(health.report(args.log)))
 
 
+def cmd_binance_futures(args):
+    """
+    Binance USD-M futures: perp depth, perp trades, and LIQUIDATIONS.
+    Public market data only. No account, no credentials, no orders.
+
+    Liquidations exist only on futures -- there is no spot equivalent -- so forced flow can
+    only be recorded here. Note the venue's own sampling rule, carried on every liquidation
+    record and repeated in the manifest: only the largest liquidation per symbol per 1000 ms
+    is published, so this stream indicates that forced flow occurred and never counts or sums
+    it.
+    """
+    import asyncio
+
+    import binance
+    import dialects
+
+    manifest = dict(MANIFEST_TEMPLATE)
+    manifest.update({
+        "environment": "Binance USD-M Futures (public market data, unauthenticated)",
+        "symbol": args.symbol.upper(),
+        "stream": "depth + trade",
+        "duration_seconds": args.seconds,
+        "forced_reconnect_after_seconds": args.reconnect_after,
+        "continuity_rule": "futures: pu == previous u (NOT spot's U == previous u + 1)",
+        "streams_unavailable": ("forceOrder, aggTrade, markPrice and kline are NOT served to "
+                                "this location -- verified silent across three hosts. See "
+                                "research/binance-futures-stream-availability.md. Individual "
+                                "@trade is served and is the better record regardless."),
+        "started_at": None,
+    })
+
+    with EventLog(args.log) as log:
+        ing = Ingestor(log, dialect=dialects.BINANCE_FUTURES)
+        import events as E
+        manifest["started_at"] = E.now()
+        ing.started(manifest)
+        try:
+            asyncio.run(binance.record(ing, args.symbol,
+                                       stop_after=args.seconds,
+                                       reconnect_after=args.reconnect_after,
+                                       extra_streams=("trade",),
+                                       ws_url=binance.FUTURES_WS_URL,
+                                       rest_url=binance.FUTURES_REST_SNAPSHOT))
+        except KeyboardInterrupt:
+            pass
+        finally:
+            ing.stopped("run complete")
+    print(health.render(health.report(args.log)))
+
+
 def cmd_record(args):
     import asyncio
 
@@ -247,6 +297,12 @@ def main(argv=None):
 
     r = sub.add_parser("record"); r.add_argument("log"); r.add_argument("tickers", nargs="+")
     r.add_argument("--seconds", type=float, default=60.0); r.set_defaults(fn=cmd_record)
+
+    bf = sub.add_parser("binance-futures")
+    bf.add_argument("log"); bf.add_argument("symbol")
+    bf.add_argument("--seconds", type=float, default=1800.0)
+    bf.add_argument("--reconnect-after", type=float, default=None, dest="reconnect_after")
+    bf.set_defaults(fn=cmd_binance_futures)
 
     bn = sub.add_parser("binance"); bn.add_argument("log"); bn.add_argument("symbol")
     bn.add_argument("--seconds", type=float, default=1800.0)
