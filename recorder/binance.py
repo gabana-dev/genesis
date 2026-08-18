@@ -35,8 +35,27 @@ REST_SNAPSHOT = "https://api.binance.com/api/v3/depth?symbol={symbol}&limit=1000
 # USD-M futures is a DIFFERENT HOST and a different continuity rule (see dialects
 # `binance_futures_extract`). Liquidations exist only here -- there is no spot equivalent --
 # so recording forced flow requires this connection, not an extra subscription on the spot one.
-FUTURES_WS_URL = "wss://fstream.binance.com/ws/{symbol}@depth"
+#
+# TWO BASE PATHS, AND THEY CANNOT SHARE A CONNECTION.
+# Binance split the futures websocket by data category and decommissioned the legacy
+# `/ws/<stream>` path on 2026-04-23. `/public` carries high-frequency channels (depth,
+# trade); `/market` carries regular market data (forceOrder, aggTrade, markPrice, kline).
+# Measured 2026-08-18 from two continents -- see
+# research/binance-futures-stream-availability.md.
+#
+# A SUBSCRIBE for a `/market` channel sent over a `/public` connection is ACKNOWLEDGED with
+# {"result": null} -- the venue's SUCCESS response -- and then delivers nothing, forever.
+# That is why `record()` now reports channels that were subscribed and stayed silent: an
+# acknowledged subscription is not evidence that data arrived.
+FUTURES_PUBLIC_WS_URL = "wss://fstream.binance.com/public/ws/{symbol}@depth"
+FUTURES_LIQUIDATION_WS_URL = "wss://fstream.binance.com/market/ws/!forceOrder@arr"
 FUTURES_REST_SNAPSHOT = "https://fapi.binance.com/fapi/v1/depth?symbol={symbol}&limit=1000"
+
+# Nairobi's link stalls: TCP maxima of 20-60 s against medians of 50-190 ms. The library
+# default open timeout aborts a handshake that would have completed, and three such aborts
+# read as "this stream is unavailable" rather than "the link stalled" -- which is exactly the
+# wrong conclusion, and one already drawn once. Generous here; slow is not absent.
+OPEN_TIMEOUT = 45
 
 # Depth payloads are large; the default 1MB frame limit is not enough for busy books.
 MAX_FRAME = 16 * 1024 * 1024
@@ -53,7 +72,8 @@ def rest_snapshot(symbol: str, timeout=20, rest=None) -> dict:
 
 
 async def record(ingestor, symbol, stop_after=None, reconnect_after=None, reconnect=True,
-                 extra_streams=("aggTrade",), ws_url=None, rest_url=None):
+                 extra_streams=("aggTrade",), ws_url=None, rest_url=None, snapshot=True,
+                 subscribed_as=("depth",), markets=None):
     """
     Observe the depth stream, recording everything. Additional channels are SUBSCRIBEd on the
     same connection.
@@ -76,6 +96,11 @@ async def record(ingestor, symbol, stop_after=None, reconnect_after=None, reconn
     reconnect handling is exercised even when the venue behaves perfectly for the whole run.
     It is recorded as DELIBERATE in the event body -- a forced reconnect that looked like a
     natural one would be fabricated evidence.
+
+    `snapshot=False` suppresses the REST anchor. The liquidation stream is a feed of discrete
+    events, not a book: there is no depth endpoint to anchor it against, and fetching the
+    unrelated depth snapshot alongside it would file an observation of one market as context
+    for another.
     """
     import websockets
 
@@ -109,10 +134,32 @@ async def record(ingestor, symbol, stop_after=None, reconnect_after=None, reconn
         except Exception as e:
             ingestor.error("rest_snapshot_failed", e)
 
+    def report_silent(channels_seen, connection_id):
+        """
+        Name any channel that was subscribed, acknowledged, and never delivered.
+
+        This is not defensive padding. Binance ACKNOWLEDGES a SUBSCRIBE for a channel that
+        lives on a different base path -- {"result": null}, its success response -- and then
+        sends nothing. Measured directly: a `/public` connection accepted an `aggTrade` and
+        `!forceOrder@arr` subscription and delivered 119 depthUpdates and zero of either.
+        Without this, the log would contain a SUBSCRIPTION_ACK, no errors, and a healthy
+        integrity check, and the missing channel would read as "the market was quiet."
+        """
+        missing = [s for s in extra_streams if s not in channels_seen]
+        if missing:
+            ingestor.log.append(
+                E.RECORDER, "SUBSCRIPTION_SILENT",
+                {"channels": missing, "connection_id": connection_id, "url": url,
+                 "note": "subscribed and acknowledged, but zero messages on this connection"})
+
     while True:
         connection_id = str(uuid.uuid4())
+        # Per-connection, because a subscription is re-established per connection: a channel
+        # that delivered on the last connection proves nothing about this one.
+        channels_seen = set()
         try:
-            async with websockets.connect(url, max_size=MAX_FRAME) as ws:
+            async with websockets.connect(url, max_size=MAX_FRAME,
+                                          open_timeout=OPEN_TIMEOUT) as ws:
                 ingestor.connection_opened(connection_id, url)
                 if extra_streams:
                     # Re-sent on EVERY reconnect. A subscription established once and assumed
@@ -123,12 +170,23 @@ async def record(ingestor, symbol, stop_after=None, reconnect_after=None, reconn
                         "method": "SUBSCRIBE",
                         "params": [f"{symbol.lower()}@{s}" for s in extra_streams],
                         "id": SUBSCRIBE_ID}))
-                ingestor.subscription_changed(["depth", *extra_streams], [symbol.upper()])
-                anchor()
+                # The channel carried by the URL itself, plus whatever was SUBSCRIBEd.
+                # `subscribed_as` and `markets` are parameters because the liquidation
+                # connection is neither depth nor one symbol: it is `!forceOrder@arr` across
+                # the WHOLE VENUE. Hardcoding ["depth"], [symbol] recorded a subscription
+                # claim that was simply false, and a false claim in the provenance chain is
+                # worse than a missing one -- it would have made 81 venue-wide liquidations
+                # look like this symbol's forced flow.
+                ingestor.subscription_changed([*subscribed_as, *extra_streams],
+                                              markets if markets is not None
+                                              else [symbol.upper()])
+                if snapshot:
+                    anchor()
 
                 while True:
                     now = time.time()
                     if deadline is not None and now >= deadline:
+                        report_silent(channels_seen, connection_id)
                         ingestor.connection_closed("stop_after reached")
                         return
                     if forced_at is not None and not forced_done and now >= forced_at:
@@ -137,6 +195,7 @@ async def record(ingestor, symbol, stop_after=None, reconnect_after=None, reconn
                             E.RECORDER, "RECONNECT_FORCED",
                             {"reason": "deliberate reconnect to exercise recovery",
                              "deliberate": True, "connection_id": connection_id})
+                        report_silent(channels_seen, connection_id)
                         ingestor.connection_closed("deliberate reconnect")
                         break
 
@@ -164,10 +223,13 @@ async def record(ingestor, symbol, stop_after=None, reconnect_after=None, reconn
                                              "connection_id": connection_id,
                                              "received_at": received_at})
                         continue
+                    if isinstance(raw, dict) and raw.get("e"):
+                        channels_seen.add(raw["e"])
                     ingestor.observe(raw, received_at=received_at)
 
         except Exception as e:
             ingestor.error(type(e).__name__, e)
+            report_silent(channels_seen, connection_id)
             ingestor.connection_closed(f"exception: {type(e).__name__}")
 
         if deadline is not None and time.time() >= deadline:

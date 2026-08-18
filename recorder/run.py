@@ -216,16 +216,45 @@ def cmd_binance_futures(args):
     manifest.update({
         "environment": "Binance USD-M Futures (public market data, unauthenticated)",
         "symbol": args.symbol.upper(),
-        "stream": "depth + trade",
+        "stream": "depth + trade + !forceOrder@arr",
         "duration_seconds": args.seconds,
         "forced_reconnect_after_seconds": args.reconnect_after,
         "continuity_rule": "futures: pu == previous u (NOT spot's U == previous u + 1)",
-        "streams_unavailable": ("forceOrder, aggTrade, markPrice and kline are NOT served to "
-                                "this location -- verified silent across three hosts. See "
-                                "research/binance-futures-stream-availability.md. Individual "
-                                "@trade is served and is the better record regardless."),
+        "connections": ("TWO. depth+trade on wss://fstream.binance.com/public/ws/, "
+                        "!forceOrder@arr on wss://fstream.binance.com/market/ws/. The venue "
+                        "split its futures websocket by data category and decommissioned the "
+                        "legacy /ws/ path on 2026-04-23; the two categories cannot share a "
+                        "connection. See research/binance-futures-stream-availability.md."),
+        "liquidation_scope": ("!forceOrder@arr is VENUE-WIDE -- every symbol, not just "
+                              "the recorded one. Do not read it as this symbol's forced flow."),
         "started_at": None,
     })
+
+    async def both(ing):
+        # One log, one clock, two connections. Concurrent coroutines in a single event loop:
+        # observe() does not await, so no message can interleave inside another's append.
+        await asyncio.gather(
+            binance.record(ing, args.symbol,
+                           stop_after=args.seconds,
+                           reconnect_after=args.reconnect_after,
+                           extra_streams=("trade",),
+                           ws_url=binance.FUTURES_PUBLIC_WS_URL,
+                           rest_url=binance.FUTURES_REST_SNAPSHOT),
+            binance.record(ing, args.symbol,
+                           stop_after=args.seconds,
+                           reconnect_after=args.reconnect_after,
+                           extra_streams=(),
+                           ws_url=binance.FUTURES_LIQUIDATION_WS_URL,
+                           snapshot=False,
+                           subscribed_as=("!forceOrder@arr",),
+                           # Empty, not a sentinel. This subscription is not scoped to any
+                           # market -- every liquidation carries its own symbol under `o.s`,
+                           # which the dialect reads. A placeholder ticker here would open a
+                           # completeness interval for a market that does not exist and can
+                           # never be anchored, i.e. permanent noise standing in for a fact
+                           # already stated in the manifest.
+                           markets=[]),
+        )
 
     with EventLog(args.log) as log:
         ing = Ingestor(log, dialect=dialects.BINANCE_FUTURES)
@@ -233,12 +262,7 @@ def cmd_binance_futures(args):
         manifest["started_at"] = E.now()
         ing.started(manifest)
         try:
-            asyncio.run(binance.record(ing, args.symbol,
-                                       stop_after=args.seconds,
-                                       reconnect_after=args.reconnect_after,
-                                       extra_streams=("trade",),
-                                       ws_url=binance.FUTURES_WS_URL,
-                                       rest_url=binance.FUTURES_REST_SNAPSHOT))
+            asyncio.run(both(ing))
         except KeyboardInterrupt:
             pass
         finally:

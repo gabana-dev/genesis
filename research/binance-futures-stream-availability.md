@@ -1,7 +1,8 @@
 # Binance futures streams: an endpoint migration, not a location restriction
 
 **Date:** 2026-08-18
-**Status: CLOSED.** A factual measurement of data availability, not a direction decision.
+**Status: CLOSED — resolved, T0.1 unblocked (§8).** A factual measurement of data
+availability, not a direction decision.
 **Classification: BUILD — engineering. Not research. No novelty claimed.**
 
 Found while implementing T0.1 (record the liquidation stream).
@@ -23,9 +24,9 @@ Found while implementing T0.1 (record the liquidation stream).
 > still arrive on the legacy path; `aggTrade`, `markPrice`, `kline` and `forceOrder` are
 > regular-market channels and are silent.
 >
-> The correct new path form has **not** been established — `/market/<stream>`, `/public/<stream>`,
-> and both bare endpoints with `SUBSCRIBE`, all return `HTTP 404`. Finding it is a small piece
-> of work and is the actual unblocker for T0.1. Recorded as unresolved rather than guessed at.
+> **RESOLVED, same day — see §8.** The new form is `/<category>/ws/<stream>`. The earlier
+> probes were missing the `/ws/` segment, which is why they returned `HTTP 404`. T0.1 is
+> unblocked and `!forceOrder@arr` is recording.
 >
 > The original text is preserved below because the measurements in it are correct and only the
 > conclusion drawn from them was not.
@@ -158,4 +159,97 @@ would buy is the elimination of 60-second stalls, which matter for *recording re
 rather than for *strategy*.
 
 **Recorded as measurement, not as a recommendation.** Whether to move the recorder is an
-operational decision, and no direction is selected.
+operational decision, and no direction is selected. §9 sharpens what such a move would and
+would not fix.
+
+---
+
+## 8. Resolution: the correct endpoints, measured
+
+The path form is `wss://fstream.binance.com/<category>/ws/<stream>`. Both earlier attempts
+omitted the `/ws/` segment and so hit `HTTP 404` on paths that do not exist — the failure was
+in the probe, not in the venue.
+
+Probed from **Nairobi and from a Paris host** (same script, same day). Every result below
+agrees across both locations, which is what establishes it as a catalogue split rather than a
+local artefact:
+
+| Stream | `/public/ws/` | `/market/ws/` |
+|---|---|---|
+| `btcusdt@depth` | **delivers** | silent |
+| `btcusdt@trade` | **delivers** | silent |
+| `btcusdt@aggTrade` | silent | **delivers** |
+| `btcusdt@markPrice` | silent | **delivers** |
+| `btcusdt@kline_1m` | silent | **delivers** |
+| `btcusdt@forceOrder` | silent | **delivers** |
+| `!forceOrder@arr` | silent | **delivers** |
+
+This matches the venue's stated split exactly: `/public` carries high-frequency channels,
+`/market` carries regular market data.
+
+### 8.1 The failure mode this creates, which is worse than a 404
+
+A `SUBSCRIBE` for a `/market` channel, sent over an open `/public` connection, is
+**acknowledged with `{"result": null}` — the venue's success response — and then delivers
+nothing.** Measured directly: a `/public` connection that accepted a subscription for
+`btcusdt@aggTrade` and `!forceOrder@arr` returned 119 `depthUpdate` messages and zero of
+either, with no error at any layer.
+
+A recorder built on the reasonable assumption that an acknowledged subscription is a working
+subscription would produce a log containing a `SUBSCRIPTION_ACK`, no errors, a passing
+integrity check, and no liquidations — and the natural reading of that log is *"forced flow is
+rare"*. That is the same class of error §6 describes, arrived at by a different route.
+
+`recorder/binance.py` therefore now emits a `SUBSCRIPTION_SILENT` recorder event naming any
+channel that was subscribed, acknowledged, and never delivered on that connection. An
+acknowledgement is a claim by the venue; delivery is the evidence.
+
+### 8.2 Consequence for the recorder: two connections, not one
+
+The two categories cannot share a connection, so futures now runs **two websockets into one
+log on one clock** — `depth`+`trade` on `/public/ws/`, `!forceOrder@arr` on `/market/ws/`.
+
+Verified over 120 s: **472 depth updates, 10,803 individual trades, 81 liquidations across 36
+symbols, zero sequence gaps, integrity verified.**
+
+Note the scope difference, which is now carried in the manifest: `!forceOrder@arr` is
+**venue-wide**. It is not the recorded symbol's forced flow, and the first implementation
+recorded it as though it were — `subscription_changed` hardcoded `["depth"], [symbol]`, which
+filed 81 venue-wide liquidations under a single-symbol subscription claim. Corrected before any
+real recording.
+
+### 8.3 What T0.1 recovers
+
+The blocked liquidation stream was treated as a pure loss of rigour: forced flow would have had
+to be *inferred* from the trade stream. It is now available, which means the inference does not
+have to be trusted — **it can be validated against it.** An inferred-cascade detector can be
+scored against real liquidation labels on the same clock, which is the same independent-channel
+pattern BAV-1 used to validate completeness labels. That is a stronger position than either
+having the stream or inferring from it alone.
+
+---
+
+## 9. A second measurement, found while smoke-testing: receipt timestamps from Nairobi
+
+The 120 s smoke test recorded **212 timestamp anomalies inside a 4.6 s wall-clock window**, all
+carrying drift of 60.0–63.3 s. The venue clock was not the problem: an independent check
+against `api.binance.com/api/v3/time` put local offset at −0.4 to −0.6 s, and `sntp` reported
++0.36 s.
+
+The signature is a **throttled link draining a backlog**. Drift *rises* through the burst
+(60.2 → 63.3 s), meaning delivery was slower than the venue was producing, so message age grew
+while the backlog drained. A live REST call during the same session took **30.7 s**. This is
+§7's instability, caught in the act.
+
+**What this does and does not invalidate.**
+
+`received_at` is unreliable from this location during stall episodes, so any analysis keyed to
+receipt time — and any live quoting — is not safely done from here.
+
+`venue_ts_ms` is unaffected. **Spot-versus-perp lead-lag is a venue-clock question**, so T0.2's
+central measurement does not depend on the link being good, and the plan proceeds from Nairobi.
+
+That relies on one assumption which Genesis has **not** verified and does not currently have a
+way to verify: that Binance's spot and USD-M futures matching engines timestamp against
+synchronised clocks. Recorded as an assumption, not a finding. If it is wrong, every lead-lag
+number at sub-second resolution is wrong by the offset.
