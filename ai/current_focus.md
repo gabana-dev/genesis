@@ -167,6 +167,12 @@ BAV-1 skew investigation and is the most strategically useful measurement the pr
 and the research record. **Never the signal.** **Agents: none until Phase 5**, then one at a
 time, each justified by a measured decision the current system gets wrong.
 
+> **RELOCATED 2026-08-18 to [`../canon/roadmap.md`](../canon/roadmap.md).** Kept here unedited
+> as the source. The phase list above was **not** relocated — see **C10** in
+> [`../research/CURRENT-STATE-2026-08-18.md`](../research/CURRENT-STATE-2026-08-18.md): the
+> sentence heading it contradicts `canon/vision.md`, and resolving that is a direction decision,
+> not a relocation.
+
 ### Standing questions for any strategy proposal
 
 - Who is on the other side, and why are they losing? No answer means noise, or we are the
@@ -177,6 +183,11 @@ time, each justified by a measured decision the current system gets wrong.
 **Largest unbuilt component: the fill/execution simulator.** It is where edges die.
 
 ## Kill criteria (researcher, 2026-08-09)
+
+> **RELOCATED 2026-08-18 to [`../canon/operations.md`](../canon/operations.md) §7.** These bind,
+> and this file is designated working memory that holds "state and activity, never project
+> substance." The canonical copy is there; the text below is kept unedited as the source.
+
 
 Stated so that abandoning a line of work is a planned outcome rather than a failure, and so
 that "intellectually interesting" is never sufficient reason to continue.

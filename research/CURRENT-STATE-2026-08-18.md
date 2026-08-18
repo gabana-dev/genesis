@@ -246,7 +246,19 @@ into this map's A–F classification** — making them part of the authority `ca
 designates — or remain a survey beside it. Merging them would adopt a direction, so it was not
 done. §3 below predates the audit and is superseded by it.
 
-### C5 · The Phase-5 / LLM constraint — **this entry was wrong; corrected 2026-08-18**
+### C5 · **RESOLVED 2026-08-18** — the constraint was real, mislocated, and is now in canon
+
+The constraint and the kill criteria have been relocated **verbatim** into
+[`../canon/roadmap.md`](../canon/roadmap.md) and
+[`../canon/operations.md`](../canon/operations.md) §7 respectively. Both were researcher-authored
+and both were sitting in a file the collaboration contract says holds no substance. Moving
+authored text is form, not authoring, so it was done.
+
+**Not moved:** the market phase list and the direction sentence that heads it — see C10.
+
+The original entry, kept because the error is the point:
+
+### C5 (original) · The Phase-5 / LLM constraint — **this entry was wrong; corrected 2026-08-18**
 
 The original entry said the constraint *"is not in this repository."* **It is**, in
 [`../ai/current_focus.md`](../ai/current_focus.md):
@@ -270,7 +282,18 @@ one is in working memory.**
 your words, or explicitly designate `ai/current_focus.md` as substance-bearing and amend
 `ai/README.md` to match. The present arrangement contradicts the collaboration contract.
 
-### C6 · `canon/roadmap.md` still shows Phase 0 as *current*
+### C6 · **PARTLY RESOLVED 2026-08-18**
+
+Phase 0 is now **marked complete** in [`../canon/roadmap.md`](../canon/roadmap.md), with a note
+explaining that the two unticked boxes are stale rather than outstanding: `constitution` and
+`ontology` were left unpopulated when the thesis they would have served was retired by DR0002.
+
+The second roadmap — the 7-phase market sequence — is **still in `ai/current_focus.md` and was
+not merged**, for the reason now recorded as C10.
+
+The original entry:
+
+### C6 (original) · `canon/roadmap.md` still shows Phase 0 as *current*
 
 Phase 0 is "build the laboratory", with two of four boxes unticked — including *"Canon
 scaffolds populated with authored content"*. Last touched 2026-08-06. Meanwhile four
@@ -303,6 +326,37 @@ in use (with Source links to the decision records that produced each practice, p
 provenance rule), or it is marked superseded and the decision records become the operative
 description. DR0006 in particular needs somewhere canonical to live, or it will be as
 discoverable as the phase list was.
+
+### C10 · Two researcher-authored direction statements, same date, in direct contradiction
+
+**Found 2026-08-18 while resolving C5/C6. The most consequential contradiction in this list,
+because it answers a question the researcher asked directly.**
+
+[`../canon/vision.md`](../canon/vision.md), supersession notice, 2026-08-10:
+
+> **No application has been selected.** Genesis is not a trading system and must not be framed
+> as one.
+
+[`../ai/current_focus.md`](../ai/current_focus.md), Direction, 2026-08-10:
+
+> **Genesis is for financial markets. Everything built from here pushes toward paper trading**,
+> with the foundation and architecture orchestrated properly first.
+
+Both researcher-authored. Same date. They cannot both govern.
+
+**Why it matters beyond filing.** The researcher asked on 2026-08-18 whether Genesis is only a
+trading system. The assistant answered from `vision.md` alone — *"your own canon forbids
+describing it as one"* — without having read the Direction section. That answer was given from
+half the evidence, and is the sixth instance of the pattern in C7.
+
+It also blocks C6: the market phase list cannot be promoted into `canon/roadmap.md` without
+importing the sentence that heads it, which would resolve this contradiction by relocation
+rather than by decision.
+
+**Decision required.** Which statement governs? If markets are selected, `vision.md`'s
+supersession notice needs amending and the phase list belongs in the roadmap. If no application
+is selected, the Direction section needs restating as conditional — *"if markets are pursued,
+this is the order"* — and the contradiction disappears.
 
 ### C7 · A pattern worth naming
 

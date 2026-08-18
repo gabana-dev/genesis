@@ -146,15 +146,35 @@ the capability-graph failure mode DR0001 classified **F — abandon**.
 
 ## 7. Kill criteria
 
-Abandoning a line of work is a planned outcome, not a failure, and *"intellectually
-interesting"* is never sufficient reason to continue. The standing criteria — including **"the
-system grows more complex without producing evidence → stop and simplify"** — are recorded in
-[`../ai/current_focus.md`](../ai/current_focus.md).
+**Authored by the researcher, 2026-08-09.** Relocated here from `ai/current_focus.md` on
+2026-08-18 — verbatim, unedited — because that file is designated working memory holding "state
+and activity, never project substance", and these bind. Resolves half of **C5**.
 
-> **Placement flag.** Those criteria, and the market phase list, currently live in a file
-> `ai/README.md` designates as assistant-maintained working memory that describes "state and
-> activity, never project substance." That is C5/C6 and it is unresolved. This document does
-> not resolve it.
+> Stated so that abandoning a line of work is a planned outcome rather than a failure, and so
+> that "intellectually interesting" is never sufficient reason to continue.
+
+| Condition | Response |
+|---|---|
+| Live validation reveals the recorder is fundamentally flawed | **Fix it** |
+| The recorder works beautifully but no meaningful application emerges | **Reconsider the application** |
+| An application requires assumptions Genesis cannot legitimately observe | **Reject it** |
+| The system grows more complex without producing evidence | **Stop and simplify** |
+| An established product already does exactly what Genesis does | **Do not pretend we invented it** |
+| A genuinely valuable capability is found | **Investigate commercialisation aggressively** |
+
+**Which have fired, as of 2026-08-18.**
+
+*"An established product already does exactly what Genesis does → do not pretend we invented
+it."* — **FIRED.** [`../research/market-prior-art-audit.md`](../research/market-prior-art-audit.md)
+returns **A, import** for all five candidate areas, including the recorder's own
+completeness-validation method, which is the match-up validation pattern from earth
+observation. The response is discharged: the finding is recorded publicly and no novelty is
+claimed anywhere in the repository.
+
+*"The recorder works beautifully but no meaningful application emerges → reconsider the
+application."* — **not fired.** No application has been tried.
+
+The remaining four have not fired.
 
 ## 8. Who may decide what
 
