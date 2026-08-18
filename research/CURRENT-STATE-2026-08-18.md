@@ -197,20 +197,34 @@ laboratory code was placed somewhere the rule forbids.
 I will not choose. Any of the three is coherent; they mean different things about what `src/`
 is *for*.
 
-### C3 · `canon/vision.md` still frames Genesis as the programme DR0002 closed
+### C3 · **This entry was wrong — withdrawn 2026-08-18**
 
-Vision states: *"Genesis is a long-term research program dedicated to discovering the minimal
-cognitive principles that allow an artificial system to continually improve the quality of its
-understanding"* and *"Markets are not the purpose of Genesis. They are the first experimental
-environment."*
+The original entry claimed `canon/vision.md` still frames Genesis as the programme DR0002
+closed, and that it was unclear whether the text was history or canon.
 
-DR0002 (ratified 2026-08-09) retired the cognitive-architecture thesis as established science
-and selected no direction. Vision was touched on 2026-08-10 — *after* DR0002 — and retains the
-framing, so it is unclear whether this is preserved-as-history or still canonical.
+**It is entirely clear.** `canon/vision.md` opens with a 60-line **SUPERSESSION NOTICE dated
+2026-08-10**, above the historical text, which states what was retired, what Genesis is
+exploring now, that quality of knowing is a property of *the structure* rather than of a knower
+inside it, that **no application has been selected and Genesis is not a trading system**, and
+that a negative outcome is a legitimate result.
 
-**Decision required:** is `canon/vision.md` current canon, or superseded history? If the
-former, it contradicts DR0002. If the latter, it needs the same "superseded" banner
-`PROGRAM-STATUS.md` uses for its triage section.
+The assistant quoted line 102 — which sits *inside the preserved historical text, explicitly
+marked as superseded* — and reported it as the current framing, without reading the top of the
+file. The same failure as C5: partial reading reported as a finding. Two in one document.
+
+**What survives as a real, smaller defect.** The notice says the two open questions are
+*"Stated in full in [`roadmap.md`](roadmap.md)"*. They are not in `canon/roadmap.md` at all —
+that document knows only Phase 0. So the deferral points nowhere.
+
+The two questions, as the notice states them:
+
+> **1. Can Genesis reliably know what is happening?**
+> **2. Can that capability produce something practically or financially valuable?**
+>
+> Question 1 is what is currently being investigated. **Question 2 has barely been tested.**
+
+**Decision required (small):** put those two questions in `canon/roadmap.md` so the deferral
+resolves, or restate them in `vision.md` and drop the pointer.
 
 ### C4 · The "authority on what is worth researching" predates the only domain now worked in
 
