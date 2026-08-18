@@ -51,13 +51,57 @@ def e(x):
     return html.escape(str(x))
 
 
-def _card(title, body, tone="ok"):
-    return f'<section class="card {tone}"><h2>{e(title)}</h2>{body}</section>'
+def _sec(title, body, tone="v"):
+    """One instrument section. `tone` drives the status LED: v verified, a attention, f failure."""
+    return (f'<section><div class="label"><span class="led {tone}"></span>'
+            f'<h2>{e(title)}</h2></div>{body}</section>')
 
 
-def _kv(pairs):
-    rows = "".join(f"<tr><th>{e(k)}</th><td>{v}</td></tr>" for k, v in pairs)
-    return f"<table class='kv'>{rows}</table>"
+def _rows(pairs):
+    return "<dl class='rows'>" + "".join(
+        f"<dt>{e(k)}</dt><dd>{v}</dd>" for k, v in pairs) + "</dl>"
+
+
+def _chip(label, value, tone):
+    return f'<span class="chip {tone}">{e(label)} <b>{e(value)}</b></span>'
+
+
+def strip(status, prov):
+    """
+    What needs attention, before any detail. A dashboard is scanned, not read.
+    """
+    c = []
+    lg = status.get("ledger", {})
+    if "error" in lg:
+        c.append(_chip("ledger", "unreadable", "f"))
+    else:
+        ok = lg.get("verify", {}).get("ok")
+        out = len(lg.get("outstanding", []))
+        c.append(_chip("chain", "verified" if ok else "FAILED", "v" if ok else "f"))
+        c.append(_chip("outstanding trials", out, "v" if out == 0 else "a"))
+
+    rc = status.get("recorder", {})
+    c.append(_chip("recorder", "running" if rc.get("running") else "idle",
+                   "v" if rc.get("running") else ""))
+
+    ev = status.get("evidence", {})
+    if "error" not in ev:
+        stale = [x for x in ev.get("committed", []) if x.get("state") != "current"]
+        behind = [x for x in ev.get("live", []) if x.get("checkpoint_behind_log")]
+        n = len(stale) + len(behind)
+        c.append(_chip("checkpoint drift", n, "v" if n == 0 else "f"))
+
+    drift = [x for x in status.get("contracts", []) if x["modified_since_commit"]]
+    c.append(_chip("contracts drifted", len(drift), "v" if not drift else "f"))
+
+    unc = status.get("repo", {}).get("uncommitted", [])
+    c.append(_chip("uncommitted", len(unc), "v" if not unc else "a"))
+
+    if "error" not in prov:
+        uns = len(prov.get("unsourced_canon", []))
+        c.append(_chip("canon without source", uns, "v" if uns == 0 else "a"))
+
+    return '<div class="strip">' + "".join(c) + "</div>"
 
 
 def build(status, prov):
@@ -66,143 +110,207 @@ def build(status, prov):
     # ---- ledger ----
     lg = status.get("ledger", {})
     if "error" in lg:
-        parts.append(_card("Trial ledger", f"<p class='bad'>{e(lg['error'])}</p>", "bad"))
+        parts.append(_sec("Trial ledger", f"<p class='f'>{e(lg['error'])}</p>", "f"))
     else:
         out = lg.get("outstanding", [])
         ok = lg.get("verify", {}).get("ok")
-        body = _kv([
-            ("chain", "<span class='ok'>verified</span>" if ok
-             else f"<span class='bad'>FAILED — {e(lg.get('verify'))}</span>"),
+        body = _rows([
+            ("chain", "<span class='v'>verified</span>" if ok
+             else f"<span class='f'>FAILED — {e(lg.get('verify'))}</span>"),
             ("declared", lg.get("declared")),
             ("recorded", lg.get("recorded")),
-            ("outstanding", f"<strong>{len(out)}</strong>"),
+            ("outstanding", len(out)),
         ])
         if out:
-            body += "<h3>Outstanding — with the question as declared</h3><ul class='trials'>"
+            body += "<h3>Outstanding — the question as declared, not the name</h3>"
             for t in out:
-                body += (f"<li><code>{e(t['trial_id'])}</code> <b>{e(t['family'])}</b>"
-                         f"<div class='q'>{e(t['question'])}</div></li>")
-            body += "</ul>"
-        parts.append(_card("Trial ledger", body, "ok" if ok and not out else "warn"))
+                body += (f"<div class='trial'><span class='id'>{e(t['trial_id'])}</span> "
+                         f"{e(t['family'])}<div class='q'>{e(t['question'])}</div></div>")
+        parts.append(_sec("Trial ledger", body, "v" if ok and not out else "a"))
 
     # ---- recorder ----
     rc = status.get("recorder", {})
     if rc.get("running"):
         procs = "".join(f"<li><code>{e(p)}</code></li>" for p in rc.get("processes", []))
-        parts.append(_card("Recorder", f"<p class='ok'>RUNNING</p><ul class='small'>{procs}</ul>"))
+        parts.append(_sec("Recorder",
+                          f"<p class='v'>running</p><ul class='plain'>{procs}</ul>", "v"))
     else:
-        parts.append(_card("Recorder", "<p class='muted'>not running</p>", "muted"))
+        parts.append(_sec("Recorder", "<p class='dim'>not running</p>", ""))
 
     # ---- evidence ----
     ev = status.get("evidence", {})
     if "error" in ev:
-        parts.append(_card("Evidence", f"<p class='bad'>{e(ev['error'])}</p>", "bad"))
+        parts.append(_sec("Evidence", f"<p class='f'>{e(ev['error'])}</p>", "f"))
     else:
         rows = ""
         for r in ev.get("live", []):
             size = (f"{r['size_bytes']/1e9:.2f} GB" if r["size_bytes"] > 1e9
                     else f"{r['size_bytes']/1e6:.1f} MB")
-            warn = " <span class='bad'>checkpoint older than log</span>" if r.get(
-                "checkpoint_behind_log") else ""
-            rows += (f"<tr><td><code>{e(r['log'])}</code></td><td>{size}</td>"
-                     f"<td>{e(r.get('events','?'))}</td>"
-                     f"<td>{e(r.get('checkpoint_age') or r.get('checkpoint','?'))}{warn}</td></tr>")
-        body = ("<table><thead><tr><th>log</th><th>size</th><th>events</th>"
-                f"<th>checkpoint</th></tr></thead><tbody>{rows}</tbody></table>")
+            warn = (" <span class='f'>checkpoint older than log</span>"
+                    if r.get("checkpoint_behind_log") else "")
+            ev_n = r.get("events", "?")
+            ev_s = f"{ev_n:,}" if isinstance(ev_n, int) else e(ev_n)
+            rows += (f"<tr><td><code>{e(r['log'])}</code></td><td class='n'>{size}</td>"
+                     f"<td class='n'>{ev_s}</td>"
+                     f"<td class='n'>{e(r.get('checkpoint_age') or r.get('checkpoint','?'))}"
+                     f"{warn}</td></tr>")
+        body = ("<div class='tablewrap'><table><thead><tr><th>log</th><th>size</th>"
+                f"<th>events</th><th>checkpoint</th></tr></thead><tbody>{rows}"
+                "</tbody></table></div>")
         stale = [c for c in ev.get("committed", []) if c.get("state") != "current"]
-        body += "<h3>Committed checkpoints</h3><ul class='small'>"
+        body += "<h3>Committed checkpoints, matched to live logs by chain hash</h3><ul class='plain'>"
         for c in ev.get("committed", []):
-            cls = "ok" if c.get("state") == "current" else "bad"
-            body += f"<li class='{cls}'><code>{e(c['file'])}</code> — {e(c.get('state'))}</li>"
+            cls = "v" if c.get("state") == "current" else "f"
+            body += (f"<li><code>{e(c['file'])}</code> — "
+                     f"<span class='{cls}'>{e(c.get('state'))}</span></li>")
         body += "</ul>"
-        parts.append(_card("Evidence", body, "bad" if stale else "ok"))
+        parts.append(_sec("Evidence", body, "f" if stale else "v"))
 
     # ---- contracts ----
     cs = status.get("contracts", [])
     rows = "".join(
-        f"<tr><td><code>{e(c['path'])}</code></td><td class='mono'>{e(c['sha256'][:16])}…</td>"
-        f"<td>{'<span class=bad>MODIFIED</span>' if c['modified_since_commit'] else 'frozen'}</td></tr>"
-        for c in cs)
+        f"<tr><td><code>{e(c['path'])}</code></td><td class='n'>{e(c['sha256'][:16])}…</td>"
+        f"<td>{'<span class=f>MODIFIED</span>' if c['modified_since_commit'] else 'frozen'}"
+        "</td></tr>" for c in cs)
     drift = any(c["modified_since_commit"] for c in cs)
-    parts.append(_card("Contracts",
-                       f"<table><tbody>{rows}</tbody></table>", "bad" if drift else "ok"))
+    parts.append(_sec("Contracts",
+                      f"<div class='tablewrap'><table><tbody>{rows}</tbody></table></div>",
+                      "f" if drift else "v"))
+
+    # ---- provenance ----
+    if "error" in prov:
+        parts.append(_sec("Provenance", f"<p class='f'>{e(prov['error'])}</p>", "f"))
+    else:
+        uns = prov.get("unsourced_canon", [])
+        unres = prov.get("unresolved_links", [])
+        body = _rows([("documents", prov.get("documents")),
+                      ("links", prov.get("links")),
+                      ("unresolved links", len(unres)),
+                      ("orphans", len(prov.get("orphans", []))),
+                      ("canon without a source", len(uns))])
+        if uns:
+            body += ("<h3>Canon reaching no decision record or journal</h3><ul class='plain'>"
+                     + "".join(f"<li class='a'><code>{e(u)}</code></li>" for u in uns)
+                     + "</ul><p class='note'>Flagged, not resolved. The Guardian flags a "
+                       "missing source and does not supply one — a plausible source found "
+                       "after the fact is indistinguishable from the real thing.</p>")
+        parts.append(_sec("Provenance", body, "a" if (uns or unres) else "v"))
 
     # ---- repository ----
     rp = status.get("repo", {})
     unc = rp.get("uncommitted", [])
-    body = _kv([("last commit", f"<code>{e(rp.get('last_commit'))}</code>"),
-                ("working tree", "clean" if not unc else
-                 f"<span class='warn'>{len(unc)} uncommitted</span>")])
+    body = _rows([("last commit", f"<code>{e(rp.get('last_commit'))}</code>"),
+                  ("working tree", "clean" if not unc else f"{len(unc)} uncommitted")])
     if unc:
-        body += "<ul class='small'>" + "".join(f"<li><code>{e(u)}</code></li>" for u in unc) + "</ul>"
-    parts.append(_card("Repository", body, "warn" if unc else "ok"))
-
-    # ---- provenance ----
-    if "error" in prov:
-        parts.append(_card("Provenance", f"<p class='bad'>{e(prov['error'])}</p>", "bad"))
-    else:
-        uns = prov.get("unsourced_canon", [])
-        unres = prov.get("unresolved_links", [])
-        body = _kv([("documents", prov.get("documents")),
-                    ("links", prov.get("links")),
-                    ("unresolved links", len(unres)),
-                    ("orphans", len(prov.get("orphans", []))),
-                    ("canon without a source", f"<strong>{len(uns)}</strong>")])
-        if uns:
-            body += ("<h3>Canon reaching no decision record or journal</h3><ul class='small'>"
-                     + "".join(f"<li class='bad'><code>{e(u)}</code></li>" for u in uns)
-                     + "</ul><p class='note'>Flagged, not resolved — the Guardian flags a "
-                       "missing source and does not supply one.</p>")
-        parts.append(_card("Provenance", body, "warn" if (uns or unres) else "ok"))
+        body += "<ul class='plain'>" + "".join(
+            f"<li><code>{e(u)}</code></li>" for u in unc) + "</ul>"
+    parts.append(_sec("Repository", body, "v" if not unc else "a"))
 
     # ---- records ----
     rec = status.get("records", {})
-    parts.append(_card("Records", _kv([
-        ("experiments", f"{len(rec.get('experiments', []))} "
-                        f"(latest {e(rec.get('experiments', ['—'])[-1])})"),
-        ("decisions", f"{len(rec.get('decisions', []))} "
-                      f"(latest {e(rec.get('decisions', ['—'])[-1])})"),
-    ])))
+    exps, decs = rec.get("experiments", []), rec.get("decisions", [])
+    parts.append(_sec("Records", _rows([
+        ("experiments", f"{len(exps)} — latest {e(exps[-1]) if exps else '—'}"),
+        ("decisions", f"{len(decs)} — latest {e(decs[-1]) if decs else '—'}"),
+    ]), "v"))
 
     return "\n".join(parts)
 
 
 CSS = """
-:root{--bg:#faf9f7;--fg:#1c1b19;--muted:#6b6862;--line:#e2ded7;--card:#fff;
---ok:#1f6f43;--warn:#8a5a00;--bad:#a02020;--accent:#7a4a1e}
-@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#141312;--fg:#e8e5e0;
---muted:#8f8a82;--line:#2c2a27;--card:#1b1a18;--ok:#5bb98a;--warn:#d9a441;--bad:#e06c6c;
---accent:#c99b6a}}
-:root[data-theme=dark]{--bg:#141312;--fg:#e8e5e0;--muted:#8f8a82;--line:#2c2a27;--card:#1b1a18;
---ok:#5bb98a;--warn:#d9a441;--bad:#e06c6c;--accent:#c99b6a}
+:root{
+  --ground:#f6f7f8; --surface:#ffffff; --ink:#14171a; --muted:#646c74;
+  --rule:#dfe3e7; --rule-strong:#c9d0d6;
+  --verified:#0b6e4f; --attention:#8a5b00; --failure:#a3271b; --steel:#2e5d7d;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ground:#101214; --surface:#171a1d; --ink:#e6e9ec; --muted:#8a939c;
+  --rule:#262b30; --rule-strong:#343b42;
+  --verified:#4fb58b; --attention:#d9a441; --failure:#e0705f; --steel:#7faecb;
+}}
+:root[data-theme="dark"]{
+  --ground:#101214; --surface:#171a1d; --ink:#e6e9ec; --muted:#8a939c;
+  --rule:#262b30; --rule-strong:#343b42;
+  --verified:#4fb58b; --attention:#d9a441; --failure:#e0705f; --steel:#7faecb;
+}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 -apple-system,
-BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding:28px 20px 60px}
-.wrap{max-width:940px;margin:0 auto}
-h1{font-size:22px;margin:0 0 4px;letter-spacing:-.01em}
-.sub{color:var(--muted);font-size:13px;margin:0 0 26px}
-.card{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--line);
-border-radius:6px;padding:16px 18px;margin:0 0 14px}
-.card.ok{border-left-color:var(--ok)}.card.warn{border-left-color:var(--warn)}
-.card.bad{border-left-color:var(--bad)}.card.muted{border-left-color:var(--line)}
-h2{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);
-margin:0 0 12px;font-weight:600}
-h3{font-size:13px;margin:16px 0 8px;color:var(--fg)}
-table{width:100%;border-collapse:collapse;font-size:13.5px}
-td,th{text-align:left;padding:5px 8px 5px 0;border-bottom:1px solid var(--line);
-vertical-align:top}
-table.kv th{width:190px;color:var(--muted);font-weight:400}
-thead th{color:var(--muted);font-weight:600;font-size:12px}
-code,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px}
-ul{margin:6px 0;padding-left:18px}ul.small{font-size:13px}
-ul.trials{list-style:none;padding:0}
-ul.trials li{border:1px solid var(--line);border-radius:5px;padding:9px 11px;margin:0 0 8px}
-.q{color:var(--muted);font-size:13px;margin-top:4px}
-.ok{color:var(--ok)}.warn{color:var(--warn)}.bad{color:var(--bad)}.muted{color:var(--muted)}
-.note{color:var(--muted);font-size:12.5px;font-style:italic;margin:8px 0 0}
-footer{color:var(--muted);font-size:12.5px;margin-top:28px;border-top:1px solid var(--line);
-padding-top:14px}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font:14px/1.55 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  padding:32px 20px 72px;
+}
+.wrap{max-width:880px;margin:0 auto}
+
+h1{font-size:19px;font-weight:600;letter-spacing:-.01em;margin:0 0 3px;text-wrap:balance}
+.stamp{
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:11.5px;color:var(--muted);margin:0 0 24px;
+  font-variant-numeric:tabular-nums;
+}
+
+/* state strip — the summary before the detail */
+.strip{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 30px}
+.chip{
+  display:inline-flex;align-items:baseline;gap:7px;
+  border:1px solid var(--rule-strong);padding:5px 10px;
+  font-size:11.5px;letter-spacing:.03em;
+}
+.chip b{
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-variant-numeric:tabular-nums;font-weight:600;
+}
+.chip.v{border-color:var(--verified);color:var(--verified)}
+.chip.a{border-color:var(--attention);color:var(--attention)}
+.chip.f{border-color:var(--failure);color:var(--failure)}
+
+section{border-top:1px solid var(--rule);padding:18px 0 6px}
+.label{display:flex;align-items:center;gap:8px;margin:0 0 14px}
+.led{width:7px;height:7px;flex:none;background:var(--muted)}
+.led.v{background:var(--verified)}
+.led.a{background:var(--attention)}
+.led.f{background:var(--failure)}
+h2{
+  font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.11em;
+  color:var(--muted);margin:0;
+}
+h3{font-size:12px;font-weight:600;margin:18px 0 8px;color:var(--ink)}
+
+.rows{display:grid;grid-template-columns:auto 1fr;gap:5px 20px;font-size:13px}
+.rows dt{color:var(--muted)}
+.rows dd{
+  margin:0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-variant-numeric:tabular-nums;font-size:12.5px;
+}
+
 .tablewrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th,td{text-align:left;padding:6px 14px 6px 0;border-bottom:1px solid var(--rule);vertical-align:top}
+thead th{
+  font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--muted);font-weight:600;border-bottom-color:var(--rule-strong);
+}
+td.n{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}
+
+ul.plain{list-style:none;padding:0;margin:6px 0 0;font-size:12.5px}
+ul.plain li{padding:3px 0;border-bottom:1px solid var(--rule)}
+ul.plain li:last-child{border-bottom:0}
+
+.trial{border:1px solid var(--rule-strong);padding:10px 12px;margin:0 0 8px}
+.trial .id{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--steel)}
+.trial .q{color:var(--muted);font-size:12.5px;margin-top:5px}
+
+.v{color:var(--verified)}.a{color:var(--attention)}.f{color:var(--failure)}
+.dim{color:var(--muted)}
+.note{color:var(--muted);font-size:12px;font-style:italic;margin:10px 0 0;max-width:62ch}
+footer{
+  border-top:1px solid var(--rule-strong);margin-top:34px;padding-top:16px;
+  color:var(--muted);font-size:12px;max-width:66ch;
+}
+a{color:var(--steel)}
+:focus-visible{outline:2px solid var(--steel);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 """
 
 
@@ -213,7 +321,8 @@ def page(status, prov):
 <style>{CSS}</style>
 <div class="wrap">
 <h1>Genesis — where things stand</h1>
-<p class="sub">generated {e(gen)} · {e(commit)}</p>
+<p class="stamp">generated {e(gen)}<br>{e(commit)}</p>
+{strip(status, prov)}
 {build(status, prov)}
 <footer>
 A snapshot, not a live view: it says what was true when it was generated, which is the same
