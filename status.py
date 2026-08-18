@@ -280,6 +280,9 @@ def render(s):
     L.append(f"  decisions    {len(s['records']['decisions'])}  "
              f"(latest {s['records']['decisions'][-1] if s['records']['decisions'] else '—'})")
     L.append("")
+    L.append("Provenance:  .venv/bin/python provenance.py            what rests on what")
+    L.append("             provenance.py --rests-on <file>          before retracting anything")
+    L.append("")
     L.append("This layer reports. It does not decide — DR0005.")
     return "\n".join(L)
 
