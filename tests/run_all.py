@@ -28,6 +28,7 @@ SUITES = [
     "test_multi_connection.py",
     "test_costs.py",
     "test_carry.py",
+    "test_dir1.py",
     "test_recorder_decimal_qty.py",
     "test_recorder_validity.py",
     "test_health_cli.py",
