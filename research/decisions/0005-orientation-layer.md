@@ -78,15 +78,33 @@ The assistant proposed writing the four EXEC-1 ledger declarations. They already
 Unchecked, that would have duplicated them and corrupted the family-size correction the ledger
 exists to protect — an automated helper, acting sensibly, silently damaging the instrument.
 
-**A claim that could not be verified, recorded rather than repeated.** The assistant's memory
-also held that "the roadmap places agents at Phase 5, one at a time, each justified by a
-measured decision the current system gets wrong — and the LLM is never the signal," and offered
-it as binding. **It is not in this repository.** `canon/roadmap.md` defines only Phase 0 and
-says of everything after it: *"Authored by the researchers... AI leaves this open."* So the
-claim is unverifiable here, and asserting it would have imported a constraint the canon does
-not contain. It is noted only so that a future reader who encounters the same assertion knows
-it was checked and not found. If the researcher recognises it, it belongs in the roadmap,
-authored by them.
+**A constraint the assistant mislocated, and then wrongly declared absent — corrected
+2026-08-18.**
+
+The assistant's memory held that "the roadmap places agents at Phase 5, one at a time, each
+justified by a measured decision the current system gets wrong — and the LLM is never the
+signal," and offered it as binding.
+
+The **first** version of this section said the claim "is not in this repository." **That was
+wrong.** It is in [`../../ai/current_focus.md`](../../ai/current_focus.md):
+
+> **LLM enters at Phase 5** for hypothesis generation, anomaly explanation, unstructured
+> events and the research record. **Never the signal.** **Agents: none until Phase 5**, then
+> one at a time, each justified by a measured decision the current system gets wrong.
+
+The memory was right about the content and wrong only about the location — it said *roadmap*,
+and the text lives in working memory. The assistant then searched `canon/` and `research/`,
+**not `ai/`**, using paraphrases rather than the literal wording, found nothing, and recorded
+"not found" as a finding. An incomplete search reported as an absence: the same failure this
+project keeps naming, committed inside a decision record about reporting honestly. It was
+caught by an outside reader of the public repository, not from within.
+
+**What the episode actually exposes, and what needs deciding.** A binding research constraint —
+*never the signal*, *no agents before Phase 5* — lives in a file that `ai/README.md` describes
+as assistant-maintained working memory, which "describes state and activity, never project
+substance." Substance is sitting in a form-only file that the assistant is licensed to edit.
+The constraint should be in the canon, authored by the researcher. Recorded here as a decision
+required, not resolved.
 
 ## Evidence from EXEC-1 that the reporting half is worth building
 

@@ -227,16 +227,29 @@ direction is chosen, or its designation as "the authority" is narrowed to the co
 architecture question it actually covers. §3 below is *not* a substitute — it is a survey by an
 assistant, not an audited prior-art map.
 
-### C5 · The Phase-5 / LLM constraint (already recorded in DR0005)
+### C5 · The Phase-5 / LLM constraint — **this entry was wrong; corrected 2026-08-18**
 
-My memory carried, and I offered as *binding*: *"the roadmap places agents at Phase 5, one at a
-time, each justified by a measured decision the current system gets wrong — and the LLM is
-never the signal."* **It is not in this repository.** `canon/roadmap.md` defines only Phase 0
-and says of everything after: *"Authored by the researchers … AI leaves this open."*
+The original entry said the constraint *"is not in this repository."* **It is**, in
+[`../ai/current_focus.md`](../ai/current_focus.md):
 
-**Decision required:** do you recognise this constraint? If yes, it belongs in
-`canon/roadmap.md` in your words. If no, DR0005's note stands as the record that it was
-checked and not found.
+> **LLM enters at Phase 5** … **Never the signal.** **Agents: none until Phase 5**, then one at
+> a time, each justified by a measured decision the current system gets wrong.
+
+The assistant searched `canon/` and `research/` but not `ai/`, using paraphrases rather than
+the literal wording, and reported the absence as a finding. Caught by an outside reader.
+
+**The real contradiction, which is worse than the one recorded.** A binding research constraint
+lives in a file `ai/README.md` defines as assistant-maintained working memory that "describes
+state and activity, **never project substance**." Substance is in a form-only file the
+assistant may edit. Related: `ai/current_focus.md` also carries a **7-phase market roadmap**
+(market literacy → measure → execution → one real decision → paper trading → hypothesis search
+→ edge-decay → small capital), while `canon/roadmap.md` — the document `canon/architecture.md`
+names as authoritative for phases — knows only Phase 0. **There are two roadmaps and the real
+one is in working memory.**
+
+**Decision required:** promote the constraint and the phase list into `canon/roadmap.md` in
+your words, or explicitly designate `ai/current_focus.md` as substance-bearing and amend
+`ai/README.md` to match. The present arrangement contradicts the collaboration contract.
 
 ### C6 · `canon/roadmap.md` still shows Phase 0 as *current*
 
