@@ -10,3 +10,6 @@ rdb_data/*.log
 # The holdout is not downloaded and must never arrive here by accident. If the design is
 # ever frozen and the holdout opened, this entry is removed deliberately, not silently.
 rdb_data/raw_holdout/
+
+# Derived: regenerate with `.venv/bin/python dashboard.py`. A snapshot is not evidence.
+dashboard.html
