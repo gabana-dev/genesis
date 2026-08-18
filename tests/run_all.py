@@ -36,6 +36,8 @@ SUITES = [
     "test_market.py",
     "test_ledger.py",
     "test_fills.py",
+    "test_holons.py",
+    "test_holon_volatility.py",
     "test_rdb_series.py",
     "test_closed_loop.py",
     "test_sparse_loop.py",
