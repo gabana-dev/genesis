@@ -63,14 +63,41 @@ is still in `ai/current_focus.md` and has **not** been promoted here — see the
 > one decision with one real cost → paper trading → pre-registered hypothesis search →
 > edge-decay monitoring → small capital. Phases 0–3 are complete (BAV-1, MEASURE-1, EXEC-1).
 >
-> **It was deliberately not promoted into this document.** Doing so would import the sentence
-> that heads it — *"Genesis is for financial markets. Everything built from here pushes toward
-> paper trading"* — into the canon, and that sentence contradicts
-> [`vision.md`](vision.md), which states on the same date that **"no application has been
-> selected. Genesis is not a trading system and must not be framed as one."**
+> **C10 resolved 2026-08-18, in favour of the canon.** The sequence formerly headed *"Genesis
+> is for financial markets, everything built from here pushes toward paper trading"* has been
+> **restated as conditional** on the researcher's instruction. No application is selected.
+> Markets are the environment Genesis has been measured against, not a destination.
 >
-> Both are researcher-authored and dated 2026-08-10. Resolving that is a direction decision, not
-> a relocation, and it is recorded as **C10** in
-> [`../research/CURRENT-STATE-2026-08-18.md`](../research/CURRENT-STATE-2026-08-18.md).
+> The sequence is therefore recorded here as **conditional and unauthorised** — what the order
+> *would be* if markets were pursued, so that adopting it later is a visible decision rather
+> than a drift.
+
+### The market sequence — CONDITIONAL, selects nothing
+
+**Nothing below is authorised.** Recording an order is not choosing to walk it, and DR0003 §10
+still forbids adopting a roadmap of future milestones in advance. This exists so that a later
+decision to proceed has to be made explicitly.
+
+| | | |
+|---|---|---|
+| 0 | Trustworthy observation | **complete** — [BAV-1](../research/experiments/0007-bav-1-book-agreement-validation.md), p = 0.0165 |
+| 1 | Market literacy | the researcher's own; not a Genesis work item |
+| 2 | Measure the environment, do not trade it | **complete** — [MEASURE-1](../research/experiments/0008-measure-1-cost-of-being-right.md) |
+| 3 | Execution economics | **complete** — [EXEC-1](../research/experiments/0009-exec-1-maker-advantage.md), 1.83 bps survives |
+| 4 | **One decision, one real cost, against a do-nothing baseline** | not started — the next phase if pursued |
+| 5 | Paper trading at deployable size | not started |
+| 6 | Pre-registered hypothesis search — trial counter, deflated Sharpe, held-out untouched | not started |
+| 7 | Edge-decay monitoring — the completeness machinery pointed at strategies | not started |
+| 8 | Real capital, small | not started; **no decision record authorises this** |
+
+Phase 4 is the one [DR0006](../research/decisions/0006-no-prediction-without-a-consumer.md)
+shapes: any predictive contract must name its consumer, the decision it changes, a do-nothing
+baseline, and a wiring kill condition. EXEC-1 already supplies the baseline — a fixed 300 s TTL
+losing 39.07% of the maker advantage.
+
+The constraints that would bind, all measured rather than assumed, are in
+[`../ai/current_focus.md`](../ai/current_focus.md): a ~291 ms latency floor eliminating every
+sub-minute strategy, round-trip costs setting affordability at roughly four hours, and a solo
+operator with small capital ruling out capacity-constrained approaches.
 
 _(unwritten)_

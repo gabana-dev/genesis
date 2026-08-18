@@ -102,11 +102,33 @@ notes that the environment-first gate ruled on Genesis-*authored* simulators and
 externally recorded data. DR0003 permits considering a harder recorded target; **it selects
 none.**
 
-## Direction (researcher, 2026-08-10)
+## Direction — CONDITIONAL (researcher, 2026-08-10; restated 2026-08-18)
 
-**Genesis is for financial markets. Everything built from here pushes toward paper trading**,
-with the foundation and architecture orchestrated properly first. Market literacy is the
-researcher's own task and is not a Genesis work item.
+> **Restated on the researcher's instruction, 2026-08-18:** *"no application is selected —
+> restate the direction section as conditional."*
+>
+> The original wording read as a **selection** and contradicted
+> [`../canon/vision.md`](../canon/vision.md), which states on the same date that *"no
+> application has been selected. Genesis is not a trading system and must not be framed as
+> one."* Two researcher-authored statements, same day, both governing. That was recorded as
+> **C10** in [`../research/CURRENT-STATE-2026-08-18.md`](../research/CURRENT-STATE-2026-08-18.md)
+> and is resolved here **in favour of the canon**. The original is preserved below, unedited.
+
+**No application is selected.** Markets are the environment Genesis has been *measured
+against* — the first laboratory, per `vision.md` — not a destination it has committed to. The
+work to date (BAV-1, MEASURE-1, EXEC-1) is measurement of an environment, and measuring an
+environment does not select it.
+
+**Conditionally — if markets are pursued, this is the order**, and the constraints below are
+what would bind. Nothing here authorises the sequence; it records what the sequence would be
+so that adopting it later is a visible decision rather than a drift.
+
+Market literacy is the researcher's own task and is not a Genesis work item.
+
+> **Superseded wording, 2026-08-10, preserved:**
+>
+> > *Genesis is for financial markets. Everything built from here pushes toward paper trading,
+> > with the foundation and architecture orchestrated properly first.*
 
 ### Hard constraints — measured, not assumed
 
@@ -121,7 +143,7 @@ researcher's own task and is not a Genesis work item.
 counterparties who are structurally price-insensitive.** The latency figure came from the
 BAV-1 skew investigation and is the most strategically useful measurement the project owns.
 
-### Phase gates
+### Phase gates — conditional; see the restatement above
 
 0. Trustworthy observation — **COMPLETE.** BAV-1, run 3, 2026-08-10:
    [`../research/experiments/0007-bav-1-book-agreement-validation.md`](../research/experiments/0007-bav-1-book-agreement-validation.md).

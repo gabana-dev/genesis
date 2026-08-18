@@ -282,14 +282,16 @@ one is in working memory.**
 your words, or explicitly designate `ai/current_focus.md` as substance-bearing and amend
 `ai/README.md` to match. The present arrangement contradicts the collaboration contract.
 
-### C6 · **PARTLY RESOLVED 2026-08-18**
+### C6 · **RESOLVED 2026-08-18**
 
 Phase 0 is now **marked complete** in [`../canon/roadmap.md`](../canon/roadmap.md), with a note
 explaining that the two unticked boxes are stale rather than outstanding: `constitution` and
 `ontology` were left unpopulated when the thesis they would have served was retired by DR0002.
 
-The second roadmap — the 7-phase market sequence — is **still in `ai/current_focus.md` and was
-not merged**, for the reason now recorded as C10.
+**RESOLVED in full 2026-08-18.** With C10 settled, the market sequence is now in
+[`../canon/roadmap.md`](../canon/roadmap.md) as a **conditional, unauthorised** sequence —
+recording what the order *would be* if markets were pursued, so that adopting it later is a
+visible decision rather than a drift. There is now one roadmap.
 
 The original entry:
 
@@ -327,7 +329,25 @@ provenance rule), or it is marked superseded and the decision records become the
 description. DR0006 in particular needs somewhere canonical to live, or it will be as
 discoverable as the phase list was.
 
-### C10 · Two researcher-authored direction statements, same date, in direct contradiction
+### C10 · **RESOLVED 2026-08-18 — in favour of the canon**
+
+The researcher's instruction: *"no application is selected — restate the direction section as
+conditional."*
+
+[`../ai/current_focus.md`](../ai/current_focus.md) §Direction is now conditional. It states
+plainly that **no application is selected**, that markets are the environment Genesis has been
+*measured against* rather than a destination, and that the phase sequence records what the order
+*would be* so that adopting it later is a visible decision rather than a drift. The original
+wording is preserved beneath it, unedited.
+
+`canon/vision.md` governs. Genesis is not a trading system.
+
+**Consequence:** the phase list is now promotable to `canon/roadmap.md` as a conditional
+sequence, because doing so no longer imports a selection. That was the blocker on C6.
+
+The original entry:
+
+### C10 (original) · Two researcher-authored direction statements, same date, in direct contradiction
 
 **Found 2026-08-18 while resolving C5/C6. The most consequential contradiction in this list,
 because it answers a question the researcher asked directly.**
