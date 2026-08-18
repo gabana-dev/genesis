@@ -2,6 +2,17 @@
 
 > **Type 1 · Research** — authored by the researchers. Claude maintains form only:
 > proofreading, formatting, links. See [`../ai/collaboration.md`](../ai/collaboration.md).
+>
+> **Scope note, added 2026-08-18.** This is the *epistemic* account — how Genesis holds that
+> knowledge is formed. It was written before the market line opened and does not describe the
+> method now in use: frozen contracts with digests, kill conditions declared before the data,
+> the trial ledger, multiple-comparison correction, the CONTEXT/trial boundary. That is
+> [`operations.md`](operations.md).
+>
+> Whether this document should be updated to describe the working method, or marked superseded
+> with the decision records becoming the operative description, is recorded as **C9** in
+> [`../research/CURRENT-STATE-2026-08-18.md`](../research/CURRENT-STATE-2026-08-18.md) and is
+> undecided. Nothing here has been rewritten.
 
 ## How Genesis Discovers Understanding
 

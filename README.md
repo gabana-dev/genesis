@@ -41,6 +41,14 @@ repository has recorded against itself.
 
 ### Where to start reading
 
+**If you want to know what this project actually does, start here:**
+[`research/CURRENT-STATE-2026-08-18.md`](research/CURRENT-STATE-2026-08-18.md) — what is
+established, falsified and unknown — and [`canon/operations.md`](canon/operations.md), which is
+how research is conducted here: frozen contracts, the trial ledger, kill conditions declared
+before the data, and what may not be claimed.
+
+The reading order below is the original one, written before the market line opened.
+
 1. [`canon/vision.md`](canon/vision.md) — the thesis. Why Genesis exists.
 2. [`canon/philosophical-foundations.md`](canon/philosophical-foundations.md) — the ground
    the vision stands on.
@@ -49,8 +57,9 @@ repository has recorded against itself.
 5. [`ai/current_focus.md`](ai/current_focus.md) — what is actually being worked on today.
 6. [`research/PROGRAM-STATUS.md`](research/PROGRAM-STATUS.md) — the milestone tracker.
 
-The rest of the canon: [`epistemology.md`](canon/epistemology.md),
-[`ontology.md`](canon/ontology.md), [`architecture.md`](canon/architecture.md), and
+The rest of the canon: [`operations.md`](canon/operations.md) — **the working method**,
+[`epistemology.md`](canon/epistemology.md), [`ontology.md`](canon/ontology.md),
+[`architecture.md`](canon/architecture.md), and
 [`research-methodology.md`](canon/research-methodology.md).
 
 If you are an AI collaborator opening this repo cold, start at
