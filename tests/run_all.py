@@ -31,6 +31,7 @@ SUITES = [
     "test_status.py",
     "test_completeness.py",
     "test_recorder_binance.py",
+    "test_recorder_aggtrade.py",
     "test_bav.py",
     "test_market.py",
     "test_ledger.py",

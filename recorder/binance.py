@@ -23,6 +23,7 @@ anything.
 
 import asyncio
 import json
+import time
 import urllib.request
 import uuid
 
@@ -34,6 +35,9 @@ REST_SNAPSHOT = "https://api.binance.com/api/v3/depth?symbol={symbol}&limit=1000
 # Depth payloads are large; the default 1MB frame limit is not enough for busy books.
 MAX_FRAME = 16 * 1024 * 1024
 
+# Fixed id on our SUBSCRIBE, so the acknowledgement can be told apart from market data.
+SUBSCRIBE_ID = 1
+
 
 def rest_snapshot(symbol: str, timeout=20) -> dict:
     """One unauthenticated GET. Returns the raw payload, unmodified."""
@@ -42,9 +46,25 @@ def rest_snapshot(symbol: str, timeout=20) -> dict:
         return json.loads(resp.read().decode("utf-8"))
 
 
-async def record(ingestor, symbol, stop_after=None, reconnect_after=None, reconnect=True):
+async def record(ingestor, symbol, stop_after=None, reconnect_after=None, reconnect=True,
+                 extra_streams=("aggTrade",)):
     """
-    Observe the depth stream, recording everything.
+    Observe the depth stream, recording everything. Additional channels are SUBSCRIBEd on the
+    same connection.
+
+    WHY SUBSCRIBE RATHER THAN A COMBINED-STREAM URL
+        Binance offers `/stream?streams=a/b`, which wraps every payload as
+        {"stream": ..., "data": {...}}. Storing the unwrapped inner object would break
+        invariant 3 -- `raw` is what the venue sent -- and storing the wrapper would make the
+        dialect read a shape no single-stream recording has. Subscribing over the existing
+        `/ws/<stream>` connection leaves payloads in their documented form, so one dialect
+        covers both and every prior recording stays comparable.
+
+    WHY aggTrade, AND WHY IT MUST BE RECORDED LIVE
+        EXEC-1 carried no trade stream, so every fill was inferred from book evolution and
+        reported as a bracket. Binance publishes historical aggTrades, but publishes no book
+        at this resolution -- so book AND trades on one clock, under this recorder's own
+        completeness labels, cannot be backfilled. It exists only if recorded.
 
     `reconnect_after` forces one deliberate reconnect that many seconds in, so the recorder's
     reconnect handling is exercised even when the venue behaves perfectly for the whole run.
@@ -53,10 +73,18 @@ async def record(ingestor, symbol, stop_after=None, reconnect_after=None, reconn
     """
     import websockets
 
-    loop = asyncio.get_running_loop()
     url = WS_URL.format(symbol=symbol.lower())
-    deadline = None if stop_after is None else loop.time() + stop_after
-    forced_at = None if reconnect_after is None else loop.time() + reconnect_after
+    # D-1 (research/exec-1-recording-defects.md). These were computed from `loop.time()`, a
+    # MONOTONIC clock, which on macOS does not advance while the host is asleep -- so
+    # `--seconds N` bounded N seconds of WAKEFULNESS, not N seconds of elapsed time. The
+    # EXEC-1 host slept 6.28h across 18 episodes and the run was still going 3h54m past its
+    # nominal end, silently and without bound.
+    #
+    # Wall clock is what a caller passing 604800 means, and what a pre-registered "7 days"
+    # window means. NTP can step this clock, but by seconds over a week -- negligible beside
+    # the hours a monotonic clock loses to sleep.
+    deadline = None if stop_after is None else time.time() + stop_after
+    forced_at = None if reconnect_after is None else time.time() + reconnect_after
     forced_done = False
 
     def anchor():
@@ -78,11 +106,20 @@ async def record(ingestor, symbol, stop_after=None, reconnect_after=None, reconn
         try:
             async with websockets.connect(url, max_size=MAX_FRAME) as ws:
                 ingestor.connection_opened(connection_id, url)
-                ingestor.subscription_changed(["depth"], [symbol.upper()])
+                if extra_streams:
+                    # Re-sent on EVERY reconnect. A subscription established once and assumed
+                    # to persist across a drop is the same class of error as a stale
+                    # checkpoint: the recording would look healthy while silently missing a
+                    # channel from the first disconnection onward.
+                    await ws.send(json.dumps({
+                        "method": "SUBSCRIBE",
+                        "params": [f"{symbol.lower()}@{s}" for s in extra_streams],
+                        "id": SUBSCRIBE_ID}))
+                ingestor.subscription_changed(["depth", *extra_streams], [symbol.upper()])
                 anchor()
 
                 while True:
-                    now = loop.time()
+                    now = time.time()
                     if deadline is not None and now >= deadline:
                         ingestor.connection_closed("stop_after reached")
                         return
@@ -106,13 +143,26 @@ async def record(ingestor, symbol, stop_after=None, reconnect_after=None, reconn
                     except json.JSONDecodeError as e:
                         ingestor.malformed(payload, e)
                         continue
+                    if isinstance(raw, dict) and raw.get("id") == SUBSCRIBE_ID \
+                            and "result" in raw:
+                        # The SUBSCRIBE acknowledgement. Not an observation of the market --
+                        # passing it to observe() would record it as a WORLD event with an
+                        # unknown channel and no market. Recorded as a recorder event so the
+                        # subscription is evidenced rather than assumed, and so a rejected
+                        # subscription is visible instead of silent.
+                        ingestor.log.append(E.RECORDER, "SUBSCRIPTION_ACK",
+                                            {"result": raw.get("result"), "id": raw.get("id"),
+                                             "streams": list(extra_streams),
+                                             "connection_id": connection_id,
+                                             "received_at": received_at})
+                        continue
                     ingestor.observe(raw, received_at=received_at)
 
         except Exception as e:
             ingestor.error(type(e).__name__, e)
             ingestor.connection_closed(f"exception: {type(e).__name__}")
 
-        if deadline is not None and loop.time() >= deadline:
+        if deadline is not None and time.time() >= deadline:
             return
         if not reconnect:
             return

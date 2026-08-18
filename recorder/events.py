@@ -204,6 +204,38 @@ def canonical_view(channel: str, msg: dict) -> dict:
             out["invalid"] = invalid
         return out
 
+    if channel == "aggTrade":
+        # The aggressor side is READ, not inferred. Binance's `m` says whether the BUYER was
+        # the maker; if so the aggressor was the seller. Every trade-signing heuristic in the
+        # literature (Lee-Ready and its descendants) exists because most feeds do not tell
+        # you this. Here it is published, so inferring it would be inventing an observation.
+        #
+        # Reversing this flag inverts signed order flow and nothing crashes -- it is the
+        # class of error that produces a plausible wrong answer, so it carries a test.
+        price = canon_price(msg.get("p"))
+        if price is None:
+            bad("p", msg.get("p"), "not a non-negative decimal")
+        qty = canon_size(msg.get("q"))
+        if qty is None:
+            bad("q", msg.get("q"), "not a non-negative decimal")
+        maker = msg.get("m")
+        if not isinstance(maker, bool):
+            bad("m", maker, "buyer-is-maker flag is not a boolean")
+        out = {
+            "price": price,
+            "qty": qty,
+            "agg_trade_id": msg.get("a"),
+            "first_trade_id": msg.get("f"),
+            "last_trade_id": msg.get("l"),
+            "trade_ms": msg.get("T"),
+            "buyer_is_maker": maker if isinstance(maker, bool) else None,
+            "aggressor_side": (("sell" if maker else "buy")
+                               if isinstance(maker, bool) else None),
+        }
+        if invalid:
+            out["invalid"] = invalid
+        return out
+
     if channel == "orderbook_snapshot":
         out = {}
         for side in ("yes", "no"):

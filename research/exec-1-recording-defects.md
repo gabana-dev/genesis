@@ -61,8 +61,14 @@ stopped had accrued only ~596,237 s of monotonic time against a 604,800 s deadli
 overnight would produce a recording that runs a day long with nothing in any log to say why.
 The duration parameter reads like a wall-clock guarantee and is not one.
 
-**Not fixed here.** Any change to the recorder's duration semantics affects what a
-pre-registered recording window means, which is not an engineering decision alone.
+**FIXED 2026-08-18** — `recorder/binance.py` now computes the deadline from `time.time()`.
+
+This was originally deferred on the grounds that changing duration semantics affects what a
+pre-registered window means. On reflection that framing was wrong: wall clock is what a caller
+passing `604800` already meant, and what the EXEC-1 contract's "7 days" already meant. The
+monotonic clock was a defect, not a design choice, so this **restores** the intended semantics
+rather than changing them. NTP can step the wall clock, but by seconds over a week — negligible
+beside the hours a monotonic clock loses to host sleep.
 
 **Second-order observation.** Because the deadline is monotonic, the overrun partially
 *compensated* for the observation gaps the sleeps caused. This was accidental. It should not

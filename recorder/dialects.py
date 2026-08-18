@@ -50,6 +50,25 @@ def binance_extract(raw: dict) -> dict:
         return {"channel": "depthSnapshot", "market": raw.get("symbol"),
                 "seq_first": None, "seq_last": None,
                 "venue_ts_ms": None, "subscription_id": None, "msg": raw}
+    if raw.get("e") == "aggTrade":
+        # An aggregate trade carries `f`/`l` -- the first and last individual trade id it
+        # aggregates -- which is a contiguous range on the same footing as depth's U/u. It
+        # does NOT carry U/u, so reading those would give (None, None) and silently disable
+        # gap detection on the busiest channel.
+        #
+        # Trade ids and depth update ids are different number spaces on the same symbol.
+        # `stream` keys sequence state by (subscription, channel, market), so they cannot
+        # collide -- but only because `channel` is in that key. If it were ever removed,
+        # interleaving these two streams would emit a SEQUENCE_GAP on nearly every message.
+        return {
+            "channel": "aggTrade",
+            "market": raw.get("s"),
+            "seq_first": raw.get("f"),
+            "seq_last": raw.get("l"),
+            "venue_ts_ms": raw.get("E"),
+            "subscription_id": None,
+            "msg": raw,
+        }
     return {
         "channel": raw.get("e") or "unknown",
         "market": raw.get("s"),
