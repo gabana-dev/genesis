@@ -209,6 +209,66 @@ def resume_does_not_borrow_the_other_instrument_state(tmp):
     return "each instrument resumes only its own sequence state"
 
 
+@check
+def a_drop_on_one_connection_does_not_invalidate_another(tmp):
+    """
+    Completeness narrowing, authorised by the researcher 2026-08-18. A perp reconnect must not
+    mark the spot book incomplete when spot's own connection never missed a beat.
+    """
+    from completeness import CompletenessRule, affects
+    path = os.path.join(tmp, "scope.log")
+    with EventLog(path) as log:
+        spot = Ingestor(log, dialect=dialects.BINANCE, instrument="binance_spot")
+        perp = Ingestor(log, dialect=dialects.BINANCE_FUTURES, instrument="binance_futures")
+        spot.connection_opened("spot-1", "wss://spot/ws")
+        spot.subscription_changed(["depth"], ["BTCUSDT"])
+        perp.connection_opened("perp-1", "wss://perp/ws")
+        perp.subscription_changed(["depth"], ["ETHUSDT"])
+        perp.connection_closed("dropped")
+
+    rule = CompletenessRule()
+    hits = []
+    for ev in read(path):
+        out = rule.observe(ev)
+        if ev.get("event_type") == "CONNECTION_CLOSED":
+            hits.append(out)
+    assert len(hits) == 1, hits
+    assert not affects(hits[0], "BTCUSDT"), "a perp drop invalidated the spot book"
+    assert affects(hits[0], "ETHUSDT"), "the perp drop did not invalidate its own market"
+    return "a drop is scoped to the markets its connection carried"
+
+
+@check
+def an_undeclared_connection_still_invalidates_everything(tmp):
+    """
+    Narrowing must not turn an honest UNKNOWN into a confident nothing. A connection that
+    closes before declaring any subscription has unbounded scope, and unbounded damage cannot
+    be scoped -- distinct from the venue-wide liquidation feed, which authoritatively carries
+    no market and therefore invalidates no book.
+    """
+    from completeness import CompletenessRule, ALL, affects
+    path = os.path.join(tmp, "unknown.log")
+    with EventLog(path) as log:
+        a = Ingestor(log, dialect=dialects.BINANCE, instrument="binance_spot")
+        liq = Ingestor(log, dialect=dialects.BINANCE_FUTURES, instrument="binance_futures")
+        a.connection_opened("mystery-1", "wss://spot/ws")
+        a.connection_closed("dropped before subscribing")     # scope never declared
+        liq.connection_opened("liq-1", "wss://perp/market")
+        liq.subscription_changed(["!forceOrder@arr"], [])     # declared, and empty
+        liq.connection_closed("dropped")
+
+    rule = CompletenessRule()
+    outs = {}
+    for ev in read(path):
+        out = rule.observe(ev)
+        if ev.get("event_type") == "CONNECTION_CLOSED":
+            outs[ev["body"]["connection_id"]] = out
+    assert outs["mystery-1"]["invalidates"] == ALL, outs["mystery-1"]
+    assert not affects(outs["liq-1"], "BTCUSDT"), \
+        "the venue-wide liquidation feed invalidated a book it never carried"
+    return "unknown scope stays global; an authoritative empty scope invalidates nothing"
+
+
 def main():
     tmp = tempfile.mkdtemp(prefix="genesis-multiconn-")
     failed = 0

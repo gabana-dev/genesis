@@ -134,7 +134,14 @@ class Ingestor:
                                 "connection_id": self.connection_id})
 
     def error(self, kind: str, detail):
-        return self.log.append(E.RECORDER, "ERROR", {"kind": kind, "detail": str(detail)})
+        # connection_id is recorded so an error can be attributed to the link it came from.
+        # It does NOT currently narrow completeness: errors remain fail-safe and global by
+        # the researcher's decision of 2026-08-10, whose exemption list is deliberately
+        # empty. Attribution is a prerequisite for that question being ASKABLE, not an
+        # answer to it.
+        return self.log.append(E.RECORDER, "ERROR",
+                               {"kind": kind, "detail": str(detail),
+                                "connection_id": self.connection_id})
 
     def malformed(self, payload, detail):
         return self.log.append(E.RECORDER, "MALFORMED_MESSAGE",

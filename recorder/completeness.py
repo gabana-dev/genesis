@@ -47,6 +47,10 @@ class CompletenessRule:
 
     def __init__(self):
         self._subscribed = set()
+        # connection_id -> the markets that connection declared. Presence is
+        # meaningful: an empty list is an authoritative "no market", absence is
+        # an unknown scope. See the CONNECTION_CLOSED branch.
+        self._carried = {}
         self._run = None
 
     def observe(self, ev) -> dict:
@@ -120,8 +124,38 @@ class CompletenessRule:
                     "reason": f"error in the observation path: {kind}"}
 
         # Class 3 -- periods during which Genesis was not continuously observing.
-        if typ in ("CONNECTION_CLOSED", "CONNECTION_OPENED",
-                   "RECORDER_STARTED", "RECORDER_STOPPED"):
+        #
+        # CONNECTION events are scoped to the markets THAT connection was carrying; recorder
+        # events stay global. Authorised by the researcher, 2026-08-18, on this reasoning:
+        # with several independent connections, a drop on one says nothing about another that
+        # never missed a beat, and invalidating clean spot data because a perp link reset is
+        # a loss of real evidence. Recorder start/stop and malformed messages are different
+        # in kind -- they are statements about the recorder, not about one link -- so they
+        # continue to invalidate everything.
+        #
+        # NOT INHERITED FROM BAV-1. BAV-1 validated the previous, unconditionally global rule
+        # against a single-connection recording. This narrowed rule is UNVALIDATED, and no
+        # completeness label produced under it may claim BAV-1's authority until a separate
+        # validation covers it. Recorded here so the gap cannot be forgotten.
+        if typ in ("CONNECTION_CLOSED", "CONNECTION_OPENED"):
+            cid = body.get("connection_id")
+            # PRESENCE in the map is the test, not truthiness. A connection that declared a
+            # subscription carrying no market -- the venue-wide !forceOrder@arr feed is
+            # exactly this -- has an authoritative scope that happens to be empty, and its
+            # loss invalidates no market's book. A connection that closed before ever
+            # declaring a subscription has an UNKNOWN scope, and unknown damage cannot be
+            # bounded, so it still invalidates everything. Collapsing those two into "falsy"
+            # would silently convert an honest unknown into a confident nothing.
+            if cid not in self._carried:
+                return {"invalidates": ALL, "restores": None, "reason": _WHY[typ]}
+            carried = self._carried[cid]
+            if not carried:
+                return None
+            return {"invalidates": carried[0] if len(carried) == 1 else list(carried),
+                    "restores": None,
+                    "reason": f"{_WHY[typ]} (scoped to {', '.join(sorted(carried))})"}
+
+        if typ in ("RECORDER_STARTED", "RECORDER_STOPPED"):
             return {"invalidates": ALL, "restores": None, "reason": _WHY[typ]}
 
         # Class 4 -- failure to establish a trustworthy starting state.
@@ -134,6 +168,14 @@ class CompletenessRule:
         # Scoped to newly affected markets only: adding a market says nothing about a
         # market already being observed.
         if typ == "SUBSCRIPTION_CHANGED":
+            # Remember what each connection carries, so its loss can be scoped to that and
+            # not to every market in the log.
+            cid = body.get("connection_id")
+            if cid is not None:
+                self._carried.setdefault(cid, [])
+                for m in (body.get("market_tickers") or []):
+                    if m not in self._carried[cid]:
+                        self._carried[cid].append(m)
             new = [m for m in (body.get("market_tickers") or []) if m not in self._subscribed]
             self._subscribed.update(body.get("market_tickers") or [])
             if new:
@@ -194,4 +236,9 @@ _WHY = {
 def affects(outcome, market_ticker) -> bool:
     """Does this outcome's scope cover the market being reconstructed?"""
     scope = outcome.get("invalidates")
-    return scope == ALL or scope == market_ticker
+    if scope == ALL:
+        return True
+    # A connection may carry several markets, so a scope can be a list.
+    if isinstance(scope, list):
+        return market_ticker in scope
+    return scope == market_ticker
