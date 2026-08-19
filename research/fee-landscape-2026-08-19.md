@@ -153,7 +153,7 @@ measurement**, and is slightly larger than the fee schedules alone suggested.
 arrived normally at 2/s, so this is not a dead feed. Hyperliquid's `l2Book` appears to publish
 throttled snapshots rather than continuous diffs.
 
-**That matters more than the spread.** Genesis's entire microstructure toolkit — queue position,
+**That matters more than the spread — but see §6.3, which corrects this.** Genesis's entire microstructure toolkit — queue position,
 fill bracketing, cancellation-versus-fill separation, adverse-selection markouts — assumes a
 continuously updating book. At 0.2 updates/second, EXEC-1's methods do not transfer, and
 anything resembling COND-1 is not computable there.
@@ -172,3 +172,34 @@ by the methods Genesis currently owns.
 The bar figures above, on both venues, count fees and spread only. They are optimistic by
 whatever adverse selection turns out to be. That was true of every bar in this project and is
 restated here because the venue comparison does not change it.
+
+### 6.3 Correction: the slow book was our subscription, not the venue
+
+§6.1 reported ~0.2 book updates/second and concluded Hyperliquid was *"economically attractive
+but experimentally unusable for Genesis's current microstructure methods."* **That conclusion
+was drawn from one subscription and is wrong as stated.**
+
+Re-probed, 60 seconds each:
+
+| subscription | rate |
+|---|---|
+| `l2Book` (default) | 0.20/s |
+| `l2Book` (nSigFigs=5) | 0.20/s |
+| **`bbo`** | **5.55/s** |
+| `activeAssetCtx` | 1.00/s |
+
+**`bbo` updates 28× faster than `l2Book`, and faster than Binance's ~3.7/s depth stream.**
+The throttling is a property of the full-depth subscription, not of the venue.
+
+**What this does and does not restore.** `bbo` carries top-of-book only — best bid and ask, no
+depth behind them. So:
+
+- **Markout and adverse-selection measurement transfer.** Those need the mid, which is
+  top-of-book, and 5.55/s is better resolution than Binance provides. EXEC-1's central
+  measurement is available on Hyperliquid.
+- **Queue position, depth consumption, and cancellation-versus-fill do not.** Those need the
+  full book, and that is still throttled to 0.2/s.
+
+The honest revision: Hyperliquid is not blind. It is **blind to depth and sharp at the touch**,
+which is a much narrower limitation than §6.1 claimed and leaves the adverse-selection work
+open.
