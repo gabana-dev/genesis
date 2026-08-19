@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Genesis collector watch. See research/next-phase-review-2026-08-19.md §12.
+
+  launchd rather than cron, for two reasons:
+    1. macOS crontab is setuid root and wedged unkillably on this machine, so the crontab
+       could not be edited at all.
+    2. It is the better mechanism regardless. StartCalendarInterval fires a MISSED job when
+       the machine wakes; cron silently skips it. On a laptop that sleeps, a monitor that
+       skips its run is a monitor that is asleep exactly when the collectors are too.
+
+  Reports only, never repairs -- DR0005.
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>dev.gabana.genesis.collector-watch</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/gabana/genesis/collector-watch.sh</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/gabana/genesis</string>
+
+    <key>StartCalendarInterval</key>
+    <array>
+        <dict>
+            <key>Hour</key><integer>7</integer>
+            <key>Minute</key><integer>30</integer>
+        </dict>
+        <dict>
+            <key>Hour</key><integer>19</integer>
+            <key>Minute</key><integer>30</integer>
+        </dict>
+    </array>
+
+    <!-- Fires once at load, which doubles as the smoke test. The check is read-only. -->
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>StandardOutPath</key>
+    <string>/Users/gabana/genesis-evidence/collector-watch.launchd.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/gabana/genesis-evidence/collector-watch.launchd.log</string>
+</dict>
+</plist>

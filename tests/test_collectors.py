@@ -144,6 +144,22 @@ def huge_records_do_not_produce_a_false_alarm():
     return "500 KB rows still read as healthy"
 
 
+def _isolated_log(fn):
+    """
+    Run a watch check against a throwaway log.
+
+    W.main() APPENDS, and pointing it at the real log wrote fake STALLED lines into the
+    operational record -- which during a genuine incident would read as history. A test must
+    never write to the thing it is testing the integrity of.
+    """
+    saved = W.LOG
+    try:
+        W.LOG = os.path.join(tempfile.mkdtemp(), "watch.log")
+        return fn()
+    finally:
+        W.LOG = saved
+
+
 @check
 def watch_reports_failure_rather_than_passing():
     # Bug 2: the watch must never exit 0 when it could not perform the check.
@@ -152,7 +168,7 @@ def watch_reports_failure_rather_than_passing():
         def boom():
             raise RuntimeError("simulated source change")
         W.problems = boom
-        assert W.main() == 1, "a watch that cannot check must not report healthy"
+        assert _isolated_log(W.main) == 1, "a watch that cannot check must not report healthy"
     finally:
         W.problems = saved
     return "unable to check == alarm"
@@ -163,12 +179,26 @@ def watch_exit_codes_match_state():
     saved = W.problems
     try:
         W.problems = lambda: []
-        assert W.main() == 0
+        assert _isolated_log(W.main) == 0
         W.problems = lambda: ["econ1: STALLED (ran OK, advanced STALLED)"]
-        assert W.main() == 1
+        assert _isolated_log(W.main) == 1
     finally:
         W.problems = saved
     return "0 healthy, 1 alarm"
+
+
+@check
+def tests_never_write_to_the_operational_log():
+    before = os.path.getsize(W.LOG) if os.path.exists(W.LOG) else 0
+    saved = W.problems
+    try:
+        W.problems = lambda: ["synthetic: STALLED"]
+        _isolated_log(W.main)
+    finally:
+        W.problems = saved
+    after = os.path.getsize(W.LOG) if os.path.exists(W.LOG) else 0
+    assert after == before, "a test wrote to the real collector-watch log"
+    return "operational log untouched by tests"
 
 
 @check
