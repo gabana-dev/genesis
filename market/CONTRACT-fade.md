@@ -8,6 +8,46 @@ found it is reported and recorded, not silently repaired.
 Odean's, decades old. What is new here is only that realised profit is *directly observable*
 on an on-chain order book, so the cohort can be identified from ground truth rather than proxied.
 
+> ## AMENDMENT 2 — 2026-08-19, before any wallet has been scored
+>
+> **Split into a refutation channel and a confirmation channel.** Both changes tighten; nothing
+> is loosened.
+>
+> **The defect this repairs.** K1 required 60 days of harvest before any read. That threshold was
+> set by counting *decision points* when it should have counted *independent* ones. At a one-day
+> horizon, N days of evaluation give **N independent observations** however finely they are
+> sampled — 60 days is 30, which was never going to establish anything. The number was wrong in
+> a way that would have produced a long wait for an underpowered answer.
+>
+> **And more history makes the central bias worse, not better.** Wallets come from Genesis's own
+> live recording, so they are wallets active *today*. Scoring them over a longer past conditions
+> harder on survival: every trader who blew up and stopped is invisible. Extending the harvest
+> buys observations at the cost of the very bias §4 already declares.
+>
+> ### The two channels
+>
+> **REFUTATION — historical, available now, and it can only kill.** Cohort membership persistence
+> (F4 / G4) is testable on the 22 days already harvested: two 10-day windows, which is Zhai's own
+> design. If membership does not persist, **K4 fires and both contracts close**, in hours rather
+> than months.
+>
+> **This channel may NOT report B1–B4 as evidence.** It may refute the premise; it may not
+> support it. A positive economic figure computed here is survivorship-contaminated by
+> construction and is reported, if at all, as a pilot that confirms nothing.
+>
+> **CONFIRMATION — forward, and the only channel that can support a result.** Evaluation runs on
+> decision points at or after **2026-08-21**, using the `hl1` recording, which is unbiased: it
+> sees every wallet that trades, not only the ones the harvest reached. Cohort selection still
+> uses harvested history — survivorship affects *who is picked*, which is acceptable because the
+> cohort being traded against is by definition currently active.
+>
+> **K1 is replaced:** no *confirmatory* read before **270 forward decision points**, matching
+> ECON-1. The 60-day harvest requirement is withdrawn as the wrong instrument for the question.
+>
+> **A fast no, a slow yes.** That is the correct shape for a hypothesis with these odds, and it
+> was not the shape originally declared.
+
+
 ---
 
 ## 1. The change of question
@@ -58,6 +98,11 @@ never that it is *irrational*.
 
 **Prices:** Hyperliquid BTC, from the `hl1` recording and 1-hour klines.
 
+> ### ~~The harvest as it stands is INSUFFICIENT~~ — SUPERSEDED BY AMENDMENT 2
+>
+> *Retained because a frozen contract is not edited. The 60-day threshold below counted
+> decision points rather than independent observations and is withdrawn; see Amendment 2.*
+>
 > ### The harvest as it stands is INSUFFICIENT, and this is stated before any result
 >
 > The current harvest reaches 22 days back. FADE-1 requires a **30-day scoring window (W1)**
