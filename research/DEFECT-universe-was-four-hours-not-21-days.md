@@ -22,9 +22,20 @@ missing open interest belongs to *"wallets that never traded during the 21-day r
 | universe frozen | **2026-08-19 12:44Z** |
 | **recording length at freeze** | **≈ 4 hours 13 minutes** |
 
-**Where "21 days" came from.** `hl_harvest` pages each wallet's fill history **backwards 20 days**
-through `userFillsByTime`. That is 20 days of *history fetched per wallet*, not 20 days of
-*recording*. I conflated the two and then reasoned from the wrong one for a full day.
+**Where "21 days" came from — two sources, both real, both misattached.**
+
+1. `hl_harvest` pages each wallet's fill history **backwards 20 days** through `userFillsByTime`.
+   That is 20 days of *history fetched per wallet*, not 20 days of *recording*.
+2. **`hl1` was itself started with `duration_seconds: 1814400` — exactly 21 days.** Discovered
+   2026-08-19 23:47 while restarting it. That is the recording's **declared** length.
+
+So "21 days" was never invented. It is hl1's planned duration, which I read as its **elapsed**
+duration. The recording was four hours old and scheduled to run for twenty-one days, and I took
+the schedule for the history.
+
+**That makes the lesson sharper, not softer.** A number that is genuinely present in the system
+is far more dangerous than one that is made up, because checking that it exists confirms nothing
+about what it measures.
 
 ## 2. Why this matters enormously
 
