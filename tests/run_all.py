@@ -32,6 +32,7 @@ SUITES = [
     "test_dir2.py",
     "test_econ1.py",
     "test_hyperliquid.py",
+    "test_cond1.py",
     "test_recorder_decimal_qty.py",
     "test_recorder_validity.py",
     "test_health_cli.py",
