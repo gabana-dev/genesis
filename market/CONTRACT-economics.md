@@ -6,6 +6,28 @@ defect is found it is reported and recorded, not silently repaired.
 
 **Classification: BUILD. No novelty claimed.**
 
+> ## AMENDMENT 1 — 2026-08-19, before any forward observation exists
+>
+> **What changed:** a fourth benchmark (B4, exposure-matched) and a declared forward
+> decomposition (§4.4) were added. Nothing was removed, relaxed, or reworded in a way that
+> makes the test easier.
+>
+> **Why this is legitimate, stated so it can be judged rather than assumed.** ECON-1 evaluates
+> only decision points at or after 2026-08-20. **No observation in its evaluation set exists
+> yet.** The contract is being amended pre-data, and every change makes the test *stricter*.
+>
+> **Why it is nonetheless not innocent.** The amendment was prompted by exploratory work on
+> DIR-2's in-sample data (§7), so it is not made blind. The mitigating fact is direction:
+> adding harder controls after seeing encouraging exploratory numbers biases **against** a
+> positive result, which is the safe way to be contaminated. Had the amendment loosened
+> anything, it would be void.
+>
+> **The defect it repairs.** B2 compares against buy-and-hold at 100% exposure. The strategy's
+> measured **net exposure is 0.4197** — it is long 71% of the time and short the rest, so it
+> carries roughly **2.4× less** directional exposure than the benchmark it was being asked to
+> beat. In a rising market that is the wrong comparison in both directions at once: too hard on
+> return, too easy on risk. Found by an outside reader.
+
 ---
 
 ## 1. Why this contract exists, stated against my own interest
@@ -77,27 +99,64 @@ run with a placeholder.
 Reported alongside, and non-substitutable: median net, standard deviation, per-trade Sharpe,
 worst trade, and the full decile distribution of net returns.
 
-### 4.2 Three benchmarks, all declared
+### 4.2 Four benchmarks, all declared
 - **B1 — zero.** Net return per trade > 0.
 - **B2 — buy-and-hold.** Mean net return must exceed the mean return of holding the asset over
   the same decision points, **after applying the same cost stack to a single entry and exit**.
 - **B3 — sign permutation.** The same predictions with signs randomly permuted, 10,000 draws.
-  The observed net must exceed the **95th percentile** of that null. This directly tests
-  whether the *timing* carries information, independent of net exposure.
+  The observed net must exceed the **95th percentile** of that null. Permutation preserves the
+  count of longs and shorts exactly, so net exposure is held fixed and only the **timing** is
+  destroyed. This is the test of whether *when* the signal fires carries information.
+- **B4 — exposure-matched constant position** *(Amendment 1)*. A static position equal to the
+  strategy's realised **net exposure** over the same decision points, under the same cost
+  stack. The strategy must beat it.
 
-**A result must clear all three.** Clearing B1 alone is what a long-biased signal does in a
+  **This is the primary passive benchmark, not B2.** Measured net exposure in the exploratory
+  sample was **0.4197** — long 71% of the time, short the rest. Buy-and-hold carries 2.4× that
+  directional exposure, so B2 alone asks whether the strategy beats something taking far more
+  risk. B4 asks the question that matters: **does the timing add anything over simply holding
+  the same average exposure?**
+
+**A result must clear all four.** Clearing B1 alone is what a long-biased signal does in a
 rising market.
 
 ### 4.3 Controls, reported every time
 - **Net exposure** — the fraction of predictions that are long. If it exceeds 0.60 or falls
-  below 0.40, the result is reported as **directionally biased** and B2/B3 become the only
-  admissible evidence.
+  below 0.40, the result is reported as **directionally biased** and B3/B4 become the only
+  admissible evidence. *(B2 was named here before Amendment 1; buy-and-hold is not
+  exposure-matched and cannot adjudicate a biased result.)*
 - **De-drifted return** — `sign(prediction) × (return − sample mean return)`.
 - **Day-of-week.** Liu, Bao, Han & Li (2025), *Finance Research Letters* 85(D):108187, find
   bid-ask spread, volume and volatility follow an inverted-U within the week, spread **peaking
   Wednesday** and falling into the weekend. Net return is therefore **reported by day of
   week**, as a declared reporting dimension and **not** as a search dimension. No cell may be
   selected on it.
+
+### 4.4 Declared forward decomposition *(Amendment 1)*
+
+Reported on the forward sample, **declared here so it cannot be run as a retrospective search.**
+An outside reader proposed roughly ten slices of the in-sample data — by magnitude quintile,
+volatility quintile, confidence, long versus short, and so on. **Run retrospectively on DIR-2's
+data that is a ten-fork fishing expedition**, and it is the precise failure §1 exists to
+prevent. Declared in advance and reported forward, the same slices are legitimate.
+
+Fixed, and unable to grow: net return **by magnitude quintile of the realised move**, **by
+realised-volatility quintile**, and **split long versus short**. Reported for description only.
+**No cell may be selected on, and no benchmark may be evaluated within a cell.**
+
+### 4.5 The magnitude hypothesis, declared not concluded *(Amendment 1)*
+
+Exploratory work found the signal is correct more often on **large** moves: mean |move| of
+217.2 bps when right against 194.4 when wrong, ratio **1.1170**. A label permutation preserving
+the hit count gives a null of mean 1.0007 and p99 1.0755, so **p = 0.0002**.
+
+That is a real asymmetry in the in-sample data, and it suggests the signal may be doing
+**conditional magnitude** rather than pure direction — which would matter, because P&L is
+magnitude-weighted while accuracy is not.
+
+**It is a hypothesis, not a finding**, for the same reason everything in §7 is: it was computed
+after the declared endpoint failed, on the data that produced the failure. It is scored forward
+as prediction F6 and nowhere else.
 
 ## 5. Predictions, recorded before any forward data exists
 
@@ -110,6 +169,12 @@ rising market.
   in §7).
 - **F5.** Day-of-week net return varies more than the pooled effect, mirroring the regime
   dispersion K4 has flagged in every prior experiment.
+- **F6** *(Amendment 1)*. The magnitude asymmetry of §4.5 **persists forward**: mean |move|
+  when correct exceeds mean |move| when wrong by more than 5%. I expect this one to hold, and
+  it is the only prediction in this contract I expect to hold.
+- **F7** *(Amendment 1)*. **B4 is not cleared** — the strategy fails to beat a constant position
+  at its own net exposure. If F2 and F7 both hold, the signal's apparent return is exposure
+  rather than information, and K3 applies.
 
 ## 6. Kill conditions
 
@@ -118,8 +183,8 @@ rising market.
 - **K2.** If B2 fails at the first admissible read, **ECON-1 reports the signal as not worth
   trading** and the directional programme is closed. It does not license new features, another
   venue, or another horizon.
-- **K3.** If the directionally-biased flag fires and B3 fails, the result is reported as
-  **exposure, not information** — whatever B1 says.
+- **K3.** If the directionally-biased flag fires and **either B3 or B4** fails, the result is
+  reported as **exposure, not information** — whatever B1 says. *(B4 added by Amendment 1.)*
 - **K4.** If the adverse-selection horizon study returns a value that makes the cost stack
   exceed the measured gross at every venue in the fee map, ECON-1 is **void before it starts**
   and reported as such.
