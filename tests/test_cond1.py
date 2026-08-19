@@ -151,6 +151,41 @@ def k4_requires_reporting_not_silent_restriction():
     return "above 25% incomplete, restriction is flagged for reporting on every result"
 
 
+@check
+def k5_void_marks_A_excluded_rather_than_computing_it():
+    """
+    If the spot and perp engines disagree, conditioner A's basis is a difference across two
+    differently-timestamped books. The void path must EXCLUDE those cells, not compute them
+    with a caveat -- a caveated number still gets quoted.
+
+    This path fires only on a rare data condition, so without a test it would never execute
+    until the day it mattered.
+    """
+    import numpy as np
+    bad = C.k5_clock([0, 10, 20], [500, 510, 520])
+    assert bad["A_void"] is True, bad
+    ok = C.k5_clock([0, 10, 20], [5, 15, 25])
+    assert ok["A_void"] is False, ok
+    # And the A cells are exactly the eight the contract declares.
+    a_cells = [k for cond, k, _ in C.cells() if cond == "A"]
+    assert len(a_cells) == 8, a_cells
+    return "50ms threshold voids A and only A; 8 A-cells to exclude"
+
+
+@check
+def window_slicing_is_half_open_and_ends_at_the_fill():
+    """
+    B and C both look BACK from a fill. Including the fill's own instant would let the fill
+    condition on itself; excluding the far edge twice would silently shorten the window.
+    """
+    series = [(0, "a"), (100, "b"), (200, "c"), (300, "d")]
+    w = C._window(series, 300, 200)
+    assert [x[0] for x in w] == [100, 200, 300], w
+    assert C._window(series, 300, 0) == [(300, "d")]
+    assert C._window(series, 50, 200) == [(0, "a")]
+    return "(t-back, t] inclusive at the fill, exclusive at the far edge"
+
+
 def main():
     failed = 0
     for fn in _checks:

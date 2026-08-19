@@ -251,3 +251,322 @@ def k5_clock(spot_ts_ms, perp_ts_ms):
     return {"median_abs_disagreement_ms": d,
             "A_void": bool(d > MAX_CLOCK_DISAGREEMENT_MS),
             "threshold_ms": MAX_CLOCK_DISAGREEMENT_MS}
+
+
+# ---------------------------------------------------------------------------------------
+# The driver. Written before q5 closed; see the module docstring.
+# ---------------------------------------------------------------------------------------
+
+SPOT = "binance_spot"
+PERP = "binance_futures"
+
+
+def auxiliary_series(path, market="BTCUSDT"):
+    """
+    One pass over the log collecting everything the conditioners need that is NOT the spot
+    book: the perp mid (A), spot trades (B, C, D), and liquidations (C's answer key).
+
+    WHY A SEPARATE PASS RATHER THAN ONE FUSED LOOP
+        `book.stream` reconstructs ONE instrument's book. Conditioner A needs two mids on one
+        clock, and rebuilding both inside a single generator would mean reimplementing the
+        replay layer here. Two passes over the same file is cheaper in code and in defects, and
+        the join is on venue timestamps which are exact.
+    """
+    from log import read
+    import events as E
+
+    perp_mid, spot_trades, liquidations = [], [], []
+    perp_bid = perp_ask = None
+
+    for ev in read(path):
+        if ev.get("event_class") != E.WORLD:
+            continue
+        body = ev.get("body", {})
+        inst = body.get("observation", {}).get("instrument")
+        world = body.get("world", {})
+        typ = ev.get("event_type")
+        raw = world.get("raw") or {}
+        vts = world.get("venue_ts_ms")
+
+        if inst == PERP and typ == "depthUpdate":
+            # Top of book only -- A needs the mid, not the depth.
+            b = (raw.get("b") or [[None]])[0]
+            a = (raw.get("a") or [[None]])[0]
+            try:
+                if b and b[0] is not None and float(b[1]) > 0:
+                    perp_bid = float(b[0])
+                if a and a[0] is not None and float(a[1]) > 0:
+                    perp_ask = float(a[0])
+            except (TypeError, ValueError, IndexError):
+                pass
+            if perp_bid and perp_ask and vts:
+                perp_mid.append((float(vts), (perp_bid + perp_ask) / 2.0))
+
+        elif inst == SPOT and typ == "aggTrade":
+            try:
+                spot_trades.append({
+                    "t": float(vts), "px": float(raw["p"]), "sz": float(raw["q"]),
+                    # Aggressor side is READ from Binance's `m` flag, never inferred:
+                    # m=True means the buyer was the maker, so the aggressor sold.
+                    "side": "S" if raw.get("m") else "B",
+                    "first": int(raw["f"]), "last": int(raw["l"]),
+                })
+            except (KeyError, TypeError, ValueError):
+                pass
+
+        elif typ == "forceOrder":
+            o = raw.get("o") or {}
+            if vts:
+                liquidations.append({"t": float(vts), "symbol": o.get("s"),
+                                     "side": o.get("S")})
+
+    perp_mid.sort(key=lambda x: x[0])
+    spot_trades.sort(key=lambda x: x["t"])
+    liquidations.sort(key=lambda x: x["t"])
+    return {"perp_mid": perp_mid, "spot_trades": spot_trades,
+            "liquidations": liquidations}
+
+
+def _mid_at(series, t):
+    """Last perp mid at or before t. Never interpolated -- an invented mid is a fabricated
+    observation, and A's whole quantity is a difference of two observed mids."""
+    import bisect
+    ts = [x[0] for x in series]
+    i = bisect.bisect_right(ts, t) - 1
+    return series[i][1] if i >= 0 else None
+
+
+def clock_disagreement(path, market="BTCUSDT", sample=5000):
+    """
+    K5. Compares the venue timestamps the two feeds attach to observations arriving in the same
+    receipt window. If the engines disagree by more than 50 ms, conditioner A is VOID -- the
+    basis would be a difference across two differently-timestamped books.
+    """
+    from log import read
+    import events as E
+    from datetime import datetime
+
+    rows = []
+    for ev in read(path):
+        if ev.get("event_class") != E.WORLD or len(rows) >= sample:
+            continue
+        body = ev.get("body", {})
+        obs, world = body.get("observation", {}), body.get("world", {})
+        if world.get("venue_ts_ms") and obs.get("received_at") and obs.get("instrument"):
+            try:
+                r = datetime.fromisoformat(obs["received_at"]).timestamp() * 1000.0
+            except ValueError:
+                continue
+            rows.append((obs["instrument"], float(world["venue_ts_ms"]), r))
+    lag = {SPOT: [], PERP: []}
+    for inst, v, r in rows:
+        if inst in lag:
+            lag[inst].append(r - v)
+    import statistics as st
+    if not lag[SPOT] or not lag[PERP]:
+        return {"evaluable": False, "reason": "one instrument absent from the sample",
+                "A_void": None}
+    d = abs(st.median(lag[SPOT]) - st.median(lag[PERP]))
+    return {"evaluable": True, "median_abs_disagreement_ms": d,
+            "spot_median_lag_ms": st.median(lag[SPOT]),
+            "perp_median_lag_ms": st.median(lag[PERP]),
+            "A_void": bool(d > MAX_CLOCK_DISAGREEMENT_MS),
+            "threshold_ms": MAX_CLOCK_DISAGREEMENT_MS}
+
+
+def book_series(path, market="BTCUSDT", instrument=SPOT, every_ms=500):
+    """
+    Touch price and depth over time for one instrument. B and C both need depth at the fill,
+    and `fills.simulate` holds the book internally without exposing it, so it is sampled here.
+
+    Uses the D-6 instrument filter. Without it this would silently return the PERP book, since
+    q5 records both venues under the ticker BTCUSDT and a snapshot replaces rather than merges.
+    """
+    import book as bk
+    out = []
+    for t_iso, b in bk.stream(path, market, every_ms=every_ms, instrument=instrument):
+        if not b.ready():
+            continue
+        out.append((bk._ms(t_iso), b.best_bid, b.best_ask,
+                    b.size_at("bids", b.best_bid), b.size_at("asks", b.best_ask)))
+    return out
+
+
+def _window(series, t, back_ms, idx=0):
+    """Rows of `series` in (t - back_ms, t]. `series` must be sorted on its first element."""
+    import bisect
+    ts = [r[idx] for r in series]
+    hi = bisect.bisect_right(ts, t)
+    lo = bisect.bisect_left(ts, t - back_ms)
+    return series[lo:hi]
+
+
+def conditioner_values(fills, aux, books):
+    """
+    Per fill, every quantity the four conditioners need. Computed once; the cells then mask.
+
+    A fill with any input missing gets NaN for that conditioner and is EXCLUDED from its cells
+    rather than defaulted -- a defaulted conditioner value is a fabricated observation.
+    """
+    tr = aux["spot_trades"]
+    tr_t = [x["t"] for x in tr]
+    rows = []
+    for f in fills:
+        t = f["t"]
+        pm = _mid_at(aux["perp_mid"], t)
+        sm = f["mid"]
+        basis = basis_bps(pm, sm) if (pm and sm) else float("nan")
+
+        b_at = _window(books, t, 1, idx=0)
+        depth = b_at[-1][3] if b_at else float("nan")     # bid-side depth at the touch
+
+        row = {"t": t, "markout": f["markout"], "basis_bps": basis}
+
+        for lb in B_LOOKBACKS_MS:
+            w = _window(books, t, lb, idx=0)
+            removed = sum(max(w[i - 1][3] - w[i][3], 0.0) for i in range(1, len(w)))
+            traded = sum(x["sz"] for x in
+                         tr[_bisect_lo(tr_t, t - lb):_bisect_hi(tr_t, t)])
+            row[f"cancel_{lb}"] = float(cancellation_ratio([removed], [traded], [depth])[0])
+
+        for burst in C_BURST_MS:
+            vol = sum(x["sz"] for x in tr[_bisect_lo(tr_t, t - burst):_bisect_hi(tr_t, t)])
+            row[f"taker_{burst}"] = vol
+            row[f"depth_{burst}"] = depth
+            # The QUIET after the burst: no trades in the declared interval before the fill.
+            recent = tr[_bisect_lo(tr_t, t - C_QUIET_MS):_bisect_hi(tr_t, t)]
+            row[f"quiet_{burst}"] = len(recent) == 0
+            # C's answer key: did the venue publish a liquidation inside the burst window?
+            lq = aux["liquidations"]
+            lqt = [x["t"] for x in lq]
+            row[f"key_{burst}"] = _bisect_hi(lqt, t) > _bisect_lo(lqt, t - burst)
+
+        for gap in D_MAX_GAP_MS:
+            w = tr[_bisect_lo(tr_t, t - 60_000):_bisect_hi(tr_t, t)]
+            if w:
+                sw = reconstruct_sweeps([x["first"] for x in w], [x["side"] for x in w],
+                                        [x["t"] for x in w], [x["sz"] for x in w], gap)
+                row[f"sweep_{gap}"] = sw[-1]["size"] if sw else float("nan")
+            else:
+                row[f"sweep_{gap}"] = float("nan")
+        rows.append(row)
+    return rows
+
+
+def _bisect_lo(ts, v):
+    import bisect
+    return bisect.bisect_left(ts, v)
+
+
+def _bisect_hi(ts, v):
+    import bisect
+    return bisect.bisect_right(ts, v)
+
+
+def run(path, market="BTCUSDT", n_boot=2000):
+    """
+    COND-1 end to end. Four passes over q5: the clock check, the auxiliary series, the spot
+    book, and the fill simulation. Nothing here chooses a parameter.
+    """
+    import exec1 as X
+    import fills as F
+    import numpy as np
+
+    check_family()
+    report = {"contract": CONTRACT, "contract_sha256": CONTRACT_SHA256,
+              "declared_trials": DECLARED_TRIALS, "bonferroni_alpha": BONFERRONI,
+              "primary": {"endpoint": "median markout, bps", "horizon_ms": PRIMARY_HORIZON_MS,
+                          "pool": POOL}}
+
+    # K5 first: if the engines disagree, A is void and must not be computed at all.
+    k5 = clock_disagreement(path, market)
+    report["K5_clock"] = k5
+    a_void = bool(k5.get("A_void"))
+
+    aux = auxiliary_series(path, market)
+    books = book_series(path, market, instrument=SPOT)
+    report["inputs"] = {"perp_mid_points": len(aux["perp_mid"]),
+                        "spot_trades": len(aux["spot_trades"]),
+                        "liquidations": len(aux["liquidations"]),
+                        "book_frames": len(books)}
+    if not books:
+        report["unevaluable"] = "no spot book frames -- check the instrument label"
+        return report
+
+    start, end = books[0][0], books[-1][0]
+    orders = X.build_orders(start, end)
+    F.simulate(path, market, orders, latency_ms=291.0,
+               markout_ms=(PRIMARY_HORIZON_MS,), every_ms=X.BOOK_SAMPLE_MS,
+               instrument=SPOT)
+    key = f"{PRIMARY_HORIZON_MS}ms"
+    fills = [{"t": o.fill_at_ms, "mid": o.mid_before_fill, "markout": o.markouts[key]}
+             for o in orders
+             if o.outcome == "certain" and key in o.markouts and o.fill_at_ms]
+    report["n_certain_fills"] = len(fills)
+    if not fills:
+        report["unevaluable"] = "no certain fills with a 60s markout"
+        return report
+
+    rows = conditioner_values(fills, aux, books)
+    mk = np.array([r["markout"] for r in rows], dtype=float)
+
+    def emit(name, cond, mask):
+        sel = mk[mask] if mask is not None else mk
+        report["cells"][name] = cell_report(sel, name, cond)
+
+    report["cells"] = {}
+    emit("unconditioned", "reference", None)
+
+    basis = np.array([r["basis_bps"] for r in rows], dtype=float)
+    if a_void:
+        for sign in BASIS_SIGNS:
+            for lo, hi in BASIS_BUCKETS_BPS:
+                report["cells"][f"basis_{sign}_{lo:g}-{hi:g}bps"] = {
+                    "cell": f"basis_{sign}_{lo:g}-{hi:g}bps", "conditioner": "A",
+                    "sufficient": False,
+                    "excluded_reason": "K5: spot and perp clocks disagree; A is VOID"}
+        report["cells"]["pooled_A"] = {"cell": "pooled_A", "conditioner": "A",
+                                       "sufficient": False, "excluded_reason": "K5: A is VOID"}
+    else:
+        for sign in BASIS_SIGNS:
+            for lo, hi in BASIS_BUCKETS_BPS:
+                emit(f"basis_{sign}_{lo:g}-{hi:g}bps", "A", a_mask(basis, sign, lo, hi))
+        emit("pooled_A", "reference", np.isfinite(basis))
+
+    for lb in B_LOOKBACKS_MS:
+        r = np.array([x[f"cancel_{lb}"] for x in rows], dtype=float)
+        for th in B_THRESHOLDS:
+            emit(f"cancel_{lb}ms_{th:g}", "B", b_mask(r, th))
+    emit("pooled_B", "reference",
+         np.isfinite(np.array([x[f"cancel_{B_LOOKBACKS_MS[0]}"] for x in rows], dtype=float)))
+
+    c_precision = {}
+    for dep in C_DEPLETION:
+        for burst in C_BURST_MS:
+            vol = np.array([x[f"taker_{burst}"] for x in rows], dtype=float)
+            dep_arr = np.array([x[f"depth_{burst}"] for x in rows], dtype=float)
+            fired = cascade_fires(vol, dep_arr, dep)
+            quiet = np.array([x[f"quiet_{burst}"] for x in rows], dtype=bool)
+            keyp = np.array([x[f"key_{burst}"] for x in rows], dtype=bool)
+            c_precision[f"{dep:g}_{burst}ms"] = precision_against_key(fired, keyp)
+            emit(f"cascade_{dep:g}_{burst}ms", "C", fired & quiet)
+    report["C_precision_against_key"] = c_precision
+    # K3: precision below 0.30 abandons the detector rather than tuning it.
+    vals = [v for v in c_precision.values() if v is not None]
+    report["K3_detector"] = {
+        "evaluable": bool(vals),
+        "best_precision": max(vals) if vals else None,
+        "abandon": bool(vals and max(vals) < C_PRECISION_ABANDON),
+        "threshold": C_PRECISION_ABANDON,
+    }
+    emit("pooled_C", "reference", None)
+
+    for gap in D_MAX_GAP_MS:
+        sw = np.array([x[f"sweep_{gap}"] for x in rows], dtype=float)
+        for lo, hi in D_SWEEP_BUCKETS_BTC:
+            emit(f"sweep_{lo:g}-{hi:g}btc_{gap}ms", "D", d_mask(sw, lo, hi))
+    emit("pooled_D", "reference",
+         np.isfinite(np.array([x[f"sweep_{D_MAX_GAP_MS[0]}"] for x in rows], dtype=float)))
+
+    report["n_cells_reported"] = len(report["cells"])
+    return report

@@ -99,12 +99,16 @@ def _mid(b):
 
 
 def simulate(path, market, orders, latency_ms=MEASURED_LATENCY_MS,
-             markout_ms=(1_000, 10_000, 60_000), every_ms=0):
+             markout_ms=(1_000, 10_000, 60_000), every_ms=0, instrument=None):
     """
     Single pass over the recorded book, tracking every supplied order to resolution.
 
     `orders` is a list of Order, each with `decided_at_ms` set. Nothing here decides when or
     at what price to post -- the caller does, and the caller is not this module.
+
+    `instrument` selects one venue from a log holding several (D-6). Left None it is a no-op
+    and EXEC-1's and CAP-2's behaviour is bit-identical, which tests/test_book_instrument.py
+    asserts -- their published results depend on it.
     """
     orders = sorted(orders, key=lambda o: o.decided_at_ms)
     pending = list(orders)
@@ -112,7 +116,7 @@ def simulate(path, market, orders, latency_ms=MEASURED_LATENCY_MS,
     filled = []
     max_markout = max(markout_ms)
 
-    for t_iso, b in bk.stream(path, market, every_ms=every_ms):
+    for t_iso, b in bk.stream(path, market, every_ms=every_ms, instrument=instrument):
         t = bk._ms(t_iso)
         mid = _mid(b)
 
