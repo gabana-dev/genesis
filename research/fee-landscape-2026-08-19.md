@@ -117,3 +117,58 @@ websocket API and requires no account to read it.
 
 Until that measurement exists, the third row of the table above is a fee schedule, not a cost.
 **Genesis has spent four experiments learning the difference.**
+
+---
+
+## 6. Addendum, same day: Hyperliquid's spread measured
+
+§2 named the unmeasured spread as the thing that could destroy the venue advantage. Measured
+directly, 150-second probe on the public websocket (`wss://api.hyperliquid.xyz/ws`, `l2Book`
+and `trades` on BTC, no account):
+
+| | Hyperliquid BTC | Binance BTCUSDT |
+|---|---|---|
+| median spread | **0.1554 bps** | 0.00154 bps |
+| depth within 5 bps of mid | **$5.1M bid / $12.9M ask** | — |
+| trades observed | 302 in 150 s | — |
+| book updates observed | **29 in 150 s** | ~224 in 60 s |
+
+**Hyperliquid's spread is 100× Binance's — and that is good news, not bad.**
+
+A *passive* round trip **captures** the spread rather than paying it: buy at the bid, below mid;
+sell at the ask, above mid. The wider book therefore reduces the effective cost:
+
+| | fees | spread capture | effective | 1-day bar | clears 0.5242? |
+|---|---|---|---|---|---|
+| Binance VIP 0 | 4.00 bps | 0.0015 | 3.998 | 0.5281 | no |
+| **Hyperliquid T0 base** | 3.00 | **0.1554** | **2.845** | **0.5200** | **yes** |
+| Hyperliquid T0 Bronze | 2.70 | 0.1554 | 2.545 | 0.5179 | yes |
+
+The concern in §2 is resolved in the favourable direction. **The venue advantage survives
+measurement**, and is slightly larger than the fee schedules alone suggested.
+
+### 6.1 What the probe also found, which is a real limitation
+
+**The book updated 29 times in 150 seconds** — roughly 0.2/s, against Binance's ~3.7/s. Trades
+arrived normally at 2/s, so this is not a dead feed. Hyperliquid's `l2Book` appears to publish
+throttled snapshots rather than continuous diffs.
+
+**That matters more than the spread.** Genesis's entire microstructure toolkit — queue position,
+fill bracketing, cancellation-versus-fill separation, adverse-selection markouts — assumes a
+continuously updating book. At 0.2 updates/second, EXEC-1's methods do not transfer, and
+anything resembling COND-1 is not computable there.
+
+Recorded as a **150-second probe, not a measurement.** It establishes an order of magnitude and
+nothing more. Whether the update rate is a subscription artefact, a rate limit, or the venue's
+actual behaviour is not established.
+
+### 6.2 The unmeasured term is now adverse selection, not spread
+
+EXEC-1 measured 1.19 bps of adverse selection at 60 s on Binance — the cost of being picked
+off, which consumed 40% of the maker advantage there. **It has not been measured on
+Hyperliquid**, and with a book that publishes 0.2 times a second it is not obvious it can be,
+by the methods Genesis currently owns.
+
+The bar figures above, on both venues, count fees and spread only. They are optimistic by
+whatever adverse selection turns out to be. That was true of every bar in this project and is
+restated here because the venue comparison does not change it.
