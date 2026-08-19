@@ -129,19 +129,28 @@ def fetch_window(user, start_ms, end_ms, budget, out_fh, stats):
     stats["fills"] += len(fills)
 
 
-def harvest(recording, days_back=20, top_wallets=500, progress_every=25):
+def harvest(recording, days_back=20, top_wallets=500, progress_every=25, start_rank=0):
     """
     Page each wallet backwards over `days_back`, appending raw fills verbatim.
 
-    Resume-safe: completed (wallet, day) pairs are recorded, so an interrupted run continues
-    rather than re-downloading. Nothing here analyses anything -- it collects.
+    Resume-safe WITHIN a run: completed (wallet, window) pairs are recorded, so an interruption
+    continues rather than re-downloading.
+
+    ACROSS runs it is not, and `start_rank` exists because of that. Window keys are derived from
+    `now`, which advances between runs, so a later run would generate shifted windows for
+    already-complete wallets, miss the dedupe, and append overlapping fills. Extending the
+    harvest therefore means skipping the ranks already done -- not re-running with a larger
+    `top_wallets`.
+
+    Ranking is by appearance count in the recording, so `start_rank` walks mechanically down that
+    fixed order. It selects on activity, never on any wallet's results.
     """
     os.makedirs(OUT_DIR, exist_ok=True)
     done = set()
     if os.path.exists(STATE_PATH):
         done = {tuple(x) for x in json.load(open(STATE_PATH))}
 
-    wallets = wallets_from_recording(recording, top=top_wallets)
+    wallets = wallets_from_recording(recording, top=top_wallets)[start_rank:]
     now = int(time.time() * 1000)
     budget = {"sleep": BASE_SLEEP, "throttled": 0}
     stats = {"requests": 0, "fills": 0, "truncated_windows": 0, "failed_windows": 0,
