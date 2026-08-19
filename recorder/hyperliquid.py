@@ -101,3 +101,52 @@ def _report_silent(ingestor, subscriptions, seen, connection_id):
                             {"channels": missing, "connection_id": connection_id,
                              "url": WS_URL,
                              "note": "subscribed and acknowledged, zero messages"})
+
+
+# ---------------------------------------------------------------------------------------
+# The aggressor rule -- SETTLED 2026-08-19 from the venue's own record, not from a guess.
+# ---------------------------------------------------------------------------------------
+
+BUY, SELL = "B", "A"
+
+
+def taker_of(trade: dict):
+    """
+    Which wallet crossed the spread. Returns (taker, maker) or (None, None).
+
+    HOW THIS WAS ESTABLISHED, because getting it backwards inverts every wallet score while
+    leaving the output entirely plausible.
+
+    Hyperliquid's public `userFills` endpoint reports a `crossed` flag per fill -- the venue
+    stating whether that user took liquidity. 120 live trades were captured from the feed and
+    matched by `tid` against `userFills` for both counterparties. 53 trades resolved, 70 sides,
+    **zero exceptions**:
+
+        slot0 own side = B (buy)   35 / 35
+        slot1 own side = A (sell)  35 / 35
+
+        feed side = A  ->  slot1 is TAKER (19),  slot0 is maker (27)
+        feed side = B  ->  slot0 is TAKER  (8),  slot1 is maker (16)
+
+    So the payload's `users` list is ordered by DIRECTION, not by role:
+
+        users[0] is always the BUYER, users[1] is always the SELLER,
+
+    and `side` names the AGGRESSOR's side. The taker is therefore the entry whose direction
+    matches `side`.
+
+    A concentration heuristic was tried first and was NOT decisive -- slot 1 was only modestly
+    more concentrated (HHI 0.0329 against 0.0206), which would have suggested slot 1 is always
+    the maker. That is wrong: slot 1 is the taker whenever the seller is the aggressor. The
+    heuristic pointed the right way for the wrong reason, which is the worst kind of nearly
+    correct.
+    """
+    users = trade.get("users") or []
+    if len(users) != 2:
+        return None, None
+    side = trade.get("side")
+    if side == BUY:
+        return users[0], users[1]
+    if side == SELL:
+        return users[1], users[0]
+    return None, None
