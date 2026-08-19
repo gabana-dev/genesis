@@ -93,7 +93,7 @@ class Book:
         return bool(self.bids) and bool(self.asks)
 
 
-def stream(path, market, every_ms=1000, complete_only=True):
+def stream(path, market, every_ms=1000, complete_only=True, instrument=None):
     """
     Stream the log, yielding (received_at, Book) at most every `every_ms`.
 
@@ -104,6 +104,16 @@ def stream(path, market, every_ms=1000, complete_only=True):
     `complete_only` restricts sampling to intervals the recorder itself vouches for. BAV-1
     established that this label predicts agreement with an independent channel, so applying it
     here is using a measured property, not an assumption.
+
+    `instrument` -- D-6. A log may hold TWO VENUES UNDER ONE TICKER. q5 records Binance spot and
+    USD-M perp together, and both call the symbol BTCUSDT, so filtering on `market_ticker` alone
+    merges them: perp depth updates get applied to the spot book and the reconstruction is a
+    blend of two venues that never existed.
+
+    The recorder has carried an `instrument` label on the observation side since the D-4 fix.
+    This reader never read it. Passing it here restricts the stream to one venue; leaving it
+    None preserves the exact prior behaviour, so every single-venue caller -- exec1, cap2,
+    fills -- is unaffected.
     """
     fast = Book()
     book = {"bids": defaultdict(lambda: Decimal("0")), "asks": defaultdict(lambda: Decimal("0"))}
@@ -125,6 +135,9 @@ def stream(path, market, every_ms=1000, complete_only=True):
         request = body.get("observation", {}).get("request") or {}
         if request.get("probe_id"):                      # anti-circularity
             continue
+        if instrument is not None:
+            if body.get("observation", {}).get("instrument") != instrument:
+                continue
         named = world.get("market_ticker")
         if named != market and not (named is None and request.get("symbol") == market):
             continue

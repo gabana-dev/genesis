@@ -41,6 +41,7 @@ SUITES = [
     "test_hyperliquid.py",
     "test_cond1.py",
     "test_sized_fills.py",
+    "test_book_instrument.py",
     "test_recorder_decimal_qty.py",
     "test_recorder_validity.py",
     "test_health_cli.py",
