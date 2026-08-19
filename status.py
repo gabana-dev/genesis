@@ -201,6 +201,113 @@ def experiments_status():
 
 # ---- report ---------------------------------------------------------------------------
 
+# ---------------------------------------------------------------------------------------
+# Forward collectors
+# ---------------------------------------------------------------------------------------
+#
+# Genesis became a COLLECTION project on 2026-08-19. Every remaining open question now
+# depends on unattended jobs running for weeks or months, and nothing was watching them.
+#
+# The failure this is aimed at is specific and was named in
+# research/next-phase-review-2026-08-19.md: a cron that fires on schedule and appends
+# NOTHING. ECON-1 needs ~90 days; a silent stall discovered at read time in November costs
+# the project's most valuable experiment and the three months with it.
+#
+# So two independent things are checked per collector, because either can fail alone:
+#   RAN      -- the job's log was touched within its cadence (did cron fire at all?)
+#   ADVANCED -- the newest record in the data is younger than its cadence (did it produce?)
+#
+# Stateless by construction: staleness is read from record timestamps already in the data,
+# never from a watermark this module would have to write. DR0005 forbids writing anything.
+
+COLLECTORS = [
+    {"name": "econ1", "cadence_h": 24,
+     "log": f"{EVIDENCE}/econ1/collect.log",
+     "data": f"{EVIDENCE}/econ1/observations.jsonl",
+     # ECON-1 evaluates decision points from 2026-08-20 at a 1-day horizon, so the first
+     # outcome is only KNOWN on the 21st. Before then an empty file is correct, not broken.
+     "advance_from": "2026-08-21",
+     "why": "ECON-1 forward test; ~270 points, first read ~mid-Nov"},
+    {"name": "liqmap", "cadence_h": 2,
+     "log": f"{EVIDENCE}/liqmap/collect2.log",
+     "data": f"{EVIDENCE}/liqmap/snapshots-liq2.jsonl",
+     "why": "LIQ-2 archive; clearinghouseState has no history, an uncollected hour is lost"},
+    {"name": "q5", "cadence_h": 1,
+     "log": f"{EVIDENCE}/q5/btcusdt-q5.jsonl",
+     "data": f"{EVIDENCE}/q5/btcusdt-q5.jsonl",
+     # A collector that has finished its job must stop being an alarm. q5 closes ~25 Aug and
+     # without this would report STALLED forever, which trains the reader to ignore the
+     # monitor -- the failure mode that makes monitors worthless.
+     "advance_until": "2026-08-26",
+     "why": "COND-1 recording; closes ~25 Aug"},
+]
+
+
+def _last_append(path):
+    """
+    When the data file was last APPENDED TO, in epoch seconds.
+
+    Deliberately mtime rather than a parsed record timestamp. The first version of this read
+    the tail 64 KB and parsed the last JSON line; LIQ-2 rows carry 2,342 positions and run to
+    ~500 KB each, so the tail was a truncated line, the parse failed, and a healthy collector
+    was reported STALLED. A monitor that cries wolf is worse than no monitor.
+
+    mtime is also the signal that actually matters here: a job that fires and appends nothing
+    leaves mtime untouched, which is exactly the failure this is aimed at.
+    """
+    if not os.path.exists(path) or os.path.getsize(path) == 0:
+        return None
+    return os.path.getmtime(path)
+
+
+def collectors_status():
+    now = datetime.now(timezone.utc).timestamp()
+    out = []
+    for c in COLLECTORS:
+        rec = {"name": c["name"], "why": c["why"], "cadence_h": c["cadence_h"]}
+        # grace of 2x cadence: one missed run is late, two is a stall worth waking someone for
+        limit = c["cadence_h"] * 3600 * 2
+
+        if os.path.exists(c["log"]):
+            age = now - os.path.getmtime(c["log"])
+            rec["ran_h_ago"] = round(age / 3600, 2)
+            rec["ran"] = "OK" if age <= limit else "STALLED"
+        else:
+            rec["ran"] = UNKNOWN
+            rec["ran_detail"] = "no log; the job has never run"
+
+        newest = _last_append(c["data"])
+        due = True
+        if c.get("advance_from"):
+            start = datetime.fromisoformat(c["advance_from"] + "T00:00:00+00:00").timestamp()
+            due = now >= start
+            rec["advance_due_from"] = c["advance_from"]
+        ended = False
+        if c.get("advance_until"):
+            stop = datetime.fromisoformat(c["advance_until"] + "T00:00:00+00:00").timestamp()
+            ended = now >= stop
+            rec["advance_due_until"] = c["advance_until"]
+        if ended:
+            rec["advanced"] = "complete"
+            rec["ran"] = "complete"
+        elif not due:
+            rec["advanced"] = "not yet due"
+        elif newest is None:
+            rec["advanced"] = "STALLED"
+            rec["advanced_detail"] = "no records, and data was due by now"
+        else:
+            age = now - newest
+            rec["advanced_h_ago"] = round(age / 3600, 2)
+            rec["advanced"] = "OK" if age <= limit else "STALLED"
+
+        rec["verdict"] = ("complete" if rec.get("advanced") == "complete"
+                          else "STALLED" if "STALLED" in (rec.get("ran"), rec.get("advanced"))
+                          else UNKNOWN if UNKNOWN in (rec.get("ran"), rec.get("advanced"))
+                          else "OK")
+        out.append(rec)
+    return out
+
+
 def gather():
     return {
         "generated_at": datetime.now(timezone.utc).isoformat(),
@@ -210,6 +317,7 @@ def gather():
         "recorder": recorder_status(),
         "repo": repo_status(),
         "records": experiments_status(),
+        "collectors": collectors_status(),
     }
 
 
@@ -284,6 +392,21 @@ def render(s):
     L.append("             provenance.py --rests-on <file>          before retracting anything")
     L.append("")
     L.append("This layer reports. It does not decide — DR0005.")
+    L.append("")
+    L.append("FORWARD COLLECTORS")
+    for c in s.get("collectors", []):
+        mark = {"OK": "  ok  ", "STALLED": "  !!  ",
+                "complete": "  --  "}.get(c["verdict"], "  ??  ")
+        L.append(f"{mark}{c['name']:<8} {c['verdict']}")
+        L.append(f"          ran {c.get('ran')}"
+                 + (f" ({c['ran_h_ago']}h ago)" if "ran_h_ago" in c else "")
+                 + f"   advanced {c.get('advanced')}"
+                 + (f" ({c['advanced_h_ago']}h ago)" if "advanced_h_ago" in c else ""))
+        for k in ("ran_detail", "advanced_detail"):
+            if k in c:
+                L.append(f"          {c[k]}")
+        L.append(f"          {c['why']}")
+
     return "\n".join(L)
 
 
