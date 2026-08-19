@@ -1,0 +1,38 @@
+{
+ "horizons_ms": [
+  60000,
+  300000,
+  3600000,
+  21600000,
+  86400000
+ ],
+ "maker_advantage_bps": 3.0,
+ "adverse_selection": {
+  "60000ms": {
+   "median_markout_bps": -1.1871397992938013,
+   "fraction_of_advantage_lost": null,
+   "n": 39473
+  },
+  "300000ms": {
+   "median_markout_bps": -1.1722449167801843,
+   "fraction_of_advantage_lost": null,
+   "n": 39473
+  },
+  "3600000ms": {
+   "median_markout_bps": -1.1636564923640837,
+   "fraction_of_advantage_lost": null,
+   "n": 39473
+  },
+  "21600000ms": {
+   "median_markout_bps": -0.4040933633683226,
+   "fraction_of_advantage_lost": null,
+   "n": 39029
+  },
+  "86400000ms": {
+   "median_markout_bps": -0.13005060794561613,
+   "fraction_of_advantage_lost": null,
+   "n": 34274
+  }
+ },
+ "n_certain": 39473
+}
