@@ -159,3 +159,50 @@ BINANCE = {"name": "binance", "extract": binance_extract}
 BINANCE_FUTURES = {"name": "binance_futures", "extract": binance_futures_extract}
 
 BY_NAME = {"kalshi": KALSHI, "binance": BINANCE, "binance_futures": BINANCE_FUTURES}
+
+
+def hyperliquid_extract(raw: dict) -> dict:
+    """
+    Hyperliquid, an on-chain order book. A THIRD dialect, and the reason it exists is not
+    price -- it is IDENTITY.
+
+    WHAT THIS VENUE CARRIES THAT NO CENTRALISED ONE DOES
+        Every trade names both counterparty wallets:
+
+            {"coin": "BTC", "side": "A", "px": "...", "sz": "...", "time": ...,
+             "hash": "0x...", "tid": ..., "users": ["0x...", "0x..."]}
+
+        Binance's trade stream carries no account information at all, which is why DIR-1's
+        fee-tier conditioner had to be discarded as unobservable. Here, participant
+        attribution is a property of the record.
+
+    NO SEQUENCE, AND SO NO GAP DETECTION
+        `tid` is a large non-contiguous identifier, not a stream position. Setting it as a
+        sequence would make the generic `seq_first == last + 1` check emit a gap on every
+        message. It is left as None and **gap detection is therefore impossible on this
+        venue** -- declared here rather than silently absent, because a recording with no
+        SEQUENCE_GAP events must not be mistaken for one that verified continuity.
+
+    WHICH WALLET IS THE AGGRESSOR IS NOT ESTABLISHED
+        `users` is a two-element list and `side` is a single letter. Which entry is the taker
+        is NOT verified, and every wallet-scoring method in the literature scores AGGRESSIVE
+        orders specifically. The raw payload is stored verbatim so the question can be settled
+        later from the record; nothing here infers it.
+    """
+    ch = raw.get("channel")
+    if ch == "trades":
+        return {"channel": "hl_trades", "market": None,
+                "seq_first": None, "seq_last": None,
+                "venue_ts_ms": None, "subscription_id": None, "msg": raw}
+    if ch == "l2Book":
+        d = raw.get("data") or {}
+        return {"channel": "hl_l2Book", "market": d.get("coin"),
+                "seq_first": None, "seq_last": None,
+                "venue_ts_ms": d.get("time"), "subscription_id": None, "msg": raw}
+    return {"channel": ch or "unknown", "market": None,
+            "seq_first": None, "seq_last": None,
+            "venue_ts_ms": None, "subscription_id": None, "msg": raw}
+
+
+HYPERLIQUID = {"name": "hyperliquid", "extract": hyperliquid_extract}
+BY_NAME["hyperliquid"] = HYPERLIQUID

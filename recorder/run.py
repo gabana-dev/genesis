@@ -374,6 +374,50 @@ def cmd_spot_perp(args):
     print(health.render(health.report(args.log)))
 
 
+def cmd_hyperliquid(args):
+    """
+    Hyperliquid trades, recorded for wallet identity. Public data only, no account.
+
+    NOT a price recording. Binance is the better book. This exists because every trade here
+    names both counterparty wallets, which is what T2.1 has been blocked on.
+    """
+    import asyncio
+
+    import dialects
+    import hyperliquid
+
+    manifest = dict(MANIFEST_TEMPLATE)
+    manifest.update({
+        "environment": "Hyperliquid perpetuals (public market data, unauthenticated)",
+        "symbol": args.coin,
+        "stream": ",".join(args.subscriptions),
+        "duration_seconds": args.seconds,
+        "why": ("every trade names both counterparty wallets; no centralised venue does. "
+                "See research/prior-art-2026-08-19-hyperliquid-observability.md"),
+        "gap_detection": ("IMPOSSIBLE on this venue: tid is not a stream position, so an "
+                          "absence of SEQUENCE_GAP events means the check could not be made, "
+                          "NOT that continuity was verified."),
+        "aggressor_unresolved": ("which entry of `users` is the taker is NOT established. "
+                                 "Raw payloads are stored verbatim so it can be settled from "
+                                 "the record; nothing infers it."),
+        "started_at": None,
+    })
+
+    with EventLog(args.log) as log:
+        import events as E
+        ing = Ingestor(log, dialect=dialects.HYPERLIQUID, instrument="hyperliquid")
+        manifest["started_at"] = E.now()
+        ing.started(manifest)
+        try:
+            asyncio.run(hyperliquid.record(ing, coin=args.coin, stop_after=args.seconds,
+                                           subscriptions=tuple(args.subscriptions)))
+        except KeyboardInterrupt:
+            pass
+        finally:
+            ing.stopped("run complete")
+    print(health.render(health.report(args.log)))
+
+
 def cmd_record(args):
     import asyncio
 
@@ -437,6 +481,12 @@ def main(argv=None):
     sp.add_argument("--seconds", type=float, default=1800.0)
     sp.add_argument("--reconnect-after", type=float, default=None, dest="reconnect_after")
     sp.set_defaults(fn=cmd_spot_perp)
+
+    hl = sub.add_parser("hyperliquid")
+    hl.add_argument("log"); hl.add_argument("coin", nargs="?", default="BTC")
+    hl.add_argument("--seconds", type=float, default=1800.0)
+    hl.add_argument("--subscriptions", nargs="+", default=["trades"])
+    hl.set_defaults(fn=cmd_hyperliquid)
 
     bn = sub.add_parser("binance"); bn.add_argument("log"); bn.add_argument("symbol")
     bn.add_argument("--seconds", type=float, default=1800.0)
