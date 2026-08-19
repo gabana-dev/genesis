@@ -1,0 +1,259 @@
+{
+ "contract": "market/CONTRACT-capacity-2.md",
+ "contract_sha256": "9b06777e0071e750155b8d4fb95b02c55853524ad07d675b3bb0312a7c26d5df",
+ "grid": {
+  "sizes_usd": [
+   1000.0,
+   10000.0,
+   100000.0,
+   1000000.0
+  ],
+  "offsets": [
+   0,
+   1,
+   5
+  ],
+  "latency_ms": 291.0,
+  "ttl_ms": 300000.0,
+  "declared_cells": 12
+ },
+ "n_orders": 241920,
+ "n_posted": 241920,
+ "cells": {
+  "1000000|0": {
+   "n_orders": 20160,
+   "sufficient": true,
+   "excluded_reason": null,
+   "reach_rate": 0.6558035714285714,
+   "fill_rate_upper_bound": 0.8747972511058796,
+   "fill_rate_lower_bound": 0.6553510214322325,
+   "median_ambiguity_fraction": 0.0,
+   "n_partial_optimistic": 67,
+   "n_traded_through": 13217,
+   "median_depth_ratio": 6.690065639861179e-05,
+   "dominant_fraction": 0.00029761904761904765,
+   "size_class_counts": {
+    "material": 16,
+    "dominant": 6,
+    "unknown_depth": 498,
+    "small": 19640
+   }
+  },
+  "1000000|1": {
+   "n_orders": 20160,
+   "sufficient": true,
+   "excluded_reason": null,
+   "reach_rate": 0.6527777777777778,
+   "fill_rate_upper_bound": 0.8498411345225843,
+   "fill_rate_lower_bound": 0.6523229734999744,
+   "median_ambiguity_fraction": 0.0,
+   "n_partial_optimistic": 381,
+   "n_traded_through": 13156,
+   "median_depth_ratio": 0.23179280560451693,
+   "dominant_fraction": 0.02782738095238095,
+   "size_class_counts": {
+    "material": 13976,
+    "dominant": 561,
+    "unknown_depth": 848,
+    "small": 4775
+   }
+  },
+  "1000000|5": {
+   "n_orders": 20160,
+   "sufficient": true,
+   "excluded_reason": null,
+   "reach_rate": 0.65,
+   "fill_rate_upper_bound": 0.779740688717992,
+   "fill_rate_lower_bound": 0.6495405775939989,
+   "median_ambiguity_fraction": 0.0,
+   "n_partial_optimistic": 256,
+   "n_traded_through": 13100,
+   "median_depth_ratio": 0.023486132341153744,
+   "dominant_fraction": 0.03715277777777778,
+   "size_class_counts": {
+    "material": 1151,
+    "dominant": 749,
+    "unknown_depth": 13290,
+    "small": 4970
+   }
+  },
+  "100000|0": {
+   "n_orders": 20160,
+   "sufficient": true,
+   "excluded_reason": null,
+   "reach_rate": 0.6558035714285714,
+   "fill_rate_upper_bound": 0.8757381839365866,
+   "fill_rate_lower_bound": 0.6553510214322325,
+   "median_ambiguity_fraction": 0.0,
+   "n_partial_optimistic": 28,
+   "n_traded_through": 13217,
+   "median_depth_ratio": 6.6900656398611785e-06,
+   "dominant_fraction": 0.0,
+   "size_class_counts": {
+    "material": 6,
+    "unknown_depth": 498,
+    "small": 19656
+   }
+  },
+  "100000|1": {
+   "n_orders": 20160,
+   "sufficient": true,
+   "excluded_reason": null,
+   "reach_rate": 0.6527777777777778,
+   "fill_rate_upper_bound": 0.8581542121298393,
+   "fill_rate_lower_bound": 0.6523229734999744,
+   "median_ambiguity_fraction": 0.0,
+   "n_partial_optimistic": 28,
+   "n_traded_through": 13156,
+   "median_depth_ratio": 0.023179280560451695,
+   "dominant_fraction": 0.0,
+   "size_class_counts": {
+    "material": 561,
+    "unknown_depth": 848,
+    "small": 18751
+   }
+  },
+  "100000|5": {
+   "n_orders": 20160,
+   "sufficient": true,
+   "excluded_reason": null,
+   "reach_rate": 0.65,
+   "fill_rate_upper_bound": 0.7852363396056875,
+   "fill_rate_lower_bound": 0.6495405775939987,
+   "median_ambiguity_fraction": 0.0,
+   "n_partial_optimistic": 8,
+   "n_traded_through": 13100,
+   "median_depth_ratio": 0.0023486132341153745,
+   "dominant_fraction": 0.0,
+   "size_class_counts": {
+    "material": 749,
+    "unknown_depth": 13290,
+    "small": 6121
+   }
+  },
+  "10000|0": {
+   "n_orders": 20160,
+   "sufficient": true,
+   "excluded_reason": null,
+   "reach_rate": 0.6558035714285714,
+   "fill_rate_upper_bound": 0.8758279012521726,
+   "fill_rate_lower_bound": 0.6553510214322326,
+   "median_ambiguity_fraction": 0.0,
+   "n_partial_optimistic": 25,
+   "n_traded_through": 13217,
+   "median_depth_ratio": 6.690065639861178e-07,
+   "dominant_fraction": 0.0,
+   "size_class_counts": {
+    "unknown_depth": 498,
+    "small": 19662
+   }
+  },
+  "10000|1": {
+   "n_orders": 20160,
+   "sufficient": true,
+   "excluded_reason": null,
+   "reach_rate": 0.6527777777777778,
+   "fill_rate_upper_bound": 0.8583766887992872,
+   "fill_rate_lower_bound": 0.6523229734999744,
+   "median_ambiguity_fraction": 0.0,
+   "n_partial_optimistic": 12,
+   "n_traded_through": 13156,
+   "median_depth_ratio": 0.0023179280560451693,
+   "dominant_fraction": 0.0,
+   "size_class_counts": {
+    "unknown_depth": 848,
+    "small": 19312
+   }
+  },
+  "10000|5": {
+   "n_orders": 20160,
+   "sufficient": true,
+   "excluded_reason": null,
+   "reach_rate": 0.65,
+   "fill_rate_upper_bound": 0.7852363396056913,
+   "fill_rate_lower_bound": 0.6495405775939989,
+   "median_ambiguity_fraction": 0.0,
+   "n_partial_optimistic": 8,
+   "n_traded_through": 13100,
+   "median_depth_ratio": 0.00023486132341153743,
+   "dominant_fraction": 0.0,
+   "size_class_counts": {
+    "unknown_depth": 13290,
+    "small": 6870
+   }
+  },
+  "1000|0": {
+   "n_orders": 20160,
+   "sufficient": true,
+   "excluded_reason": null,
+   "reach_rate": 0.6558035714285714,
+   "fill_rate_upper_bound": 0.8758279012570781,
+   "fill_rate_lower_bound": 0.6553510214322325,
+   "median_ambiguity_fraction": 0.0,
+   "n_partial_optimistic": 25,
+   "n_traded_through": 13217,
+   "median_depth_ratio": 6.690065639861179e-08,
+   "dominant_fraction": 0.0,
+   "size_class_counts": {
+    "unknown_depth": 498,
+    "small": 19662
+   }
+  },
+  "1000|1": {
+   "n_orders": 20160,
+   "sufficient": true,
+   "excluded_reason": null,
+   "reach_rate": 0.6527777777777778,
+   "fill_rate_upper_bound": 0.8583766887993808,
+   "fill_rate_lower_bound": 0.6523229734999745,
+   "median_ambiguity_fraction": 0.0,
+   "n_partial_optimistic": 12,
+   "n_traded_through": 13156,
+   "median_depth_ratio": 0.00023179280560451694,
+   "dominant_fraction": 0.0,
+   "size_class_counts": {
+    "unknown_depth": 848,
+    "small": 19312
+   }
+  },
+  "1000|5": {
+   "n_orders": 20160,
+   "sufficient": true,
+   "excluded_reason": null,
+   "reach_rate": 0.65,
+   "fill_rate_upper_bound": 0.7852363396057296,
+   "fill_rate_lower_bound": 0.6495405775939987,
+   "median_ambiguity_fraction": 0.0,
+   "n_partial_optimistic": 8,
+   "n_traded_through": 13100,
+   "median_depth_ratio": 2.3486132341153744e-05,
+   "dominant_fraction": 0.0,
+   "size_class_counts": {
+    "unknown_depth": 13290,
+    "small": 6870
+   }
+  }
+ },
+ "K3_size_blind": {
+  "fill_rate_by_size": {
+   "1000000": 0.8347930247821519,
+   "100000": 0.8397095785573713,
+   "10000": 0.8398136432190504,
+   "1000": 0.8398136432207295
+  },
+  "spread": 0.005020618438577595,
+  "evaluable": true,
+  "instrument_still_size_blind": false,
+  "consequence": "K3: if size-blind, the run is VOID and no cell may be interpreted -- this is the failure that blocked CAP-1"
+ },
+ "K2_anchor": {
+  "expected_reach_rate": 0.6529,
+  "observed": 0.6528604497354498,
+  "tolerance": 0.05,
+  "evaluable": true,
+  "passes": true,
+  "reason": null,
+  "consequence": "K2: if the anchor FAILS the re-simulation is defective and nothing else is interpreted; if it is UNEVALUABLE that is a data shortfall, not a defect"
+ },
+ "elapsed_s": 239
+}

@@ -169,6 +169,28 @@ def an_unarrived_order_fills_nothing():
     return "an order that never saw the book has no queue and no fill"
 
 
+@check
+def order_size_and_book_depth_must_share_a_unit():
+    """
+    D-CAP2-1. book.size_at() returns notional in quote currency, and the first CAP-2 runner
+    handed this module base units. Every order came out ~64,000x too small, fill rate was
+    near-identical across a 1,000x size range, and both kill conditions passed.
+
+    This module is unit-agnostic by design, so it cannot detect the mismatch -- which is
+    exactly why the caller must be checked. A $1M order against a $10M level is 0.1 of it, and
+    any answer near 1.6e-6 means someone divided by the price.
+    """
+    r = S.depth_ratio(1_000_000.0, 10_000_000.0)
+    assert abs(r - 0.1) < 1e-12, r
+    assert S.classify_size(1_000_000.0, 10_000_000.0) == "small"      # 0.1 is the boundary
+    assert S.classify_size(1_000_000.0, 5_000_000.0) == "material"    # 0.2 is past it
+    # The defective form, kept so the failure is recognisable if it recurs.
+    wrong = S.depth_ratio(1_000_000.0 / 64_000.0, 10_000_000.0)
+    assert wrong < 1e-5, wrong
+    assert S.classify_size(1_000_000.0 / 64_000.0, 10_000_000.0) == "small"
+    return "$1M against $10M is 0.1 and 'material'; base-unit confusion gives 1.6e-6 and 'small'"
+
+
 def main():
     failed = 0
     for fn in _checks:

@@ -15,11 +15,20 @@ WHY THE REPLAY LOOP IS HERE AND NOT REUSED FROM fills.py
 
     `fills.py` is not modified: EXEC-1 and BAV-1 were validated against it.
 
-NOTIONAL VERSUS BASE UNITS
-    The contract's grid is in notional USD; `SizedOrder.size` is in base units, and so is the
-    displayed depth it is compared against. Conversion happens ONCE, at post time, using the
-    posted price. Converting at decision time would price the order at a mid it never traded
-    at, and converting continuously would silently resize a resting order.
+UNITS -- D-CAP2-1, AND THE REASON THIS DOCSTRING ONCE SAID THE OPPOSITE
+    `book.size_at()` returns **notional in quote currency**: it computes `q * p` internally.
+    Order size must therefore be carried in NOTIONAL too. `SizedOrder` is unit-agnostic -- it
+    only requires that `size` and the values passed to `observe_level` share a unit.
+
+    The first version of this module converted the grid's notional to base units at post time
+    (`size_usd / price`) and compared that against the book's notional. Every order was
+    therefore ~64,000x too small: a $1,000,000 order was simulated as $15.60. Fill rate came
+    out near-identical across a 1,000x size range, and BOTH kill conditions passed -- K2's
+    anchor because reach does not depend on size, and K3 because a 0.005 spread of pure
+    floating-point and rounding noise cleared its 0.001 threshold.
+
+    K3 tests whether the INSTRUMENT is size-blind. It cannot test whether the CALLER handed it
+    the wrong units, and it did not. Recorded in research/cap-2-units-defect.md.
 """
 
 import os
@@ -110,9 +119,10 @@ def simulate(path, market, orders, every_ms=BOOK_SAMPLE_MS):
             if o.price is None:
                 if t < o.arrives_at_ms:
                     continue
-                # ARRIVAL. Notional converts to base units ONCE, at the posted price.
+                # ARRIVAL. Size stays in NOTIONAL, because that is what size_at returns.
+                # See D-CAP2-1 in the module docstring.
                 o.price = o.intended_price
-                o.size = o.size_usd / o.price
+                o.size = o.size_usd
                 depth = b.size_at(side_key, o.price)
                 o.depth_at_post = depth
                 o.observe_level(depth)          # sets queue_ahead and last_size
