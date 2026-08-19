@@ -38,6 +38,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 
 import dir1 as D1  # noqa: E402
 import dir2 as D2  # noqa: E402
+import econ1 as E1  # noqa: E402
 import stats as ST  # noqa: E402
 
 CONTRACT = "market/CONTRACT-generalisation.md"
@@ -61,7 +62,16 @@ FIELDS = ["sum_open_interest", "sum_open_interest_value",
 
 
 def load_metrics(symbol):
-    """Every metrics row held for a symbol. Empty fields are NaN and never interpolated."""
+    """
+    Every metrics row held for a symbol. Empty fields are NaN and never interpolated.
+
+    TIMESTAMPS ARE IN MILLISECONDS, matching `econ1.build_grid`, which is the grid builder used
+    below. This is the boundary the 2026-08-19 assessment flagged as a latent trap: `dir2`
+    represents the same quantity in SECONDS and multiplies by 1000, `econ1` uses milliseconds
+    directly, and nothing marked the seam. A first draft of this module returned seconds and
+    handed them to a millisecond consumer. The trap was named in the morning and sprung the
+    same hour, which is the argument for marking it here rather than remembering it.
+    """
     rows, files, unreadable = [], 0, 0
     for f in sorted(glob.glob(f"{METRICS_ROOT}/{symbol}/*.zip")):
         files += 1
@@ -77,7 +87,7 @@ def load_metrics(symbol):
                 s = (r.get(k) or "").strip().strip('"')
                 v.append(float(s) if s else np.nan)
             ts = datetime.fromisoformat(r["create_time"]).replace(tzinfo=timezone.utc)
-            rows.append((ts.timestamp(), *v))
+            rows.append((ts.timestamp() * 1000.0, *v))   # MILLISECONDS -- see docstring
     rows.sort(key=lambda x: x[0])
     if not rows:
         return None
@@ -137,7 +147,7 @@ def assemble(symbol):
     # build_grid already computes every declared feature, including the trailing z-scores.
     # An earlier draft recomputed taker_z here; it was dead code and is removed rather than
     # left to look load-bearing.
-    cols = D2.build_grid({"ts": m["ts"], "arr": m["arr"]}, closes)
+    cols = E1.build_grid({"ts": m["ts"], "arr": m["arr"]}, closes)
     return cols, {"metrics_files": m["files"], "unreadable": m["unreadable"],
                   "metrics_rows": int(len(m["ts"])), "klines": len(closes),
                   "closes": closes}
