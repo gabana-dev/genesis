@@ -100,11 +100,27 @@ class Ingestor:
             self._remember(key, seq, E.content_hash(raw))
 
     def _remember(self, key, seq, digest):
+        """
+        Bounded window of recently seen sequence numbers, for duplicate detection.
+
+        EVICTION IS O(1) AND USED TO BE O(n log n) PER EVENT. The previous version called
+        `sorted(seen)` on every insert once the window was full, to drop a single entry:
+        161 microseconds per event, measured. Live that is invisible at ~38 events/sec, and it
+        made RESTARTS quadratic in log size -- `_resume_sequences` replays the whole log, so q5
+        at 4.1M events cost ~11 minutes per Ingestor and spot-perp runs three of them. Measured
+        2026-08-19 when a restart took over an hour before opening a socket, and it would have
+        grown to ~1.6 hours at the recording's declared length.
+
+        Dicts preserve insertion order, so the first key IS the oldest inserted. Sequences
+        arrive monotonically in normal operation, which makes that the same entry `sorted`
+        would have dropped. Where they do not -- out-of-order arrival, which is separately
+        logged as SEQUENCE_GAP or sequence_regression -- forgetting the least recently seen is
+        the better behaviour for a duplicate window anyway.
+        """
         seen = self._seen.setdefault(key, {})
         seen[seq] = digest
-        if len(seen) > self.SEEN_LIMIT:
-            for old in sorted(seen)[:len(seen) - self.SEEN_LIMIT]:
-                seen.pop(old, None)
+        while len(seen) > self.SEEN_LIMIT:
+            seen.pop(next(iter(seen)))
 
     # ---- lifecycle ----------------------------------------------------------------
 

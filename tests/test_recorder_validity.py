@@ -204,6 +204,52 @@ def valid_traffic_is_unaffected(tmp):
     return "real fractional traffic still replays clean, no false anomalies"
 
 
+
+
+# --- D-7: the duplicate window's eviction was quadratic on restart ---------------------
+
+def _window_ingestor():
+    """An Ingestor with only the duplicate-window state, so no log or socket is needed."""
+    i = Ingestor.__new__(Ingestor)
+    i._seen = {}
+    return i
+
+
+@check
+def d7_seen_window_keeps_the_newest_and_stays_bounded(tmp):
+    i = _window_ingestor()
+    L = Ingestor.SEEN_LIMIT
+    n = L * 3
+    for k in range(n):
+        i._remember(("k",), k, b"d")
+    seen = i._seen[("k",)]
+    assert len(seen) == L, len(seen)
+    assert min(seen) == n - L and max(seen) == n - 1, (min(seen), max(seen))
+    return f"window holds the newest {L} sequences"
+
+
+@check
+def d7_seen_window_eviction_is_not_quadratic(tmp):
+    """
+    `_remember` used to call sorted(seen) on every insert once the window was full: 161 us per
+    event, measured. Invisible live at ~38 events/sec, and quadratic on RESTART, because
+    _resume_sequences replays the whole log. q5 at 4.1M events cost over an hour across
+    spot-perp's three Ingestors before a socket opened. This pins the fix.
+    """
+    import time
+    L = Ingestor.SEEN_LIMIT
+    i = _window_ingestor()
+    for k in range(L):
+        i._remember(("k",), k, b"d")
+    n = 20000
+    t0 = time.time()
+    for k in range(L, L + n):
+        i._remember(("k",), k, b"d")
+    per = (time.time() - t0) / n
+    assert per < 40e-6, f"{per*1e6:.1f} us/event -- eviction looks superlinear again"
+    return f"{per*1e6:.1f} us/event (was 161)"
+
+
 def main():
     tmp = tempfile.mkdtemp(prefix="genesis-validity-")
     failed = 0
