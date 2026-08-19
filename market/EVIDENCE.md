@@ -89,6 +89,56 @@ cited as evidence that distance or latency do not matter to execution.
 Committed: `evidence/measure1-report.json`, `evidence/power-analysis.json`.
 Record: [`../research/experiments/0008-measure-1-cost-of-being-right.md`](../research/experiments/0008-measure-1-cost-of-being-right.md).
 
+## Q4 — spot-only recording, stopped and archived 2026-08-18
+
+Started as a 7-day Binance spot run; **stopped ten hours in** because it carried no perpetual
+feed and could therefore never serve COND-1's conditioners A or C. Restarted as Q5 (below).
+
+Archived, not discarded. `~/genesis-evidence/q4/btcusdt-q4.jsonl`, SHA-256
+`296bd3edb025aede0acfb7009046106a6c04c30121876ba05a90c6be2e291a03`, 170,819 events, integrity
+verified, **unclean shutdown recorded** — the process ignored SIGINT as a backgrounded job, so
+SIGTERM was used. No truncation; the chain verifies.
+
+## Q5 — spot + perpetual on one clock, IN PROGRESS
+
+`~/genesis-evidence/q5/btcusdt-q5.jsonl`, started 2026-08-18T15:44Z, seven days, closing
+~2026-08-25. Three connections into one hash chain: spot depth+aggTrade, perp depth+trade, and
+venue-wide `!forceOrder@arr`.
+
+**Spoken for by [`CONTRACT-conditioners.md`](CONTRACT-conditioners.md) (COND-1), which is frozen
+and unrun.** Its SHA-256 is recorded here at close. No other contract may be run against it —
+see CARRY-1 §4 for why two frozen contracts on one unseen dataset is not acceptable.
+
+## CARRY-1 — public funding and price history
+
+`~/genesis-evidence/carry1/`, 3.5 MB. 7,604 Binance funding settlements 2019-09 → 2026-08 plus
+8-hourly spot and perp klines. Funding payload SHA-256 `eb63d8425e36c4e4…`.
+Committed: `evidence/carry1-report.json`. Record:
+[`../research/carry-1-result.md`](../research/carry-1-result.md).
+
+## Futures metrics — positioning and flow
+
+`~/genesis-evidence/metrics/`, 65 MB, 2,177 daily files 2020-09-01 → 2026-08-17, consolidated to
+`metrics-consolidated.npy`, 701,594 rows, SHA-256
+`30b98a961a461adc9478cd62b7ee75ba60e8d9ee69c3592fe75d9d281af06db0`.
+
+Open interest, taker buy/sell volume ratio, and long/short positioning for all accounts and for
+top traders, at 5-minute resolution. Coverage is **not uniform** — the taker ratio is 94.7%
+overall but only **65.0% in 2022** — and that is declared in
+[`CONTRACT-direction-2.md`](CONTRACT-direction-2.md) §3.1 rather than worked around.
+
+Committed: `evidence/dir2-report.json`. Record:
+[`../research/dir-2-result.md`](../research/dir-2-result.md).
+
+## Minute bars — price history
+
+`~/genesis-evidence/market-data/`, 308 MB, 91 monthly files, **3,983,271 one-minute BTCUSDT
+bars**, 2019-01 → 2026-07. Columns: open time, OHLC, base volume, close time, quote volume,
+trade count. **No taker-buy volume**, which is why VPIN is absent from DIR-1 and DIR-2 —
+see [`CONTRACT-direction.md`](CONTRACT-direction.md) §4.1.
+
+Committed: `evidence/dir1-report.json`, `evidence/as-horizon.json`, `evidence/feemap.json`.
+
 ## The trial ledger
 
 `~/genesis-evidence/ledger/trials.jsonl`, hash-chained, checkpoint committed at
