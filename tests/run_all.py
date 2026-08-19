@@ -22,6 +22,13 @@ ROOT = HERE.parent
 PYTHON = ROOT / ".venv" / "bin" / "python"
 
 # Ordered fastest-first so a broken invariant surfaces before the slow laboratory replays.
+# Suites for lab/ and rdb/ -- retired subsystems nothing imports -- are NOT run by
+# default. They cost ~14s of a 108s suite to test code no longer on any path. The code
+# is kept (lab/README.md: "history, kept runnable") and the suites still run on demand:
+#     .venv/bin/python tests/test_laboratory3.py
+RETIRED = ["test_closed_loop.py", "test_sparse_loop.py", "test_laboratory.py",
+           "test_laboratory2.py", "test_laboratory3.py", "test_rdb_series.py"]
+
 SUITES = [
     "test_recorder.py",
     "test_recorder_audit.py",
@@ -49,12 +56,6 @@ SUITES = [
     "test_holons.py",
     "test_holon_volatility.py",
     "test_holon_cross_section.py",
-    "test_rdb_series.py",
-    "test_closed_loop.py",
-    "test_sparse_loop.py",
-    "test_laboratory.py",
-    "test_laboratory2.py",
-    "test_laboratory3.py",
 ]
 
 
