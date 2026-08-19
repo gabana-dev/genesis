@@ -35,6 +35,7 @@ SUITES = [
     "test_multi_connection.py",
     "test_costs.py",
     "test_carry.py",
+    "test_liqmap.py",
     "test_dir1.py",
     "test_dir2.py",
     "test_econ1.py",
