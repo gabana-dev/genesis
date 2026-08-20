@@ -25,11 +25,14 @@ The commercial question behind the whole data line is therefore unanswered by an
 **The design.** Liquidations are *events*, not calendar time. The power audit
 ([`../research/POWER-AUDIT-the-daily-lane-is-unpowerable.md`](../research/POWER-AUDIT-the-daily-lane-is-unpowerable.md))
 established that daily-horizon questions need decades because one instrument yields one
-observation per day. **Events escape that**: the recording already holds **48,104 liquidations
-across 757 symbols in 37.3 hours** — 1,288 per hour — and the effect being tested is large by
-construction, because forced flow is an actual market order.
+observation per day. **Events escape that**, though by less than the raw counts suggest. The recording holds 48,104
+liquidations across 757 symbols in 37.3 hours, but §5 shows that at any notional large enough to
+matter these collapse to a few hundred *episodes* across a few dozen symbols. The escape is real
+and it is roughly **an order of magnitude, not three** — days instead of decades, not minutes.
 
-Both escapes MEASURE-1 §8 names — **event-based and cross-sectional** — apply at once.
+What genuinely helps is the second half: **the effect is large by construction**, because forced
+flow is an actual market order rather than a statistical whisper, and required observations fall
+as the square of effect size.
 
 ## 3. The question
 
@@ -50,7 +53,7 @@ public API. Fetched per symbol; no vendor, no cost.
 **Event definition:** one `forceOrder` order with venue time `T`, symbol, side, average price and
 quantity. **Notional = quantity × price.**
 
-**Measured distribution, from the existing recording:**
+**Measured distribution, from the existing recording** (events, before episode collapse — see §5):
 
 | | |
 |---|---|
@@ -61,28 +64,38 @@ quantity. **Notional = quantity × price.**
 | **≥ $1M** | **234 events (6.3/hour)** |
 | sides | 25,237 SELL / 22,867 BUY |
 
-**Cohort: events ≥ $1M notional.** Fixed here. The median event is $310 and cannot move
-anything; testing it would guarantee a null and waste the sample.
+**Cohort: three declared notional strata**, because §5 shows the trade-off between effect size
+and observation count is the whole design, not a detail to tune later.
 
-## 5. Power — mandatory section, and the reason this contract is worth running
+## 5. Power — mandatory, and it corrected this contract before it was frozen
 
-Adopted as standing practice after the power audit. **No contract is frozen without this.**
+Adopted as standing practice after the power audit. **No contract freezes without this.**
 
-For a continuation hit rate at 80% power, α = 0.05 two-sided:
+**The first draft of this section was wrong in exactly the way the audit warned about.** It
+claimed 234 independent events at ≥$1M across 757 symbols. Both numbers were inflated:
 
-| effect to detect | independent events needed | collection time at 6.3/hour |
-|---|---|---|
-| 60% vs 50% | **196** | **31 hours — already have 234** |
-| 55% vs 50% | 784 | ~5 days |
-| 52.5% vs 50% | 3,136 | ~21 days |
+- **90% of large events fall within 60 s of another** — they are cascade *episodes*, not
+  independent draws
+- at ≥$1M the events sit in **12 symbols**, not 757. The breadth is at the small end, where the
+  notional is $310 and nothing can move
 
-**The existing recording already powers the 60% question.** Five days of collection powers 55%.
+Collapsing to episodes (same symbol, same side, ≥60 s apart) gives the honest picture:
 
-**Independence:** events span 757 symbols, so simultaneous liquidations in different symbols are
-far closer to independent than repeated observations of one instrument. **This is not assumed.**
-K3 requires the effective breadth of the event set to be measured and reported, by the same
-participation-ratio method used on the cross-section holon, and the effective n used in every
-interval is the measured one, never the raw count.
+| stratum | events | symbols | **episodes** | smallest detectable hit rate |
+|---|---|---|---|---|
+| ≥ $1M | 234 | 12 | **80** | **0.657** |
+| **≥ $250k** | 559 | 27 | **170** | **0.607** |
+| ≥ $50k | 1,554 | 75 | **570** | **0.559** |
+
+**Primary stratum: ≥ $250k.** The other two are declared secondaries, family-corrected across
+three, and they are what makes C3 testable rather than a fishing grid.
+
+**Time to better power:** episodes accrue at ~4.6/hour at ≥$250k. q5 runs to roughly 24 August
+on current disk, which would take the primary stratum to about **500 episodes, detecting 0.563**.
+
+**Independence is measured, never assumed.** K3 requires effective breadth by the
+participation-ratio method used on the cross-section holon, and the measured value is the
+effective n in every interval.
 
 ## 6. Endpoint and benchmarks
 
@@ -118,7 +131,8 @@ hit rate. GEN-1 established that a bar near 0.50 is clearable by accident.
 
 ## 8. Kill conditions
 
-- **K1.** No read before **196 events at ≥$1M** with measured effective breadth ≥ 20.
+- **K1.** No read before **170 episodes in the primary ≥$250k stratum**, episodes defined as
+  same symbol, same side, separated by ≥60 s. **Events are not observations.**
 - **K2.** If Tier 2 fails — no better than volatility-matched random times — the map is reported
   as **describing volatility, not causing it**, and the line closes.
 - **K3.** Effective breadth is measured, not assumed, and used as the effective n everywhere.
