@@ -1,7 +1,8 @@
 # CASCADE-1 — does forced liquidation move price, and for how long?
 
-**Status: DRAFT, not frozen.** Awaiting Gabana. No outcome has been computed and none may be
-until this is frozen and hashed.
+**Status: FROZEN 2026-08-20, before any outcome was computed.** Declared by Gabana. No cohort
+threshold, horizon, benchmark, prediction or kill condition below may be changed after this
+point. If a defect is found it is reported and recorded, not silently repaired.
 
 **Classification: MEASUREMENT + IMPORT.** Liquidation-driven price impact is studied in the
 literature and sold commercially as heatmaps. No novelty is claimed for the idea. What is
