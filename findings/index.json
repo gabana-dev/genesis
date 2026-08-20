@@ -105,6 +105,36 @@
    "last_updated": "2026-08-20",
    "supersedes": "none",
    "path": "findings/F-0007-per-wallet-state-unsold-REFUTED.md"
+  },
+  {
+   "id": "F-0008",
+   "title": "The position map is up to an hour stale relative to the order book, which manufactures phantom triggers",
+   "status": "MEASURED",
+   "observation": "clock gap of 3,055 s (51 min) between the latest l2Book snapshot and the latest position snapshot",
+   "sample": "first end-to-end cascade run, 2026-08-20",
+   "method": "compare observation timestamps of the two joined sources",
+   "evidence": "market/cascade_live.py",
+   "confidence": "structural, not incidental -- the fast position scan runs hourly while the book updates every 5.3 s",
+   "market_gap": "no liquidation product discloses the age of the positions behind its map",
+   "first_recorded": "2026-08-20",
+   "last_updated": "2026-08-20",
+   "supersedes": "none",
+   "path": "findings/F-0008-map-book-clock-gap.md"
+  },
+  {
+   "id": "F-0009",
+   "title": "Visible forced flow on Hyperliquid BTC is small relative to visible book depth",
+   "status": "PRELIMINARY",
+   "observation": "$63.6M total forced selling in the visible map against $222.5M of bids within 2.71% of mid; a $10.6M trigger moved price 0.069%",
+   "sample": "one snapshot pair, 2026-08-20, fast-tier map at 24.2% coverage",
+   "method": "cascade sweep of the observed ladder against the observed book, evaporation not applied",
+   "evidence": "market/cascade_live.py",
+   "confidence": "ONE observation, low coverage, static book, and a 51-minute clock gap (F-0008)",
+   "market_gap": "no product publishes forced flow as a ratio to available depth",
+   "first_recorded": "2026-08-20",
+   "last_updated": "2026-08-20",
+   "supersedes": "none",
+   "path": "findings/F-0009-forced-flow-small-vs-depth.md"
   }
  ]
 }
