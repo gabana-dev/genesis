@@ -33,6 +33,33 @@ MAX_FRAME = 16 * 1024 * 1024
 OPEN_TIMEOUT = 45
 
 
+
+def _sub_spec(spec: str, coin: str) -> dict:
+    """
+    Parse a subscription string into Hyperliquid's subscription object.
+
+    "trades"    -> {"type": "trades", "coin": ...}
+    "l2Book:3"  -> {"type": "l2Book", "coin": ..., "nSigFigs": 3}
+
+    nSigFigs matters and is not cosmetic. The venue returns 20 levels whatever you ask for, but
+    coarser price bucketing makes those 20 levels span far more of the book. Measured on BTC
+    2026-08-20:
+
+        default / 5   +/-0.03%     $5.7M visible
+        4             +/-0.27%    $60.8M
+        3             +/-2.72%   $212.2M
+        2             +/-27%     $437.6M
+
+    The Binance bookDepth bands this is meant to be compared against are +/-0.2% and +/-1%, so
+    the DEFAULT SUBSCRIPTION CANNOT ANSWER THE QUESTION -- it does not reach far enough. Found
+    by checking reach before recording rather than after accumulating weeks of unusable data.
+    """
+    if ":" in spec:
+        kind, sig = spec.split(":", 1)
+        return {"type": kind, "coin": coin, "nSigFigs": int(sig)}
+    return {"type": spec, "coin": coin}
+
+
 async def record(ingestor, coin="BTC", stop_after=None, subscriptions=("trades",),
                  reconnect=True):
     """Subscribe and record verbatim. Re-subscribes on every reconnect."""
@@ -49,7 +76,7 @@ async def record(ingestor, coin="BTC", stop_after=None, subscriptions=("trades",
                 ingestor.connection_opened(connection_id, WS_URL)
                 for s in subscriptions:
                     await ws.send(json.dumps({"method": "subscribe",
-                                              "subscription": {"type": s, "coin": coin}}))
+                                              "subscription": _sub_spec(s, coin)}))
                 ingestor.subscription_changed(list(subscriptions), [coin])
 
                 while True:
