@@ -233,7 +233,10 @@ COLLECTORS = [
      "data": f"{EVIDENCE}/liqmap/snapshots-liq2.jsonl",
      "why": "LIQ-2 archive; clearinghouseState has no history, an uncollected hour is lost"},
     {"name": "hl2", "cadence_h": 1,
-     "log": f"{EVIDENCE}/hl2/recorder.out",
+     # A long-running recorder writes recorder.out only at start and stop, so using it as the
+     # RAN signal reports a healthy recorder as stalled forever. For continuous recorders the
+     # data file IS the liveness signal -- the same choice already made for q5.
+     "log": f"{EVIDENCE}/hl2/btc-l2book.jsonl",
      "data": f"{EVIDENCE}/hl2/btc-l2book.jsonl",
      "why": "Hyperliquid book at nSigFigs=3 (+/-2.7%); tests whether Binance depth physics transfers"},
     {"name": "q5", "cadence_h": 1,

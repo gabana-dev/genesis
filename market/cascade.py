@@ -43,6 +43,35 @@ import book as BK  # noqa: E402
 
 MAX_ROUNDS = 20          # a fixed point that has not converged in 20 rounds has diverged
 
+# MEASURED, not assumed. Binance USD-M BTCUSDT, 1,324 days, 3,733,943 snapshots, 0 missing.
+# research/evaporation-result.md; finding F-0002.
+#
+# Depth after / depth before in the near book (+/-0.2-1%) during the LARGEST move bucket, with
+# the p25 as the stressed case. Horizon matters more than expected: liquidity leaves over
+# minutes, not on impact, so a fast cascade meets a nearly full book and a slow one does not.
+#
+#   horizon   quiet    median (large move)   p25
+#   1m        1.0003   0.9773                0.8700
+#   5m        1.0015   0.8462                0.6573
+#   15m       1.0030   0.8586                0.6646
+#
+# CARRIES F-0006: measured on Binance, applied to Hyperliquid is ASSUMED and untested.
+EVAPORATION = {
+    1:  {"quiet": 1.000, "stress": 0.9773, "tail": 0.8700},
+    5:  {"quiet": 1.000, "stress": 0.8462, "tail": 0.6573},
+    15: {"quiet": 1.000, "stress": 0.8586, "tail": 0.6646},
+}
+
+
+def evaporation_for(horizon_min, case="stress"):
+    """
+    Measured depth ratio for a horizon. Raises rather than interpolating an unmeasured horizon --
+    inventing a number between measured ones is how a calibration becomes a guess.
+    """
+    if horizon_min not in EVAPORATION:
+        raise ValueError(f"no measurement at {horizon_min}m; have {sorted(EVAPORATION)}")
+    return EVAPORATION[horizon_min][case]
+
 
 def clusters_between(clusters, lo, hi):
     """Forced notional with a trigger price in (lo, hi]. `clusters` is [(price, notional), ...]."""
@@ -148,24 +177,31 @@ def cascade(levels, side, initial_notional, clusters, start_price,
 
 
 def bracket(levels, side, initial_notional, clusters, start_price,
-            evaporation_optimistic=1.0, evaporation_pessimistic=0.72):
+            evaporation_optimistic=1.0, evaporation_pessimistic=None, horizon_min=5):
     """
     The declared range.
 
-    OPTIMISTIC assumes a static book -- what every published heatmap implicitly claims.
-    PESSIMISTIC applies measured evaporation.
+    OPTIMISTIC assumes a static book -- what every published heatmap implicitly claims, and what
+    the measurement says is correct to four decimals in QUIET markets and wrong by 15% during
+    large moves.
+    PESSIMISTIC applies the measured ratio for the horizon.
 
     The gap between them is reported as `ambiguity_pct` and is a first-class output: it is the
     cost of not knowing how the book behaves, and it is exactly the quantity a competitor hides
     by quoting a single number.
     """
+    if evaporation_pessimistic is None:
+        evaporation_pessimistic = evaporation_for(horizon_min, "stress")
     hi = cascade(levels, side, initial_notional, clusters, start_price,
                  evaporation=evaporation_optimistic)
     lo = cascade(levels, side, initial_notional, clusters, start_price,
                  evaporation=evaporation_pessimistic)
     out = {"optimistic": hi, "pessimistic": lo,
            "evaporation_optimistic": evaporation_optimistic,
-           "evaporation_pessimistic": evaporation_pessimistic}
+           "evaporation_pessimistic": evaporation_pessimistic,
+           "horizon_min": horizon_min,
+           "evaporation_source": "measured, Binance 1,324d (F-0002); applied to Hyperliquid "
+                                 "is ASSUMED (F-0006)"}
     if hi.get("moved_pct") is not None and lo.get("moved_pct") is not None:
         out["ambiguity_pct"] = abs(lo["moved_pct"] - hi["moved_pct"])
     return out

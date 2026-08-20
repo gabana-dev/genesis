@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  LIQ-2 deep position scan. Moved off cron 2026-08-20: the crontab was intact and the daemon
+  running, yet nothing fired for 4.6 hours and the script worked when run by hand. cron on this
+  machine is already known unreliable -- two crontab processes wedged unkillably earlier the
+  same day. clearinghouseState has no history, so a missed hour is lost permanently.
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key><string>dev.gabana.genesis.liqmap-deep</string>
+    <key>ProgramArguments</key>
+    <array>
+      <string>/Users/gabana/genesis/market/liqmap-liq2.sh</string>
+      <string>deep</string>
+    </array>
+    <key>WorkingDirectory</key><string>/Users/gabana/genesis</string>
+    <key>StartInterval</key><integer>21600</integer>
+    <key>RunAtLoad</key><false/>
+    <key>StandardOutPath</key><string>/Users/gabana/genesis-evidence/liqmap/launchd-deep.log</string>
+    <key>StandardErrorPath</key><string>/Users/gabana/genesis-evidence/liqmap/launchd-deep.log</string>
+</dict>
+</plist>

@@ -14,13 +14,15 @@ WHAT IT IS NOT
       * COVERAGE. LIQ-2 sees roughly half of open interest (F-0003), and the fast tier less. A
         cluster ladder built from it is a LOWER BOUND on forced size, so the cascade computed
         here is a lower bound too.
-      * EVAPORATION IS NOT APPLIED YET. The measurement is still running; until it lands this
-        uses evaporation=1.0, which is the static book every commercial heatmap assumes and
-        which F-0002 says is wrong. The number is therefore OPTIMISTIC BY CONSTRUCTION.
+      * EVAPORATION IS NOW MEASURED and applied to the pessimistic branch: 0.8462 at a
+        5-minute horizon, from 1,324 days of Binance bookDepth (F-0002). The optimistic branch
+        keeps the static book every commercial heatmap assumes, so the bracket is literally
+        "what everyone else would tell you" against "what the data says".
       * BOOK REACH. 20 levels at nSigFigs=3 span ~2.7%. Beyond that the book cannot speak, and
         the model reports exhaustion instead of extrapolating.
-      * F-0006 does not apply here -- this book IS Hyperliquid's. The Binance-transfer
-        assumption only bites once evaporation is applied.
+      * F-0006 NOW APPLIES. The book is Hyperliquid's but the evaporation ratio is Binance's,
+        and whether it transfers is untested. hl2 is recording to settle it. Until then the
+        pessimistic branch carries that caveat on its face.
 """
 
 import json
@@ -140,8 +142,7 @@ def run(trigger_notional=None):
     # a 33-minute-old map and the current book.
     book_top = max(bids)
     res = C.bracket(bids, "bids", trigger_notional, ladder, book_top,
-                    evaporation_optimistic=1.0,
-                    evaporation_pessimistic=1.0)   # NOT YET MEASURED -- see module docstring
+                    evaporation_optimistic=1.0, horizon_min=5)
 
     book_notional = sum(p * q for p, q in bids.items())
     return {
@@ -159,7 +160,8 @@ def run(trigger_notional=None):
         "trigger_notional": trigger_notional,
         "result": res,
         "caveats": ["coverage ~half of open interest; forced size is a LOWER BOUND",
-                    "evaporation not applied; static book, OPTIMISTIC by construction",
+                    "pessimistic branch uses Binance-measured evaporation 0.8462 @5m (F-0002); "
+                    "transfer to Hyperliquid is ASSUMED (F-0006)",
                     "book reaches ~2.7%; beyond that the model reports exhaustion",
                     f"map is {stale_s:.0f}s old (F-0008); trigger measured from the map's spot"
                     if stale_s else "map age unknown"],
