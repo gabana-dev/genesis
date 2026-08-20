@@ -117,3 +117,170 @@ def summarise(rel):
     v = np.array(sorted(rel.values()))
     return {"n": len(v), "median": float(np.median(v)),
             "p05": float(v[int(0.05 * len(v))]), "p95": float(v[int(0.95 * len(v))])}
+
+
+# ---------------------------------------------------------------------------------------
+# The measurement
+# ---------------------------------------------------------------------------------------
+
+def aligned(sym, days, band=(0.2, 1.0), horizon_min=5):
+    """
+    Join each depth snapshot to the price move over the FOLLOWING `horizon_min` minutes.
+
+    Forward, never backward. A backward-looking join would measure depth after the move and
+    answer a different question -- and it is the version that would accidentally look
+    predictive, because the book is visibly thin once a move has already happened.
+
+    Returns (rel_depth, abs_move_pct) pairs, where rel_depth is normalised by hour-of-day
+    median so the diurnal liquidity cycle is divided out rather than measured.
+    """
+    snaps, missing_depth = load(sym, days)
+    rel = relative_depth(snaps, band)
+
+    closes = {}
+    missing_px = []
+    for d in days:
+        p = B.fetch_klines(sym, d, "1m")
+        if not p:
+            missing_px.append(d)
+            continue
+        for t, _o, _h, _l, c in B.read_klines(p):
+            closes[t] = c
+    if not closes or not rel:
+        return [], {"missing_depth": missing_depth, "missing_px": missing_px}
+
+    minute = lambda ms: (ms // 60000) * 60000  # noqa: E731
+    out = []
+    for t, r in rel.items():
+        m0 = minute(t)
+        c0 = closes.get(m0)
+        c1 = closes.get(m0 + horizon_min * 60000)
+        if c0 and c1 and c0 > 0:
+            out.append((r, abs(c1 - c0) / c0 * 100.0))
+    return out, {"missing_depth": missing_depth, "missing_px": missing_px,
+                 "snapshots": len(rel), "matched": len(out)}
+
+
+def evaporation(pairs, quantiles=(0.5, 0.9, 0.99, 0.999)):
+    """
+    Median relative depth, bucketed by how violent the following window was.
+
+    Buckets are quantiles of the move distribution, not fixed thresholds, so the comparison is
+    self-calibrating across symbols and regimes rather than depending on a number chosen after
+    seeing the data.
+    """
+    if not pairs:
+        return []
+    rels = np.array([p[0] for p in pairs])
+    moves = np.array([p[1] for p in pairs])
+    cuts = [0.0] + [float(np.quantile(moves, q)) for q in quantiles] + [float(moves.max()) + 1]
+    rows = []
+    for lo, hi in zip(cuts, cuts[1:]):
+        m = (moves >= lo) & (moves < hi)
+        if m.sum() < 20:
+            continue
+        rows.append({"move_lo_pct": lo, "move_hi_pct": hi, "n": int(m.sum()),
+                     "median_rel_depth": float(np.median(rels[m])),
+                     "p25": float(np.quantile(rels[m], 0.25))})
+    return rows
+
+
+def during(sym, days, band=(0.2, 1.0), horizon_min=5):
+    """
+    EVAPORATION proper: depth AFTER the window divided by depth BEFORE it, bucketed by how big
+    the move was.
+
+    `aligned` answers a different question -- depth now against the move next, i.e. whether a
+    thin book PRECEDES violence. Both matter and they are not the same:
+
+        aligned  : thin book -> big move        (predictive, and possibly just permissive)
+        during   : big move  -> book gets thinner  (the cascade AMPLIFIER)
+
+    Only the second one changes a cascade estimate, because it says the liquidity a heatmap
+    counted on is not there by the time the forced flow arrives.
+
+    Ratio of raw notional, not of the hour-normalised value: before and after are minutes apart,
+    so the diurnal cycle is common to both and divides out on its own.
+    """
+    snaps, missing_depth = load(sym, days)
+    closes, missing_px = {}, []
+    for d in days:
+        p = B.fetch_klines(sym, d, "1m")
+        if not p:
+            missing_px.append(d)
+            continue
+        for t, _o, _h, _l, c in B.read_klines(p):
+            closes[t] = c
+    if not snaps or not closes:
+        return [], {"missing_depth": missing_depth, "missing_px": missing_px}
+
+    h_ms = horizon_min * 60000
+    out = []
+    for t, s in snaps.items():
+        s2 = snaps.get(t + h_ms)
+        if s2 is None:
+            continue
+        d0, d1 = band_notional(s, *band), band_notional(s2, *band)
+        if d0 <= 0 or d1 <= 0:
+            continue
+        m0 = (t // 60000) * 60000
+        c0, c1 = closes.get(m0), closes.get(m0 + h_ms)
+        if not c0 or not c1 or c0 <= 0:
+            continue
+        out.append((d1 / d0, abs(c1 - c0) / c0 * 100.0))
+    return out, {"missing_depth": missing_depth, "missing_px": missing_px, "pairs": len(out)}
+
+
+def report(rows, label):
+    print(f"\n{label}")
+    for r in rows:
+        print(f"  move {r['move_lo_pct']:6.3f}–{r['move_hi_pct']:6.3f}%  n={r['n']:>7,}  "
+              f"median {r['median_rel_depth']:.3f}   p25 {r['p25']:.3f}")
+
+
+def non_overlapping(rows, horizon_min=5):
+    """
+    Reduce to non-overlapping observations by striding at the horizon length.
+
+    Snapshots are 30 s apart and the window is `horizon_min`, so consecutive rows share most of
+    their window. Counting them as independent inflates n roughly tenfold -- the error the power
+    audit found in GEN-1 and that I repeated in CASCADE-1's first draft.
+
+    A gap-based episode collapse is the WRONG tool here and was tried first: bookDepth is a
+    continuous series with no gaps, so a 30-minute gap rule reduced 24,043 rows to 7. Discrete
+    events have episodes; a continuous series has a sampling stride.
+
+    Volatility clusters, so even horizon-spaced rows inside one storm are not fully independent.
+    `distinct_days` is therefore reported per bucket as the honest lower bound on breadth.
+    """
+    if not rows:
+        return []
+    rows = sorted(rows, key=lambda x: x[2])
+    step = horizon_min * 60000
+    out, last = [], None
+    for r in rows:
+        if last is None or r[2] - last >= step:
+            out.append(r)
+            last = r[2]
+    return out
+
+
+def evaporation_by_bucket(rows, quantiles=(0.5, 0.9, 0.99, 0.999)):
+    """As `evaporation`, plus the number of distinct UTC days behind each bucket."""
+    import numpy as np
+    if not rows:
+        return []
+    ratio = np.array([r[0] for r in rows])
+    move = np.array([r[1] for r in rows])
+    day = np.array([r[2] // 86400000 for r in rows])
+    cuts = [0.0] + [float(np.quantile(move, q)) for q in quantiles] + [float(move.max()) + 1]
+    out = []
+    for lo, hi in zip(cuts, cuts[1:]):
+        m = (move >= lo) & (move < hi)
+        if m.sum() < 10:
+            continue
+        out.append({"move_lo_pct": lo, "move_hi_pct": hi, "n": int(m.sum()),
+                    "distinct_days": int(len(set(day[m].tolist()))),
+                    "median_rel_depth": float(np.median(ratio[m])),
+                    "p25": float(np.quantile(ratio[m], 0.25))})
+    return out
