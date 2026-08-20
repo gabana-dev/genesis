@@ -99,15 +99,47 @@ def run(trigger_notional=None):
     bids, _asks, mid, t_book = bk
     ladder, spot, coverage, t_map = cluster_ladder(side="sell")
 
-    # The trigger: forced selling from positions whose liquidation price is at or above the
-    # current book mid -- i.e. already underwater relative to where the book is now.
-    if trigger_notional is None:
-        trigger_notional = sum(n for p, n in ladder if p >= mid)
-        if trigger_notional <= 0:
-            nearest = max((p for p, _ in ladder if p < mid), default=None)
-            trigger_notional = sum(n for p, n in ladder if nearest and p == nearest)
+    # F-0008. The trigger is defined against the MAP'S OWN SPOT, never the current book mid.
+    #
+    # The map is up to an hour stale while the book updates every 5.3 s. Positions whose
+    # liquidation price now sits above the current mid have ALREADY been passed through -- they
+    # fired, or they were topped up, and either way we have not re-observed them. Counting them
+    # as "about to liquidate" reports the map's age as a forecast. The first run did exactly
+    # that and manufactured a $10.6M trigger out of nothing.
+    #
+    # Only clusters strictly BELOW the map's spot are ahead of the market. The nearest one is
+    # what a cascade would actually reach first.
+    stale_s = (abs(t_book - t_map) / 1000.0
+               if t_book is not None and t_map is not None else None)
+    already_passed = sum(n for p, n in ladder if p >= mid)
 
-    res = C.bracket(bids, "bids", trigger_notional, ladder, mid,
+    if trigger_notional is None:
+        below = [(p, n) for p, n in ladder if p < spot]
+        if not below:
+            trigger_notional = 0.0
+            nearest_px = None
+        else:
+            nearest_px = max(p for p, _ in below)
+            trigger_notional = sum(n for p, n in below if p == nearest_px)
+    else:
+        nearest_px = None
+
+    if trigger_notional <= 0:
+        return {"generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+                "refused": "no cluster below the map's spot; nothing to trigger",
+                "map_age_s": stale_s, "map_coverage": coverage}
+
+    # THE TWO PRICES HAVE DIFFERENT JOBS, and conflating them produces a fake move.
+    #
+    #   map spot  decides which clusters are still AHEAD of the market (not yet fired)
+    #   book top  is where the sweep starts and where the move is measured FROM
+    #
+    # Measuring the move from the map's spot folds the drift since the map was taken into the
+    # cascade impact. The first fixed version reported 0.252% for a $222k trigger against $209M
+    # of bids -- arithmetically impossible, and almost all of it was the 130-point gap between
+    # a 33-minute-old map and the current book.
+    book_top = max(bids)
+    res = C.bracket(bids, "bids", trigger_notional, ladder, book_top,
                     evaporation_optimistic=1.0,
                     evaporation_pessimistic=1.0)   # NOT YET MEASURED -- see module docstring
 
@@ -117,15 +149,20 @@ def run(trigger_notional=None):
         "book_mid": mid, "book_bid_notional": book_notional,
         "book_reach_pct": (mid - min(bids)) / mid * 100,
         "map_spot": spot, "map_coverage": coverage,
-        "clock_gap_s": (abs(t_book - t_map) / 1000.0
-                        if t_book is not None and t_map is not None else None),
+        "map_age_s": stale_s,
+        "already_passed_notional": already_passed,
+        "nearest_cluster_px": nearest_px,
+        "book_top": max(bids),
+        "map_to_book_drift_pct": (spot - max(bids)) / spot * 100,
         "clusters_below_mid": sum(1 for p, _ in ladder if p < mid),
         "forced_notional_total": sum(n for _, n in ladder),
         "trigger_notional": trigger_notional,
         "result": res,
         "caveats": ["coverage ~half of open interest; forced size is a LOWER BOUND",
                     "evaporation not applied; static book, OPTIMISTIC by construction",
-                    "book reaches ~2.7%; beyond that the model reports exhaustion"],
+                    "book reaches ~2.7%; beyond that the model reports exhaustion",
+                    f"map is {stale_s:.0f}s old (F-0008); trigger measured from the map's spot"
+                    if stale_s else "map age unknown"],
     }
 
 

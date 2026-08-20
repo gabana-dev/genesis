@@ -20,6 +20,21 @@ through them and they should have fired. They had not been re-observed.
 So a naive trigger rule reads those as "about to liquidate" when they are really "the map is
 old". **The number is an artifact of the join, not a forecast.**
 
-**What this forces.** Any published cascade figure must carry the age of the position map, and a
-trigger rule must be defined against the map's own spot rather than the current book mid.
-Reconciling the two is a design decision, not a detail.
+**What this forces, and the first fix was also wrong.** Defining the trigger against the map's
+spot removed the phantom triggers but folded the price DRIFT since the map was taken into the
+cascade impact: a $222k trigger against $225M of bids reported a 0.252% move, which is
+arithmetically impossible. All of it was the 180-point gap between a 33-minute-old map and the
+current book.
+
+The two prices have different jobs and conflating them fakes a move:
+
+| price | job |
+|---|---|
+| **map spot** | decides which clusters are still AHEAD of the market |
+| **book top** | where the sweep starts, and what the move is measured FROM |
+
+With both separated the same input reports **0.0000%** -- correct, since $222k does not clear the
+top bid level.
+
+**Publish the drift.** `map_to_book_drift_pct` bounds how far the market has moved since the map
+could last be trusted, and it belongs next to any forecast rather than hidden inside it.
