@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  ECON-1 daily forward collection. Moved off cron 2026-08-21: cron stopped firing entirely on
+  this machine -- crontab intact, daemon running, nothing executed. ECON-1 needs ~90 unattended
+  days and its first observation was due today, so a silent stop here costs the project's
+  longest-running experiment.
+
+  RunAtLoad is true because a launchd job that has never run does not reliably get its
+  StartInterval timer on this machine: the liqmap agents sat at runs=0 for 11 hours with
+  RunAtLoad false, while disk-guard with RunAtLoad true has 46 clean runs.
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key><string>dev.gabana.genesis.econ1</string>
+    <key>ProgramArguments</key>
+    <array><string>/Users/gabana/genesis/market/econ1-daily.sh</string></array>
+    <key>WorkingDirectory</key><string>/Users/gabana/genesis</string>
+    <key>StartInterval</key><integer>21600</integer>
+    <key>RunAtLoad</key><true/>
+    <key>StandardOutPath</key><string>/Users/gabana/genesis-evidence/econ1/launchd.log</string>
+    <key>StandardErrorPath</key><string>/Users/gabana/genesis-evidence/econ1/launchd.log</string>
+</dict>
+</plist>

@@ -225,8 +225,10 @@ COLLECTORS = [
      "log": f"{EVIDENCE}/econ1/collect.log",
      "data": f"{EVIDENCE}/econ1/observations.jsonl",
      # ECON-1 evaluates decision points from 2026-08-20 at a 1-day horizon, so the first
-     # outcome is only KNOWN on the 21st. Before then an empty file is correct, not broken.
-     "advance_from": "2026-08-21",
+     # outcome is only KNOWN on the 21st -- and the daily metrics archive is published with a
+     # lag, so the file cannot exist until the 22nd at the earliest. Set to the 23rd: a watch
+     # that fires before data can possibly exist teaches the reader to ignore it.
+     "advance_from": "2026-08-23",
      "why": "ECON-1 forward test; ~270 points, first read ~mid-Nov"},
     {"name": "liqmap", "cadence_h": 2,
      "log": f"{EVIDENCE}/liqmap/collect2.log",
