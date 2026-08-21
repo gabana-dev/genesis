@@ -82,12 +82,18 @@ Each row is fixed before any styling. **"Not shown" is as binding as "shown."**
 ### `/check` — job ①
 - **Primary question:** *can I save this position?*
 - **Shown now:** positions, liquidation price, distance, free collateral, whether it can defend.
-- **Must be added — the largest single product gap:** *what would change this.* "Add $500 and your
-  liquidation price moves from $72,840 to $72,310." It is arithmetic on numbers the venue already
-  gives us, it is not a forecast, and **no competitor offers it.**
-  **Gate:** the formula must be validated against the venue's own `liquidationPx` before it ships,
-  exactly as F-0001 validated `withdrawable`. Derived arithmetic that has not been checked against
-  the venue is how one wallet in five gets called safe when it is not.
+- **Wanted, and BLOCKED — see F-0015.** *"Add $500 and your liquidation price moves to X"* is the
+  right feature: decision support rather than a forecast, offered by nobody. The gate above was
+  run on 2026-08-22 and **the feature failed it.** The documented formula reproduces the venue
+  within 10 bps for 56.4% of positions, is internally inconsistent within a single account for
+  71.8% of accounts, and the observed response does not match the predicted one.
+  **It must be measured, not computed** — join real deposits from `userNonFundingLedgerUpdates`
+  to `liquidationPx` before and after. That needs per-wallet state over time, which is the one
+  asset competitors lack, and it needs a thicker archive than three days.
+- **Until then `/check` ships the honest version of the same job:** what the venue reports, what
+  free collateral it actually has, and *"we cannot yet tell you what adding margin would do, and
+  here is why"* — with a link to F-0015. Saying so is more trustworthy than a number that is
+  wrong for two positions in five.
 - **Not shown:** a 0–100 score; any statement about where price will go.
 - **Language:** the heading is **"Can you defend this position?"**, never "defensibility". The
   technical term lives in `/methodology`, the API, and nowhere else a trader reads.
@@ -188,8 +194,9 @@ of charts. None of them is readable.
 
 ## 10. Build order
 
-1. **`/check` — "what would change this"**, with the formula validated against the venue first.
-   Job ① is the only surface a stranger has a reason to open, and it is currently incomplete.
+1. ~~`/check` — "what would change this"~~ **BLOCKED by F-0015.** Do not ship a computed margin
+   response. The replacement task is instrumentation: record deposits against liquidation prices
+   until the response can be measured.
 2. **Navigation and language pass** — Alerts out, Methodology to the footer, "defensibility"
    replaced with "can you defend this" everywhere a trader reads.
 3. **`/research/<slug>` restructured** to Question → Test → Result → **What would change our

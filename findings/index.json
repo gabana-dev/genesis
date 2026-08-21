@@ -210,6 +210,21 @@
    "last_updated": "2026-08-22",
    "supersedes": "none",
    "path": "findings/F-0014-book-is-too-deep-for-clusters-to-matter.md"
+  },
+  {
+   "id": "F-0015",
+   "title": "How a liquidation price responds to added margin cannot be derived from Hyperliquid's published state, so the \"add $500 and your liquidation moves to X\" feature cannot be built from arithmetic",
+   "status": "PRELIMINARY",
+   "observation": "the documented formula reproduces the venue's own liquidationPx to within 10 bps for only 56.4% of cross positions (median error 4.79 bps, n=1,019); inverting it position-by-position within a single account recovers margin_available values that disagree by 3.49% at the median and 73.7% at p90, so only 28.2% of accounts are internally consistent within 1%",
+   "sample": "90 Hyperliquid accounts fetched live 2026-08-22 (1,474 positions, 1,019 cross); 39 accounts holding 2+ cross positions; 1,923 wallet-transitions across 6 deep scans",
+   "method": "liq_px = entry - side*margin_available/|szi|/(1 - l*side) with l = 1/(2*maxLeverage), margin_available = crossMarginSummary.accountValue - crossMaintenanceMarginUsed; then the same formula inverted per position and compared within each account; then the implied derivative compared against observed liquidationPx movement in wallets whose position size was unchanged",
+   "evidence": "market/liqcalc.py, ~/genesis-evidence/liqmap/snapshots-liq2.jsonl",
+   "confidence": "one venue, one afternoon, 90 accounts. The three checks disagree with the formula in three different ways, which is stronger than any one of them; but the third conflates unrealised PnL with deposited collateral and cannot yet isolate a real deposit",
+   "market_gap": "no provider offers a margin-response figure at all, and this measurement suggests why -- the obvious arithmetic is wrong in a way that only shows up in the tail",
+   "first_recorded": "2026-08-22",
+   "last_updated": "2026-08-22",
+   "supersedes": "none",
+   "path": "findings/F-0015-liquidation-response-to-margin-not-derivable.md"
   }
  ]
 }
