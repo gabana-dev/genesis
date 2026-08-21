@@ -130,6 +130,13 @@ coverage and the URL.
 Nothing here has been paid for by anyone. That is the single largest open risk and no amount of
 building reduces it. The first paid trigger has to be discovered from behaviour, not designed.
 
+`product/PAYMENTS.md` sets out how to run that experiment cheaply: the customer is crypto-native,
+so a stablecoin transfer verified on-chain needs no processor, no company and no account system.
+**The architecture is not the point — it is that the architecture makes the first honest
+commercial experiment affordable.** Two experiments are specified there, C-1 (will they pay in
+stablecoins) and C-2 (what do they actually use it for), the second of which matters more and is
+easier to skip.
+
 ## 6. Order of work
 
 Each line names what it is for. Anything that cannot state its distribution surface does not get
@@ -142,7 +149,7 @@ built.
 | 3 | **per-asset search pages** | the queries already exist and we answer none | search |
 | 4 | **MCP server** | agents as a channel; thin wrapper over existing JSON | agents |
 | 5 | **shareable alert cards** | the incumbents' organic reach mechanism | social |
-| 6 | **paid tier** | only after 1–5 produce returning users | revenue |
+| 6 | **paid tier** | only after 1–5 produce returning users | revenue — see `PAYMENTS.md` |
 
 **The API is deliberately not a milestone.** Static JSON already exists and costs nothing; a
 documented, supported, rate-limited API is a product with an obligation attached, and it waits
