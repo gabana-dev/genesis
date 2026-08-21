@@ -150,3 +150,18 @@ export function url(path: string): string {
   const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   return `${base}/${path.replace(/^\//, '')}`;
 }
+
+/**
+ * The site's absolute root, derived from astro.config.mjs -- never written out by hand.
+ *
+ * It appeared as a literal in seven places (JSON-LD, llms.txt, robots.txt, the research index),
+ * which meant moving to a real domain later would be seven chances to leave one behind pointing
+ * at a URL that no longer describes us. Changing `site` or `base` in the config now moves all of
+ * them, and the only copy outside this build is product/alerts.py, which is noted there.
+ */
+export const SITE = new URL(import.meta.env.BASE_URL, import.meta.env.SITE).href.replace(/\/$/, '');
+
+/** An absolute URL for a site-root-relative path. */
+export function abs(path: string): string {
+  return `${SITE}/${path.replace(/^\//, '')}`;
+}

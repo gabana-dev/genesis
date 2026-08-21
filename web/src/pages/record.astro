@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import Grid from '../components/Grid.astro';
 import Note from '../components/Note.astro';
 import Stat from '../components/Stat.astro';
-import { scorecard } from '../lib/data';
+import { abs, scorecard } from '../lib/data';
 
 const sc = scorecard();
 const counts = Object.entries(sc.counts).sort(([a], [b]) => a.localeCompare(b));
@@ -23,7 +23,7 @@ const jsonld = {
   distribution: {
     '@type': 'DataDownload',
     encodingFormat: 'application/json',
-    contentUrl: 'https://gabana-dev.github.io/genesis/data/scorecard.json',
+    contentUrl: abs('data/scorecard.json'),
   },
 };
 ---

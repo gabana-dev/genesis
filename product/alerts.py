@@ -33,6 +33,8 @@ WATCHLIST = f"{PRIVATE}/watchlist.json"
 STATE = f"{PRIVATE}/state.json"
 LOG = f"{PRIVATE}/alerts.log"
 
+# The one copy of the site URL outside the web build. web/src/lib/data.ts derives its own from
+# astro.config.mjs; these two are the ONLY places a domain move has to touch.
 SITE = "https://gabana-dev.github.io/genesis"
 
 # Free tier. Not a trial -- the whole product for a trader with one account. The limit exists as

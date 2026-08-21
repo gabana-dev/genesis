@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import Note from '../components/Note.astro';
-import { marketMap } from '../lib/data';
+import { SITE, marketMap } from '../lib/data';
 
 const m = marketMap();
 const example = JSON.stringify(
@@ -16,7 +16,7 @@ const example = JSON.stringify(
 );
 const coverage = JSON.stringify(m.coverage, null, 1);
 
-const SITE = 'https://gabana-dev.github.io/genesis';
+
 const jsonld = {
   '@context': 'https://schema.org',
   '@type': 'DataCatalog',

@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
-import { marketMap, scorecard, usd } from '../lib/data';
+import { SITE, marketMap, scorecard, usd } from '../lib/data';
 
 /**
  * llms.txt -- the site stated plainly for a retrieval system.
@@ -13,7 +13,7 @@ import { marketMap, scorecard, usd } from '../lib/data';
  * summary is exactly the failure this site exists to avoid. The "does not claim" section is not
  * modesty -- it is the guardrail that stops a model attributing a cascade prediction to us.
  */
-const SITE = 'https://gabana-dev.github.io/genesis';
+
 
 export const GET: APIRoute = async () => {
   const m = marketMap();
