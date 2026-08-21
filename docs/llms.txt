@@ -13,8 +13,8 @@ later refuted stay published.
 - Cannot defend: 97.9% ($57.2M)
 - Drawn from: 569 positions from the full frozen universe
 - Coverage of exchange open interest, THIS scan: 37.1%
-- Book standing within ±1% of spot: $198.9M
-- Largest cluster as a share of that book: 11.8%
+- Book standing within ±1% of spot: $192.6M
+- Largest cluster as a share of that book: 12.2%
 - Map taken at: 2026-08-21T23:49:07+00:00
 
 Coverage is reported for the current scan, never the best scan ever run. A full universe is
@@ -34,7 +34,7 @@ estimated to reach 53.3% (F-0003).
   deliberately empty.
 - Figures cover BTC on hyperliquid only, and exclude cross-margin effects from other assets.
 
-## The record (14 claims, 2 refuted by us)
+## The record (15 claims, 2 refuted by us)
 
 - [MEASURED] F-0001: Free collateral cannot be derived from position and margin data; naive arithmetic misclassifies one wallet in five
   withdrawable == accountValue - totalMarginUsed for 19% of wallets; 20% misclassified as able to defend
@@ -64,6 +64,8 @@ estimated to reach 53.3% (F-0003).
   across 4 deep-to-deep transitions, of wallets within 5% of liquidation: 62.7% of those WITH free collateral were absent at the next scan, against 45.1% of those with none. The sign is opposite to the hypothesis that free collateral aids survival.
 - [PRELIMINARY] F-0014: Both venues' ±1% BTC book holds roughly a quarter of a billion dollars, so a single sweep costs about 1 bp at retail size and a typical liquidation cluster is too small to move price
   standing notional within ±1% of mid is $247.6M median on Binance futures and $225.6M median on Hyperliquid — within 9% of each other. At burst level, a same-side sweep worth 0.5–1% of that book costs the taker 0.8–1.1 bps of slippage. The median published liquidation cluster is 0.44% of the Hyperliquid book; the p90 cluster is 5.1%.
+- [PRELIMINARY] F-0015: How a liquidation price responds to added margin cannot be derived from Hyperliquid's published state, so the "add $500 and your liquidation moves to X" feature cannot be built from arithmetic
+  the documented formula reproduces the venue's own liquidationPx to within 10 bps for only 56.4% of cross positions (median error 4.79 bps, n=1,019); inverting it position-by-position within a single account recovers margin_available values that disagree by 3.49% at the median and 73.7% at p90, so only 28.2% of accounts are internally consistent within 1%
 
 ## Research
 
@@ -88,4 +90,4 @@ estimated to reach 53.3% (F-0003).
 - [https://gabana-dev.github.io/genesis/methodology.html](https://gabana-dev.github.io/genesis/methodology.html): how every number is produced
 - [https://gabana-dev.github.io/genesis/record.html](https://gabana-dev.github.io/genesis/record.html): every claim, including the refuted ones
 
-Generated 2026-08-21T23:51:45+00:00 from the same data the pages are built from.
+Generated 2026-08-21T23:56:15+00:00 from the same data the pages are built from.

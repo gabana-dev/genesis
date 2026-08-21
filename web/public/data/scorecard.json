@@ -1,11 +1,11 @@
 {
- "generated_at": "2026-08-21T23:51:45+00:00",
+ "generated_at": "2026-08-21T23:56:15+00:00",
  "note": "Every claim Genesis has published, including the ones that turned out wrong. REFUTED entries are never removed.",
  "counts": {
   "MEASURED": 7,
   "REFUTED": 2,
   "ASSUMED": 1,
-  "PRELIMINARY": 4
+  "PRELIMINARY": 5
  },
  "findings": [
   {
@@ -159,6 +159,17 @@
    "sample": "221,778 aggressive bursts \u2265 $50,000 over 2 Binance futures days (2025-03-10/11), joined to bookDepth \u00b11%; 5,112 Hyperliquid l2Book snapshots 2026-08-20/21; 433 published clusters",
    "method": "contiguous same-side aggTrades within 200 ms grouped into one burst; cost = executed VWAP against the price at which the burst began, signed against the taker; conditioned on the PREVIOUS minute's range so that volatility already in progress cannot be credited to the burst",
    "confidence": "two Binance days and 34 hours of Hyperliquid book. The order of magnitude is not in doubt; the day-to-day variation is not established, and neither is behaviour in a stressed regime, where F-0002 measured near-book depth falling to 0.657",
+   "first_recorded": "2026-08-22",
+   "last_updated": "2026-08-22"
+  },
+  {
+   "id": "F-0015",
+   "title": "How a liquidation price responds to added margin cannot be derived from Hyperliquid's published state, so the \"add $500 and your liquidation moves to X\" feature cannot be built from arithmetic",
+   "status": "PRELIMINARY",
+   "observation": "the documented formula reproduces the venue's own liquidationPx to within 10 bps for only 56.4% of cross positions (median error 4.79 bps, n=1,019); inverting it position-by-position within a single account recovers margin_available values that disagree by 3.49% at the median and 73.7% at p90, so only 28.2% of accounts are internally consistent within 1%",
+   "sample": "90 Hyperliquid accounts fetched live 2026-08-22 (1,474 positions, 1,019 cross); 39 accounts holding 2+ cross positions; 1,923 wallet-transitions across 6 deep scans",
+   "method": "liq_px = entry - side*margin_available/|szi|/(1 - l*side) with l = 1/(2*maxLeverage), margin_available = crossMarginSummary.accountValue - crossMaintenanceMarginUsed; then the same formula inverted per position and compared within each account; then the implied derivative compared against observed liquidationPx movement in wallets whose position size was unchanged",
+   "confidence": "one venue, one afternoon, 90 accounts. The three checks disagree with the formula in three different ways, which is stronger than any one of them; but the third conflates unrealised PnL with deposited collateral and cannot yet isolate a real deposit",
    "first_recorded": "2026-08-22",
    "last_updated": "2026-08-22"
   }
