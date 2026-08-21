@@ -113,3 +113,36 @@ What is worth money is not more addresses:
 
 No billing is built. The limit exists as one constant so the boundary is real from the first
 subscriber rather than retrofitted onto people who got used to unlimited.
+
+## Measured 2026-08-21: the laptop is not a host
+
+"A laptop is the wrong host for an alarm" was written above as an argument. It is now a
+measurement, taken from the collector that has been running longest.
+
+| | |
+|---|---|
+| LIQ-2 archive span | 42.5h |
+| hourly scans due | 42 |
+| snapshots actually taken | 21 |
+| **hours lost** | **22 — 52% of the archive** |
+
+`clearinghouseState` has no history, so every one of those hours is gone permanently.
+
+The cause is not the scanner. macOS `pmset` logs idle sleep across exactly the gap windows, and
+every resumed scan lands within two minutes of a wake event — `02:01Z` follows a UserActivity
+wake at `01:59Z`, `06:42Z` follows one at `06:26Z`. launchd's `StartInterval` does not fire while
+the machine sleeps; it fires once on wake. Power Nap is off, and it sleeps on AC as well as
+battery.
+
+**The collector watch was right and I assumed it was twitchy.** Three of the four overnight
+STALLED alarms were real data loss. The other three alarms in that log were already-fixed
+config: `econ1` fired before its archive could publish (`advance_from` since moved to the 23rd)
+and `hl2` used `recorder.out` as its liveness signal when a continuous recorder only writes it at
+start and stop (since pointed at the data file).
+
+**The consequence for this product is worse than for the archive.** A missed scan costs one hour
+of history. A missed alert costs the customer the thing they subscribed for, at the exact moment
+it mattered — and they only find out afterwards.
+
+Target host: `187.124.32.36` — Ubuntu 24.04, systemd 255, Python 3.12.3, up 11 weeks, 19 GB free.
+The engine is stdlib-only and host-agnostic for exactly this move.
