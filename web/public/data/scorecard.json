@@ -1,8 +1,8 @@
 {
- "generated_at": "2026-08-21T15:45:16+00:00",
+ "generated_at": "2026-08-21T15:49:52+00:00",
  "note": "Every claim Genesis has published, including the ones that turned out wrong. REFUTED entries are never removed.",
  "counts": {
-  "MEASURED": 6,
+  "MEASURED": 7,
   "REFUTED": 2,
   "ASSUMED": 1,
   "PRELIMINARY": 2
@@ -126,6 +126,17 @@
    "sample": "one deep snapshot of 1,327 BTC positions against three fast snapshots of 267-270, 2026-08-21",
    "method": "distance to liquidation as |liquidationPx - spot| / spot, per position, compared across scan tiers",
    "confidence": "one deep snapshot against three fast ones, same day, single venue, single asset. Needs several deep/fast pairs across different market conditions before it is more than PRELIMINARY.",
+   "first_recorded": "2026-08-21",
+   "last_updated": "2026-08-21"
+  },
+  {
+   "id": "F-0012",
+   "title": "The vulnerability figure Isobath publishes is very nearly a constant, so it cannot discriminate between clusters",
+   "status": "MEASURED",
+   "observation": "\"across 433 published clusters, cannot_defend_pct has median 100.0 and 71% sit at exactly 100%. Splitting at the median leaves 29% below and 0% above. thinly_defended_pct behaves the same: median 100.0, 27% below, 0% above.\"",
+   "sample": "433 clusters published across 23 hourly and deep snapshots, Hyperliquid BTC, 2026-08-19 to 2026-08-21",
+   "method": "contrast pre-condition P1 of market/CONTRACT-calibration.md, run before any outcome was examined",
+   "confidence": "three days, one venue, one asset, and drawn largely from the fast scan tier whose selection bias is F-0011. A market regime with materially lower leverage could restore the spread. What is not in doubt is that no spread exists in the period recorded.",
    "first_recorded": "2026-08-21",
    "last_updated": "2026-08-21"
   }
