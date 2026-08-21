@@ -13,6 +13,19 @@ export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
 cd /Users/gabana/genesis || exit 1
 LOG=~/genesis-evidence/product/refresh.log
 mkdir -p ~/genesis-evidence/product
+
+# One refresh at a time. A manual run once landed four seconds after the launchd run and the two
+# interleaved into the same log, so it ended "COMMIT FAILED" and "published" back to back with no
+# way to tell which line belonged to which. The commit race was harmless; two builds writing docs/
+# at once would not be. shlock is in the macOS base system and, unlike a bare lockfile, clears
+# itself when the holding pid is gone.
+LOCK=~/genesis-evidence/product/refresh.pid
+if ! /usr/bin/shlock -f "$LOCK" -p $$; then
+  echo "=== $(date -u +%Y-%m-%dT%H:%M:%SZ) === already running, skipped" >> "$LOG"
+  exit 0
+fi
+trap 'rm -f "$LOCK"' EXIT
+
 {
   echo "=== $(date -u +%Y-%m-%dT%H:%M:%SZ) ==="
   .venv/bin/python product/generate.py \
