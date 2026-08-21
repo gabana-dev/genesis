@@ -17,7 +17,7 @@ import json, os, re, glob, html
 from datetime import datetime, timezone
 
 ROOT = os.path.join(os.path.dirname(__file__), "..")
-DATA = os.path.join(ROOT, "public", "data")
+DATA = os.path.join(ROOT, "docs", "data")
 PUB = os.path.join(ROOT, "docs")   # GitHub Pages serves /docs from main
 
 def load(n):
@@ -37,7 +37,7 @@ def shell(title, desc, body, jsonld=None, depth=0):
 <style>{css()}</style>{ld}
 </head><body>
 <nav class="nav"><a class="brand" href="{up}index.html">Genesis</a>
-<a href="{up}markets/btc.html">Markets</a><a href="{up}research/index.html">Research</a>
+<a href="{up}check.html">Check a wallet</a><a href="{up}markets/btc.html">Markets</a><a href="{up}research/index.html">Research</a>
 <a href="{up}record.html">Record</a><a href="{up}methodology.html">Methodology</a>
 <a href="{up}api.html">API</a></nav>
 <main class="wrap">{body}</main>
@@ -556,12 +556,32 @@ its coverage is not an answer.</div>
                  "for Hyperliquid.", body)
 
 
+def page_check():
+    """
+    The front door.
+
+    A trader's question is not "how vulnerable is the market" but "how vulnerable am I", and
+    product/CUSTOMERS.md is the argument for why that distinction is the whole product. The
+    lookup runs in the browser against Hyperliquid's public endpoint -- no server, no key,
+    nothing stored, and it scales without us.
+    """
+    tpl = open(os.path.join(os.path.dirname(__file__), "templates", "check.html")).read()
+    # A real address with a real story: fully deployed, twelve positions, zero free collateral.
+    example = "0xb83de012dbd0ed61b4dea4ce6c1ec53e6b0b73ec"
+    try:
+        snap = json.load(open(os.path.join(DATA, "map.json")))
+    except Exception:
+        snap = None
+    return tpl.replace("__CSS__", css()).replace("__EXAMPLE__", example)
+
+
 def main():
     m, sc = load("map"), load("scorecard")
     os.makedirs(os.path.join(PUB, "markets"), exist_ok=True)
     os.makedirs(os.path.join(PUB, "research"), exist_ok=True)
     out = {
       "index.html": page_home(m, sc),
+      "check.html": page_check(),
       "markets/btc.html": page_market(m),
       "research/index.html": page_research_index(),
       "record.html": page_record(sc),

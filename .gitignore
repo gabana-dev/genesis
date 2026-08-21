@@ -13,3 +13,8 @@ rdb_data/raw_holdout/
 
 # Derived: regenerate with `.venv/bin/python dashboard.py`. A snapshot is not evidence.
 dashboard.html
+
+# Commercial material stays out of the public repo. The RESEARCH is public on purpose --
+# that is the distribution strategy. Pricing, competitive analysis and internal odds are not.
+BUSINESS-PLAN.md
+/private/
