@@ -18,6 +18,8 @@ from datetime import datetime, timezone
 
 ROOT = os.path.join(os.path.dirname(__file__), "..")
 DATA = os.path.join(ROOT, "docs", "data")
+# The raw position snapshots, for picking a live example address at build time.
+L_SNAP = os.path.expanduser("~/genesis-evidence/liqmap/snapshots-liq2.jsonl")
 PUB = os.path.join(ROOT, "docs")   # GitHub Pages serves /docs from main
 
 def load(n):
@@ -566,12 +568,25 @@ def page_check():
     nothing stored, and it scales without us.
     """
     tpl = open(os.path.join(os.path.dirname(__file__), "templates", "check.html")).read()
-    # A real address with a real story: fully deployed, twelve positions, zero free collateral.
-    example = "0xb83de012dbd0ed61b4dea4ce6c1ec53e6b0b73ec"
+
+    # The example address is PULLED FROM THE LATEST SNAPSHOT, never hardcoded.
+    #
+    # The first version hardcoded one I had reconstructed from a truncated log line -- I saw
+    # "0xb83de012..." and invented the remaining 32 characters. The page then reported "no open
+    # positions" for an address that does not exist, which is the same class of error as filling
+    # a mockup with plausible numbers: inventing detail to close a gap.
+    #
+    # Chosen mechanically: the largest position in the current scan that has zero free
+    # collateral, so the example always demonstrates the thing the product is about.
+    example = ""
     try:
-        snap = json.load(open(os.path.join(DATA, "map.json")))
+        snap = json.loads(open(L_SNAP).readlines()[-1])
+        trapped = [p for p in snap["positions"]
+                   if float(p.get("withdrawable") or 0) <= 0 and p.get("forced_notional")]
+        if trapped:
+            example = max(trapped, key=lambda p: p["forced_notional"])["wallet"]
     except Exception:
-        snap = None
+        pass
     return tpl.replace("__CSS__", css()).replace("__EXAMPLE__", example)
 
 
