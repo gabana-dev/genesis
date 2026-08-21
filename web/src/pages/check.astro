@@ -1,0 +1,68 @@
+---
+/**
+ * The wallet check.
+ *
+ * A trader's question is not "how vulnerable is the market" but "how vulnerable am I"
+ * (product/CUSTOMERS.md). The lookup runs in the visitor's own browser against Hyperliquid's
+ * public endpoint -- no server, no key, nothing stored.
+ */
+import Base from '../layouts/Base.astro';
+import Note from '../components/Note.astro';
+import { botHandle, liveExample, url } from '../lib/data';
+
+const example = liveExample();
+const bot = botHandle();
+---
+
+<Base
+  title="Check your liquidation risk — Hyperliquid"
+  description="Paste a Hyperliquid address. See how close it is to liquidation, and whether it has anything left to defend with. Free, no signup."
+>
+  <h1>How close are you?</h1>
+  <p class="lede">
+    Paste any Hyperliquid address. We read its positions straight from the exchange and tell you
+    the one thing most tools leave out — whether it has anything left to defend with.
+  </p>
+
+  <form id="f" class="checkform" autocomplete="off">
+    <input id="addr" type="text" spellcheck="false" placeholder="0x…" aria-label="Hyperliquid address" />
+    <button type="submit">Check</button>
+  </form>
+  <p class="hint">
+    No signup, nothing stored. The lookup happens in your browser, straight to Hyperliquid.
+    {example && <button class="linkish" id="demo" type="button" data-address={example}>Try an example</button>}
+  </p>
+
+  <div id="out"></div>
+
+  {/* The check is where someone learns they are exposed. That is the only moment the alert is an
+      obvious thing to want, so the offer belongs after the answer -- never before it. */}
+  {bot && (
+    <section id="alertcta" hidden>
+      <Note title="Want to be told when this changes?">
+        The bot messages you when this address crosses into a tighter band, or loses the collateral
+        to defend itself — and says nothing at all otherwise.
+        <a href={url('alerts.html')}>Set it up →</a>
+      </Note>
+    </section>
+  )}
+
+  <section id="explain" hidden>
+    <h2>Why free collateral is the number that matters</h2>
+    <p>
+      When price moves against a leveraged position, the usual escape is to add margin and push the
+      liquidation price away. Whether that is possible depends on <em>free collateral</em> — and the
+      obvious way to work it out is wrong.
+    </p>
+    <p>
+      We compared the arithmetic against the exchange's own figure on 74 wallets. It matched
+      <strong>19%</strong> of the time, and misclassified <strong>one wallet in five</strong> as able
+      to defend when it was not. Always in the direction of looking safer.
+      <a href={url('research/free-collateral-misclassification.html')}>The measurement →</a>
+    </p>
+  </section>
+</Base>
+
+<script>
+  import '../scripts/check';
+</script>

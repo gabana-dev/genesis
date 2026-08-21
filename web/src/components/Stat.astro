@@ -1,0 +1,18 @@
+---
+interface Props {
+  k: string;
+  v: string;
+  n?: string;
+  /** Draws the value in the alarm colour. Reserved for "this wallet cannot defend itself". */
+  hot?: boolean;
+  /** Values that are words rather than figures drop the tabular monospace face. */
+  prose?: boolean;
+}
+const { k, v, n, hot = false, prose = false } = Astro.props;
+---
+
+<div class="stat">
+  <div class="k">{k}</div>
+  <div class="v" style={`${hot ? 'color:var(--hot);' : ''}${prose ? 'font-size:1rem;font-family:var(--sans);' : ''}`}>{v}</div>
+  {n && <div class="n">{n}</div>}
+</div>

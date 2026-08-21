@@ -1,0 +1,52 @@
+---
+/**
+ * The shell every page wears: head, nav, main, footer.
+ *
+ * The nav's Alerts entry appears only when a bot handle exists, so the site never links a door
+ * that does not open. That check happens once, here, instead of in every page.
+ */
+import { botHandle, url } from '../lib/data';
+import '../styles/site.css';
+
+interface Props {
+  title: string;
+  description: string;
+  /** JSON-LD, so an agent can cite a figure with its method rather than parsing a chart. */
+  jsonld?: Record<string, unknown>;
+}
+const { title, description, jsonld } = Astro.props;
+const bot = botHandle();
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {jsonld && <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonld)} />}
+  </head>
+  <body>
+    <nav class="nav">
+      <a class="brand" href={url('index.html')}>Genesis</a>
+      <a href={url('check.html')}>Check a wallet</a>
+      {bot && <a href={url('alerts.html')}>Alerts</a>}
+      <a href={url('markets/btc.html')}>Markets</a>
+      <a href={url('research/index.html')}>Research</a>
+      <a href={url('record.html')}>Record</a>
+      <a href={url('methodology.html')}>Methodology</a>
+      <a href={url('api.html')}>API</a>
+    </nav>
+    <main class="wrap"><slot /></main>
+    <footer class="wrap foot">
+      <p>
+        Genesis — market intelligence for leveraged crypto traders. Every number carries its
+        provenance, its observation count and how much of the market we could see.
+        <a href={url('record.html')}>Including the claims we got wrong.</a>
+      </p>
+    </footer>
+  </body>
+</html>

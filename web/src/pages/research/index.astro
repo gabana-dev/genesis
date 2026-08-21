@@ -1,0 +1,27 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { url } from '../../lib/data';
+
+// Ordered as written rather than alphabetically: the collection's own order is the reading order.
+const articles = await getCollection('research');
+---
+
+<Base
+  title="Genesis Research — evidence on crypto market structure"
+  description="Original measurements on liquidation cascades, order-book depth and leveraged positioning, with methods and limitations stated."
+>
+  <h1>Research</h1>
+  <p class="lede">
+    An evidence library, not a blog. Every finding carries its method, its sample and its limits —
+    and the ones we later refuted stay published.
+  </p>
+  <ul class="plain">
+    {articles.map((a) => (
+      <li>
+        <a href={url(`research/${a.id}.html`)}><strong>{a.data.title}</strong></a><br />
+        <span style="color:var(--ink-faint)">{a.data.sub.slice(0, 120)}…</span>
+      </li>
+    ))}
+  </ul>
+</Base>

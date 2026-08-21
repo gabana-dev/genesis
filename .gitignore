@@ -18,3 +18,8 @@ dashboard.html
 # that is the distribution strategy. Pricing, competitive analysis and internal odds are not.
 BUSINESS-PLAN.md
 /private/
+
+# Astro / node
+web/node_modules/
+web/.astro/
+web/dist/

@@ -1,0 +1,39 @@
+---
+import Base from '../layouts/Base.astro';
+import Grid from '../components/Grid.astro';
+import Note from '../components/Note.astro';
+import Stat from '../components/Stat.astro';
+import { scorecard } from '../lib/data';
+
+const sc = scorecard();
+const counts = Object.entries(sc.counts).sort(([a], [b]) => a.localeCompare(b));
+---
+
+<Base
+  title="Our record — Genesis"
+  description="Every claim Genesis has published, including the ones we refuted ourselves."
+>
+  <h1>Our record</h1>
+  <p class="lede">
+    Every claim Genesis has published, and what happened to it. Refuted findings are never
+    removed — a record that keeps only its wins is a marketing page.
+  </p>
+
+  <Grid>
+    {counts.map(([k, v]) => <Stat k={k} v={String(v)} />)}
+  </Grid>
+
+  <Note>
+    Two of these were claims we made confidently and then disproved ourselves. They are the entries
+    a competitor will not reproduce, because doing so means publishing when you were wrong.
+  </Note>
+
+  <ul class="plain">
+    {sc.findings.map((f) => (
+      <li>
+        <span class={`tag ${f.status}`}>{f.status}</span>&nbsp; <strong>{f.title}</strong><br />
+        <span style="color:var(--ink-faint);font-size:.85rem">{f.observation ?? ''}</span>
+      </li>
+    ))}
+  </ul>
+</Base>

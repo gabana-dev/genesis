@@ -1,0 +1,41 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Answer from '../../components/Answer.astro';
+import Prov from '../../components/Prov.astro';
+import { url } from '../../lib/data';
+
+export async function getStaticPaths() {
+  const articles = await getCollection('research');
+  return articles.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const d = entry.data;
+
+const jsonld = {
+  '@context': 'https://schema.org',
+  '@type': 'ScholarlyArticle',
+  headline: d.title,
+  abstract: d.sub,
+  identifier: d.finding,
+  publisher: { '@type': 'Organization', name: 'Genesis' },
+};
+---
+
+<Base title={`${d.title} — Genesis Research`} description={d.sub} jsonld={jsonld}>
+  <h1>{d.title}</h1>
+  <p class="lede">{d.sub}</p>
+
+  <Answer q="The answer" a={d.answer} calm small>
+    <Prov slot="prov" tier="historical" detail={`${d.finding} · see the record for status`} />
+  </Answer>
+
+  <Content />
+
+  <p style="margin-top:2rem">
+    <a href={url('research/index.html')}>← All research</a> ·
+    <a href={url('record.html')}>Our record, including what we got wrong →</a>
+  </p>
+</Base>

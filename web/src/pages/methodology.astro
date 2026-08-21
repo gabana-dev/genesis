@@ -1,0 +1,63 @@
+---
+import Base from '../layouts/Base.astro';
+import Prov from '../components/Prov.astro';
+import { marketMap, url } from '../lib/data';
+import type { Tier } from '../types/data';
+
+const m = marketMap();
+
+// The ladder is data, so the page cannot drift from the type. Adding a fifth tier means changing
+// `Tier` first -- and `predicted` is deliberately absent from both.
+const ladder: [Tier, string][] = [
+  ['observed', 'read directly from the venue — liquidation price, free collateral'],
+  ['calculated', 'arithmetic over observations — cluster notional, defensibility'],
+  ['estimated', 'a model with stated assumptions — full-universe coverage'],
+  ['historical', 'measured over an archive — depth evaporation over 1,324 days'],
+];
+---
+
+<Base
+  title="Methodology — Genesis"
+  description="How Genesis produces every number, and the four tiers of evidence it distinguishes."
+>
+  <h1>Methodology</h1>
+  <p class="lede">How each number is produced, and which tier of evidence it sits on.</p>
+
+  <h2>The provenance ladder</h2>
+  <p>Every figure on this site carries one of four tiers. There is deliberately no <em>predicted</em> tier.</p>
+  <ul class="plain">
+    {ladder.map(([tier, detail]) => <li><Prov tier={tier} detail={detail} /></li>)}
+  </ul>
+
+  <h2>Defensibility</h2>
+  <p>
+    The share of a cluster's notional held by wallets whose <code>withdrawable</code> is exactly
+    zero. They cannot move their liquidation price without depositing from outside. This requires
+    the venue's own figure — the obvious arithmetic misclassifies one wallet in five.
+    <a href={url('research/free-collateral-misclassification.html')}>The measurement →</a>
+  </p>
+
+  <h2>Coverage</h2>
+  <p>
+    Scanned position notional divided by exchange open interest, reported for <em>this</em> scan
+    rather than the best scan we have ever run. The current map states
+    {' '}{Math.round(m.coverage.observed_fraction * 100)}%; a full universe reaches an estimated
+    {' '}{(m.coverage.full_universe_estimate * 100).toFixed(1)}%. Publishing the better number on a
+    narrower scan would be exactly the dishonesty this site exists to avoid.
+  </p>
+
+  <h2>Map age</h2>
+  <p>
+    The position scan runs on a slower cadence than the order book updates. Every figure carries how
+    old the underlying scan is, because a map presented as current when it is an hour old is
+    precision that does not exist.
+  </p>
+
+  <h2>What we do not publish</h2>
+  <ul class="plain">
+    <li>A cascade magnitude. We tested whether reaching a cluster moves price and it did not beat a
+    volatility-matched minute.</li>
+    <li>A risk rating without a measured basis. LOW/MODERATE/HIGH is a colour, not a finding.</li>
+    <li>A prediction record before making predictions.</li>
+  </ul>
+</Base>

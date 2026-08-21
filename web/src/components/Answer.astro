@@ -1,0 +1,24 @@
+---
+/**
+ * One question, one number, one sentence. The top layer of the disclosure ladder
+ * (product/CUSTOMERS.md) -- what a frightened trader reads in ten seconds.
+ *
+ * There is exactly one of these per page. That is the rule, not a convention.
+ */
+interface Props {
+  q: string;
+  a: string;
+  /** Calm renders the figure in green. Use it when the answer is reassuring, never to soften a bad one. */
+  calm?: boolean;
+  /** Words rather than a figure, so the display size drops. */
+  small?: boolean;
+}
+const { q, a, calm = false, small = false } = Astro.props;
+---
+
+<div class="answer">
+  <div class="q">{q}</div>
+  <div class={`a${calm ? ' calm' : ''}`} style={small ? 'font-size:1.5rem;line-height:1.3' : ''}>{a}</div>
+  {Astro.slots.has('default') && <div class="s"><slot /></div>}
+  {Astro.slots.has('prov') && <div style="margin-top:.8rem"><slot name="prov" /></div>}
+</div>

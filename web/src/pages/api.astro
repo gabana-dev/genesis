@@ -1,0 +1,50 @@
+---
+import Base from '../layouts/Base.astro';
+import Note from '../components/Note.astro';
+import { marketMap } from '../lib/data';
+
+const m = marketMap();
+const example = JSON.stringify(
+  {
+    asset: m.asset,
+    venue: m.venue,
+    map_taken_at: m.map_taken_at,
+    map_age_seconds: m.map_age_seconds,
+  },
+  null,
+  1,
+);
+const coverage = JSON.stringify(m.coverage, null, 1);
+---
+
+<Base
+  title="API — Genesis"
+  description="Static JSON: liquidation exposure, defensibility and coverage for Hyperliquid."
+>
+  <h1>API</h1>
+  <p class="lede">
+    The same source of truth the pages are generated from. Static JSON — no key, no rate limit, no
+    server to fall over.
+  </p>
+
+  <h2>Endpoints</h2>
+  <pre>GET /data/map.json         clusters, exposure, defensibility, coverage
+GET /data/scorecard.json   every published claim and its status
+GET /data/meta.json        what we cannot currently see</pre>
+
+  <h2>Example</h2>
+  <pre>{example}
+"coverage": {coverage}</pre>
+
+  <h2>For agents</h2>
+  <p>
+    Every page carries JSON-LD describing the same measurements, so a retrieval system can cite a
+    figure together with its observation count, timestamp, coverage and method rather than parsing a
+    chart.
+  </p>
+
+  <Note>
+    Every response states what fraction of the market it observed. A number without its coverage is
+    not an answer.
+  </Note>
+</Base>

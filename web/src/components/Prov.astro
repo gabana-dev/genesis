@@ -1,0 +1,17 @@
+---
+/**
+ * The provenance badge. Every figure on this site carries one (product/IA.md).
+ *
+ * It is a component rather than a string helper so the tier cannot be misspelled: `Tier` is a
+ * union, and `<Prov tier="predicted" />` fails the build. That tier is empty on purpose.
+ */
+import type { Tier } from '../types/data';
+
+interface Props {
+  tier: Tier;
+  detail: string;
+}
+const { tier, detail } = Astro.props;
+---
+
+<span class={`prov prov-${tier}`}>{tier}</span> <span class="prov-d">{detail}</span>

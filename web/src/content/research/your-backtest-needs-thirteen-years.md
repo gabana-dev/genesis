@@ -1,0 +1,43 @@
+---
+title: "Your backtest needs 13 years to prove what it claims"
+finding: "F-0005"
+answer: "4,900 independent observations to detect a 52% edge. 19,600 for 51%."
+sub: "We found this by discovering our own tests were underpowered by one to two orders of magnitude. The best result in one experiment sat below the threshold that experiment could detect."
+---
+
+<p>A directional strategy claiming a 52% hit rate sounds modest. Detecting one, at 80% power,
+needs <strong>4,900 independent observations</strong>. On a single instrument at a daily horizon
+that is <strong>13.4 years</strong>. A 51% edge needs 53.7.</p>
+
+<div class="scroll"><table>
+<thead><tr><th>Independent observations</th><th>Smallest detectable hit rate</th></tr></thead>
+<tbody>
+<tr><td>270</td><td>0.5852</td></tr><tr><td>900</td><td>0.5467</td></tr>
+<tr><td>2,695</td><td>0.5270</td></tr><tr><td>5,000</td><td>0.5198</td></tr>
+<tr><td>20,000</td><td>0.5099</td></tr>
+</tbody></table></div>
+
+<h3>How we found it</h3>
+<p>By auditing our own work. One experiment ran 2,695 rows per cell and could resolve nothing
+below <strong>54.67%</strong>. Its best cell measured <strong>52.10%</strong> — the best result
+in the experiment sat <em>below</em> the threshold the experiment could detect. A real 52% edge
+would have produced exactly the data we saw, and we would have missed it every time.</p>
+
+<h3>The trap is the independence count</h3>
+<p>Those 2,695 rows were really <strong>898</strong> independent observations. Decisions were
+taken three times a day against a one-day horizon, so each measurement overlapped the next
+twofold. Overlapping windows inflate the apparent sample threefold and the apparent t-statistic
+by the square root of three.</p>
+
+<p>A second experiment looked like 234 observations and was <strong>80</strong>: 90% of its events
+fell within a minute of another, making them episodes rather than independent draws.</p>
+
+<h3>What it means for anyone selling a signal</h3>
+<p>Most crypto strategies are validated on a few hundred trades. At that sample the smallest
+detectable edge is around <strong>58%</strong> — far above anything realistic. The honest
+statement after such a test is not "this works" or "this fails" but <strong>"this test cannot
+tell."</strong></p>
+
+<p>We now require every experiment to state, before it runs, the effect size it can detect, the
+independent observations that requires, and how long collecting them takes. Several of our own
+would not have been run under that rule.</p>

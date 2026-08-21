@@ -1,0 +1,94 @@
+---
+/**
+ * The alerts page -- the only surface anyone will pay for (product/ALERTS.md).
+ *
+ * It is a dynamic route purely so `getStaticPaths` can return NOTHING when no bot exists yet.
+ * A storefront advertising a door that does not open is worse than no door, and this makes that
+ * rule structural: without a handle the page is never emitted and the nav never links it.
+ *
+ * The page sells the SILENCE as hard as the alert. Every competitor's notification product is a
+ * firehose, and a customer woken for nothing turns the alarm off.
+ */
+import Base from '../layouts/Base.astro';
+import Grid from '../components/Grid.astro';
+import Note from '../components/Note.astro';
+import Stat from '../components/Stat.astro';
+import { botHandle, url } from '../lib/data';
+
+export function getStaticPaths() {
+  return botHandle() ? [{ params: { alertsRoute: 'alerts' } }] : [];
+}
+
+const bot = botHandle();
+
+const jsonld = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Genesis liquidation alerts',
+  description:
+    'Telegram alerts when a Hyperliquid position approaches liquidation or loses the collateral to defend itself.',
+  areaServed: 'Hyperliquid',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+};
+---
+
+<Base
+  title="Liquidation alerts on Telegram — Genesis"
+  description="Get a Telegram message when a Hyperliquid position approaches liquidation, or loses the free collateral to defend itself. Free for 3 addresses."
+  jsonld={jsonld}
+>
+  <h1>Be told before it matters</h1>
+  <p class="lede">
+    You cannot watch a position at three in the morning. Give the bot an address and it watches for
+    you — and says nothing at all until something actually changes.
+  </p>
+
+  <p><a class="cta" href={`https://t.me/${bot}?start=watch`}>Open @{bot} on Telegram →</a></p>
+  <p class="hint">
+    Free for up to 3 addresses. No signup, no email, no wallet connection — the bot only ever reads
+    public exchange data about an address you give it.
+  </p>
+
+  <h2>What it sends</h2>
+  <Grid>
+    <Stat k="Getting close" v="25 · 15 · 10 · 5 · 2%" n="once, when your closest position crosses into a tighter band" prose />
+    <Stat k="Nothing left to defend with" v="free collateral collapse" n="the one nobody else sends" prose />
+    <Stat k="Clear" v="stand down" n="once, when you are safely out again" prose />
+  </Grid>
+
+  <h2>Why the second one exists</h2>
+  <p>
+    Being close to liquidation is survivable if you can add margin and push the liquidation price
+    away. Whether you can depends on free collateral — and the obvious way to compute it is wrong.
+  </p>
+  <p>
+    We compared the arithmetic against the exchange's own figure on 74 wallets. It agreed
+    <strong>19%</strong> of the time and misclassified <strong>one wallet in five</strong> as able to
+    defend when it was not — always in the direction of looking safer. A tool that does the obvious
+    thing will reassure a trapped trader.
+    <a href={url('research/free-collateral-misclassification.html')}>The measurement →</a>
+  </p>
+
+  <h2>What it will never do</h2>
+  <Note title="Wake you for nothing.">
+    An alert is a change of state, never a level. A band fires once; price oscillating around it
+    stays silent until distance has recovered a quarter past the threshold. No running commentary,
+    no daily digest, no noise to look busy.
+  </Note>
+  <p>
+    It will also never tell you a cascade is coming. We tested whether reaching a cluster of forced
+    selling moves price further and found it does not move price more than an ordinary volatile
+    minute in the same hour — so we do not sell it, however good the alert would look.
+    <a href={url('research/liquidations-dont-move-price.html')}>The test →</a>
+  </p>
+
+  <h2>Commands</h2>
+  <pre>/watch 0x…     start watching an address
+/unwatch 0x…   stop
+/list          what it is watching for you
+/stop          forget you entirely</pre>
+  <p class="hint">
+    Your address is stored only so the bot knows what to check. <code>/stop</code> deletes it and
+    everything derived from it.
+  </p>
+</Base>
