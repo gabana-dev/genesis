@@ -1,0 +1,25 @@
+[Unit]
+# hl2: Hyperliquid book at nSigFigs=3 (+/-2.7%). Settles F-0006 -- whether the depth physics
+# measured on Binance transfers to Hyperliquid, which the whole evaporation finding rests on.
+Description=Isobath hl2 recorder - Hyperliquid L2 book
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=genesis
+Group=genesis
+WorkingDirectory=/opt/genesis
+ExecStart=/opt/genesis/.venv/bin/python /opt/genesis/recorder/run.py hyperliquid   /home/genesis/genesis-evidence/hl2/btc-l2book.jsonl BTC   --subscriptions l2Book:3 --seconds 5184000
+# The recorder appends to a hash-chained log and resumes from its checkpoint, so a restart
+# continues the chain rather than starting a second one.
+Restart=always
+RestartSec=20
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/genesis/genesis-evidence
+
+[Install]
+WantedBy=multi-user.target

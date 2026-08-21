@@ -246,8 +246,13 @@ COLLECTORS = [
      # A long-running recorder writes recorder.out only at start and stop, so using it as the
      # RAN signal reports a healthy recorder as stalled forever. For continuous recorders the
      # data file IS the liveness signal -- the same choice already made for q5.
-     "log": f"{EVIDENCE}/hl2/btc-l2book.jsonl",
-     "data": f"{EVIDENCE}/hl2/btc-l2book.jsonl",
+     #
+     # MOVED TO THE SERVER 2026-08-21, for the same reason as LIQ-2: this laptop slept through
+     # half the archive. hl2 settles F-0006, the assumption the evaporation finding rests on, so
+     # a 52% loss rate was not survivable. Watched over SSH; unreachable reads UNKNOWN, never OK.
+     "remote": "root@187.124.32.36",
+     "log": "/home/genesis/genesis-evidence/hl2/btc-l2book.jsonl",
+     "data": "/home/genesis/genesis-evidence/hl2/btc-l2book.jsonl",
      "why": "Hyperliquid book at nSigFigs=3 (+/-2.7%); tests whether Binance depth physics transfers"},
     {"name": "q5", "cadence_h": 1,
      "log": f"{EVIDENCE}/q5/btcusdt-q5.jsonl",

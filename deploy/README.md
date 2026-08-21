@@ -23,7 +23,9 @@ customer not being told the thing they subscribed for, at the moment it mattered
 |---|---|
 | the alert bot (subscriptions) | the site build and deploy |
 | the alert engine (every 5 min) | research, contracts, analysis |
-| LIQ-2 scans (fast hourly, deep 6-hourly) | the q5/hl2 recorders, for now |
+| LIQ-2 scans (fast hourly, deep 6-hourly) | the q5 recorder, until it closes ~25 Aug |
+| the calibration record (hourly) | |
+| the hl2 book recorder | |
 
 The split is by **whether a gap is recoverable**. A missed site rebuild fixes itself on the next
 run; a missed scan or alert does not.
@@ -46,6 +48,19 @@ locally. That portability was the reason for writing it that way.
 Runs as a dedicated `genesis` system account, never root: this box also serves three production
 sites. The units are confined with `ProtectSystem=strict` and a single `ReadWritePaths`, because
 the whole job is outbound HTTPS plus appending to its own files.
+
+## The one dependency
+
+Everything here is stdlib except **`hl2`**, which needs `websockets`. That was found the hard way:
+`recorder/hyperliquid.py` imports it *inside* a function, so a grep for top-level imports declared
+the recorder stdlib-only and it wasn't. The service failed on first start.
+
+Ubuntu packages `websockets` at **10.4**; the recorder was written against **17.0.1**, which is a
+different asyncio API generation. Rather than hope, `/opt/genesis/.venv` pins the exact local
+version — for a recorder whose entire job is completeness, a silently different client library is
+the worst kind of dependency drift.
+
+Only `genesis-hl2.service` uses that venv. Everything else runs on system `python3`.
 
 ## Installing or updating
 
