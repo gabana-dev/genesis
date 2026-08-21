@@ -257,3 +257,21 @@ ul.plain li:last-child{border-bottom:0}
   .liqmap-dist,.liqmap-wal{display:none}
   .liqmap-key,.liqmap-spot{padding-left:.9rem;padding-right:.9rem}
 }
+
+/* ---- the hero -------------------------------------------------------------------------
+   Two columns, because a left-aligned prose block inside a wide page reads as unfinished
+   rather than spacious. The graphic earns its half: it is the live map seen side-on. */
+.hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:3.5rem;
+  align-items:center;margin:1rem 0 3rem}
+.hero-text{min-width:0}
+.hero-fig{margin:0;min-width:0}
+.hero-fig figcaption{display:flex;flex-direction:column;gap:.25rem;margin-top:1rem;
+  font-size:.78rem;color:var(--faint);line-height:1.45}
+.hero h1{margin-bottom:1.2rem}
+.hero .lede{max-width:34rem}
+
+@media (max-width:60rem){
+  .hero{grid-template-columns:1fr;gap:2.2rem}
+  /* The graphic follows the answer on a phone: it is context, not the entry point. */
+  .hero-fig{order:2}
+}

@@ -1,0 +1,112 @@
+---
+/**
+ * The hero graphic: the liquidation ladder as depth contours.
+ *
+ * NOT DECORATION. Every line is a real price band and every bulge is real exposure. DESIGN.md
+ * forbids any element that cannot answer "what is this for", and a pretty shape drawn from noise
+ * would fail that on a page whose entire argument is that its numbers are honest.
+ *
+ * How to read it: spot is the centre line. Contours above are where shorts get bought back,
+ * below is where longs get sold. A contour bows outward where forced exposure sits at that
+ * price — so the silhouette IS the map, seen side-on.
+ *
+ * It draws once on load, ~900ms, then holds still. Charts do not animate.
+ */
+import type { Cluster } from '../types/data';
+
+interface Props {
+  clusters: Cluster[];
+  spot: number;
+}
+const { clusters, spot } = Astro.props;
+
+const W = 400;
+const H = 300;
+const MID = H / 2;
+const BAND = 10; // ±10%, the scanned range
+
+const widest = Math.max(...clusters.map((c) => c.notional_usd), 1);
+
+/** Exposure near a given distance, smoothed so a contour is a curve rather than a spike. */
+function weightAt(distance: number): number {
+  let w = 0;
+  for (const c of clusters) {
+    const gap = Math.abs(c.distance_pct - distance);
+    if (gap > 2.2) continue;
+    w += (c.notional_usd / widest) * Math.exp(-((gap / 1.1) ** 2));
+  }
+  return Math.min(w, 1);
+}
+
+/**
+ * One contour at a given distance from spot. Sampled left to right; the amplitude at each sample
+ * is the exposure near that band, so a line with nothing behind it stays flat.
+ */
+function contour(distance: number, i: number): { d: string; opacity: number } {
+  const y = MID - (distance / BAND) * (MID - 18);
+  const amp = weightAt(distance) * 46;
+  const pts: string[] = [];
+  for (let x = 0; x <= W; x += 8) {
+    const t = x / W;
+    // Two out-of-phase lobes so the curve reads as a natural contour rather than a bell.
+    const shape = Math.sin(t * Math.PI) ** 1.6 * (0.62 + 0.38 * Math.sin(t * Math.PI * 2.3 + i));
+    pts.push(`${x},${(y - amp * shape).toFixed(1)}`);
+  }
+  return { d: `M${pts.join('L')}`, opacity: 0.13 + weightAt(distance) * 0.6 };
+}
+
+// Every 0.75% out to the edge of the scanned band, both sides.
+const steps: number[] = [];
+for (let d = -BAND; d <= BAND; d += 0.75) steps.push(Number(d.toFixed(2)));
+const lines = steps.map((d, i) => ({ ...contour(d, i), key: d }));
+---
+
+<svg
+  class="contours"
+  viewBox={`0 0 ${W} ${H}`}
+  preserveAspectRatio="xMidYMid meet"
+  role="img"
+  aria-label={`Forced-selling exposure around ${Math.round(spot).toLocaleString('en-US')}, drawn as depth contours`}
+>
+  {lines.map((l, i) => (
+    <path d={l.d} style={`--o:${l.opacity.toFixed(3)};animation-delay:${i * 26}ms`} />
+  ))}
+  <line class="contour-spot" x1="0" y1={MID} x2={W} y2={MID} />
+</svg>
+
+<style>
+  .contours {
+    width: 100%;
+    height: auto;
+    max-height: 22rem;
+    overflow: visible;
+  }
+  .contours path {
+    fill: none;
+    stroke: var(--depth);
+    stroke-width: 1;
+    stroke-linecap: round;
+    opacity: var(--o);
+    /* 1200 comfortably exceeds any path length here, so one value works for every line. */
+    stroke-dasharray: 1200;
+    stroke-dashoffset: 1200;
+    animation: trace 1.1s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+  }
+  .contour-spot {
+    stroke: var(--hazard);
+    stroke-width: 1;
+    stroke-dasharray: 2 4;
+    opacity: 0.55;
+  }
+  @keyframes trace {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .contours path {
+      stroke-dashoffset: 0;
+      animation: none;
+    }
+  }
+</style>
