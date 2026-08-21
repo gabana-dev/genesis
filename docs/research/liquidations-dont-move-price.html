@@ -1,151 +1,10 @@
-<!doctype html>
-<html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Liquidation maps show where forced selling is. We tested whether it moves price. — Genesis Research</title>
-<meta name="description" content="228 independent episodes across 28 symbols. Forced flow returned +40.07 bps at 15 minutes and beat a permutation null. A random minute in the same symbol in the same hour returned 44.52 bps.">
-<style>:root{
-  --ink:#16150f; --ink-soft:#57544a; --ink-faint:#8b8779;
-  --paper:#f7f4ec; --card:#fffdf7; --rule:#e2ddcf;
-  --hot:#a4341f; --hot-bg:#f3e2dd; --cool:#4a6b52;
-  --mono:ui-monospace,"SF Mono",Menlo,monospace;
-  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
-  --sans:system-ui,-apple-system,"Segoe UI",sans-serif;
-}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --ink:#ece8dc; --ink-soft:#a8a294; --ink-faint:#726d61;
-  --paper:#14130f; --card:#1c1a15; --rule:#2e2b23;
-  --hot:#d9705a; --hot-bg:#2e1d18; --cool:#7fa389;
-}}
-:root[data-theme="dark"]{
-  --ink:#ece8dc; --ink-soft:#a8a294; --ink-faint:#726d61;
-  --paper:#14130f; --card:#1c1a15; --rule:#2e2b23;
-  --hot:#d9705a; --hot-bg:#2e1d18; --cool:#7fa389;
-}
-*{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
-  line-height:1.55;-webkit-font-smoothing:antialiased}
-.wrap{max-width:46rem;margin:0 auto;padding:0 1.25rem}
-main.wrap{padding-bottom:4rem}
-
-.nav{display:flex;gap:1.1rem;align-items:baseline;flex-wrap:wrap;
-  max-width:46rem;margin:0 auto;padding:1.4rem 1.25rem 2.2rem;font-size:.9rem}
-.nav a{color:var(--ink-soft);text-decoration:none}
-.nav a:hover{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
-.nav .brand{font-family:var(--serif);font-size:1.15rem;font-weight:600;color:var(--ink);
-  margin-right:auto;letter-spacing:-.01em}
-
-h1{font-family:var(--serif);font-size:clamp(1.8rem,5vw,2.5rem);font-weight:600;
-  margin:0 0 .4rem;letter-spacing:-.015em;text-wrap:balance}
-h2{font-family:var(--serif);font-size:1.28rem;font-weight:600;margin:2.6rem 0 .3rem;
-  letter-spacing:-.01em}
-h3{font-size:.95rem;font-weight:600;margin:1.5rem 0 .3rem}
-.lede{color:var(--ink-soft);margin:0 0 1.1rem;font-size:1rem;text-wrap:balance}
-p{margin:0 0 .9rem}
-
-.answer{background:var(--card);border:1px solid var(--rule);border-radius:3px;
-  padding:1.7rem;margin:1.4rem 0}
-.answer .q{font-size:.78rem;letter-spacing:.07em;text-transform:uppercase;
-  color:var(--ink-faint);margin-bottom:.5rem}
-.answer .a{font-family:var(--mono);font-size:clamp(2.1rem,8vw,3.2rem);font-weight:600;
-  line-height:1;letter-spacing:-.03em;color:var(--hot);font-variant-numeric:tabular-nums}
-.answer .a.calm{color:var(--cool)}
-.answer .s{color:var(--ink-soft);margin-top:.8rem;font-size:.95rem}
-
-.grid{display:grid;gap:.7rem;grid-template-columns:repeat(auto-fit,minmax(10.5rem,1fr));margin:1.1rem 0}
-.stat{background:var(--card);border:1px solid var(--rule);border-radius:3px;padding:.95rem 1.05rem}
-.stat .k{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint)}
-.stat .v{font-family:var(--mono);font-size:1.3rem;font-weight:600;margin-top:.15rem;
-  font-variant-numeric:tabular-nums}
-.stat .n{font-size:.78rem;color:var(--ink-soft);margin-top:.2rem}
-
-.prov{font-family:var(--mono);font-size:.62rem;letter-spacing:.05em;text-transform:uppercase;
-  padding:.1rem .32rem;border-radius:2px;border:1px solid var(--rule);color:var(--ink-faint)}
-.prov-observed{border-color:var(--cool);color:var(--cool)}
-.prov-calculated{border-color:var(--ink-faint)}
-.prov-historical{border-color:var(--ink-faint)}
-.prov-estimated{border-style:dashed}
-.prov-d{font-size:.76rem;color:var(--ink-faint)}
-
-.scroll{overflow-x:auto;border:1px solid var(--rule);border-radius:3px;background:var(--card)}
-table{border-collapse:collapse;width:100%;font-size:.88rem}
-th,td{padding:.55rem .8rem;text-align:right;white-space:nowrap}
-th{font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);
-  font-weight:500;border-bottom:1px solid var(--rule)}
-td{font-family:var(--mono);font-variant-numeric:tabular-nums;border-bottom:1px solid var(--rule)}
-tr:last-child td{border-bottom:0}
-th:first-child,td:first-child{text-align:left}
-.sell{color:var(--hot)} .buy{color:var(--cool)}
-.bar{display:inline-block;height:.5rem;background:var(--hot);opacity:.5;border-radius:1px;
-  vertical-align:middle;min-width:1px}
-
-.note{background:var(--hot-bg);border-left:2px solid var(--hot);padding:.85rem 1.05rem;
-  margin:1.2rem 0;font-size:.9rem;border-radius:0 3px 3px 0}
-.note strong{font-weight:600}
-
-ul.plain{list-style:none;padding:0;margin:.4rem 0 0}
-ul.plain li{padding:.5rem 0;border-bottom:1px solid var(--rule);font-size:.9rem;color:var(--ink-soft)}
-ul.plain li:last-child{border-bottom:0}
-ul.plain a{color:var(--ink);text-decoration:none}
-ul.plain a:hover{text-decoration:underline;text-underline-offset:2px}
-
-.tag{font-family:var(--mono);font-size:.65rem;letter-spacing:.04em;padding:.1rem .38rem;
-  border:1px solid var(--rule);border-radius:2px;color:var(--ink-faint)}
-.tag.REFUTED{color:var(--hot);border-color:var(--hot)}
-.tag.ASSUMED{border-style:dashed}
-.tag.MEASURED{color:var(--cool);border-color:var(--cool)}
-
-.foot{margin-top:3rem;padding-top:1.2rem;border-top:1px solid var(--rule);
-  color:var(--ink-faint);font-size:.82rem}
-.foot a{color:var(--ink-faint)}
-code{font-family:var(--mono);font-size:.85em}
-pre{background:var(--card);border:1px solid var(--rule);border-radius:3px;padding:.9rem 1rem;
-  overflow-x:auto;font-size:.82rem}
-a{color:inherit;text-underline-offset:2px}
-.asset-row{display:flex;gap:.7rem;flex-wrap:wrap}
-.asset{flex:1 1 12rem;background:var(--card);border:1px solid var(--rule);border-radius:3px;
-  padding:1rem 1.1rem;text-decoration:none;color:inherit;display:block}
-.asset:hover{border-color:var(--ink-faint)}
-.asset .sym{font-family:var(--serif);font-size:1.3rem;font-weight:600}
-
-/* wallet check */
-.checkform{display:flex;gap:.5rem;margin:1.2rem 0 .5rem;flex-wrap:wrap}
-.checkform input{flex:1 1 22rem;font-family:var(--mono);font-size:.95rem;padding:.75rem .9rem;
-  background:var(--card);color:var(--ink);border:1px solid var(--rule);border-radius:3px}
-.checkform input:focus{outline:2px solid var(--cool);outline-offset:1px;border-color:var(--cool)}
-.checkform button{font-family:var(--sans);font-size:.95rem;font-weight:600;padding:.75rem 1.4rem;
-  background:var(--ink);color:var(--paper);border:0;border-radius:3px;cursor:pointer}
-.checkform button:hover{opacity:.88}
-.hint{font-size:.84rem;color:var(--ink-faint);margin:.2rem 0 1.4rem}
-.linkish{background:none;border:0;padding:0;font:inherit;color:var(--cool);cursor:pointer;
-  text-decoration:underline;text-underline-offset:2px}
-
-.cta{display:inline-block;background:var(--ink);color:var(--paper);text-decoration:none;
-  font-weight:600;padding:.75rem 1.4rem;border-radius:3px}
-.cta:hover{opacity:.88}
-</style><script type="application/ld+json">{"@context": "https://schema.org", "@type": "ScholarlyArticle", "headline": "Liquidation maps show where forced selling is. We tested whether it moves price.", "abstract": "228 independent episodes across 28 symbols. Forced flow returned +40.07 bps at 15 minutes and beat a permutation null. A random minute in the same symbol in the same hour returned 44.52 bps.", "identifier": "F-0010", "publisher": {"@type": "Organization", "name": "Genesis"}}</script>
-</head><body>
-<nav class="nav"><a class="brand" href="../index.html">Genesis</a>
-<a href="../check.html">Check a wallet</a>
-<a href="../markets/btc.html">Markets</a><a href="../research/index.html">Research</a>
-<a href="../record.html">Record</a><a href="../methodology.html">Methodology</a>
-<a href="../api.html">API</a></nav>
-<main class="wrap">
-<h1>Liquidation maps show where forced selling is. We tested whether it moves price.</h1>
-<p class="lede">228 independent episodes across 28 symbols. Forced flow returned +40.07 bps at 15 minutes and beat a permutation null. A random minute in the same symbol in the same hour returned 44.52 bps.</p>
-<div class="answer"><div class="q">The answer</div>
-  <div class="a calm" style="font-size:1.5rem;line-height:1.3">No evidence, once you control for the volatility that was already there.</div>
-  <div style="margin-top:.9rem"><span class="prov prov-historical">historical</span> <span class="prov-d">F-0010 · see the record for status</span></div>
-</div>
-
-<p>Every liquidation product on the market shows you where forced selling sits. Coinglass calls
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Liquidation maps show where forced selling is. We tested whether it moves price. — Genesis Research</title><meta name="description" content="228 independent episodes across 28 symbols. Forced flow returned +40.07 bps at 15 minutes and beat a permutation null. A random minute in the same symbol in the same hour returned 44.52 bps."><link rel="canonical" href="https://gabana-dev.github.io/genesis/research/liquidations-dont-move-price"><script type="application/ld+json">{"@context":"https://schema.org","@type":"ScholarlyArticle","headline":"Liquidation maps show where forced selling is. We tested whether it moves price.","abstract":"228 independent episodes across 28 symbols. Forced flow returned +40.07 bps at 15 minutes and beat a permutation null. A random minute in the same symbol in the same hour returned 44.52 bps.","identifier":"F-0010","publisher":{"@type":"Organization","name":"Genesis"}}</script><link rel="stylesheet" href="/genesis/_assets/_alertsRoute_.BkMO9kSi.css"></head> <body> <nav class="nav"> <a class="brand" href="/genesis/index.html">Genesis</a> <a href="/genesis/check.html">Check a wallet</a>  <a href="/genesis/markets/btc.html">Markets</a> <a href="/genesis/research/index.html">Research</a> <a href="/genesis/record.html">Record</a> <a href="/genesis/methodology.html">Methodology</a> <a href="/genesis/api.html">API</a> </nav> <main class="wrap"> <h1>Liquidation maps show where forced selling is. We tested whether it moves price.</h1> <p class="lede">228 independent episodes across 28 symbols. Forced flow returned +40.07 bps at 15 minutes and beat a permutation null. A random minute in the same symbol in the same hour returned 44.52 bps.</p> <div class="answer"> <div class="q">The answer</div> <div class="a calm" style="font-size:1.5rem;line-height:1.3">No evidence, once you control for the volatility that was already there.</div>  <div style="margin-top:.8rem"><span class="prov prov-historical">historical</span> <span class="prov-d">F-0010 · see the record for status</span></div> </div> <p>Every liquidation product on the market shows you where forced selling sits. Coinglass calls
 its heatmap a probability map and attaches no probability to anything. None of them publishes
 whether reaching a cluster actually does anything.</p>
-
 <p>We recorded 61,338 forced-order events across 757 symbols on Binance USD-M and collapsed them
 into <strong>228 independent episodes</strong> at $250k or more. Episodes, not events: 90% of
 large liquidations fall within 60 seconds of another, so counting events as observations inflates
 the sample threefold.</p>
-
 <h3>The result</h3>
 <div class="scroll"><table>
 <thead><tr><th>Horizon</th><th>Mean</th><th>Hit rate</th><th>Permutation p95</th>
@@ -154,31 +13,22 @@ the sample threefold.</p>
 <tr><td>5 min</td><td>+11.10 bps</td><td>0.557</td><td>14.99 — fails</td><td>25.13 — fails</td></tr>
 <tr><td>15 min</td><td>+40.07 bps</td><td>0.604</td><td>17.06 — clears</td><td>44.52 — fails</td></tr>
 </tbody></table></div>
-
 <p>At 15 minutes the effect is large: <strong>+40 bps with a 60% hit rate</strong>, comfortably
 beating a permutation null. That number alone would make a compelling product.</p>
-
 <p>Then take any other minute from the same hour in the same symbol. <strong>44.52 bps.</strong>
 More.</p>
-
 <h3>What it means</h3>
 <p>Liquidations happen because the market is already moving. The move is the volatility; the
 liquidation is a symptom of it. A liquidation map is a map of where leverage sat, not a map of
 what will happen next.</p>
-
 <h3>Limitations, stated</h3>
 <p>Three days of recording. One venue. 106 of 228 episodes had usable price data, biasing the
 surviving sample toward liquid symbols — which flatters a liquidity-driven effect rather than
 hiding one. And this is Binance: it says nothing about Hyperliquid, whose HLP backstop and far
 smaller book differ in ways that could cut either way. That test is running.</p>
-
 <p>The failure is against a matched control, not a power threshold. More data tightens the
-intervals; it does not repair a comparison the effect loses on its merits.</p>
-
-<p style="margin-top:2rem"><a href="index.html">← All research</a> ·
-<a href="../record.html">Our record, including what we got wrong →</a></p>
-</main>
-<footer class="wrap foot"><p>Genesis — market intelligence for leveraged crypto traders.
-Every number carries its provenance, its observation count and how much of the market we could
-see. <a href="../record.html">Including the claims we got wrong.</a></p></footer>
-</body></html>
+intervals; it does not repair a comparison the effect loses on its merits.</p> <p style="margin-top:2rem"> <a href="/genesis/research/index.html">← All research</a> ·
+<a href="/genesis/record.html">Our record, including what we got wrong →</a> </p> </main> <footer class="wrap foot"> <p>
+Genesis — market intelligence for leveraged crypto traders. Every number carries its
+        provenance, its observation count and how much of the market we could see.
+<a href="/genesis/record.html">Including the claims we got wrong.</a> </p> </footer> </body></html>
