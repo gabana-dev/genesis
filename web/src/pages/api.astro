@@ -60,6 +60,19 @@ GET /data/meta.json        what we cannot currently see</pre>
   <pre>{example}
 "coverage": {coverage}</pre>
 
+  <h2>MCP</h2>
+  <p>
+    The same intelligence as a tool an agent can call, rather than a page it has to read.
+    Stdlib Python, no key, no account:
+  </p>
+  <pre>claude mcp add isobath -- python3 product/mcp_server.py</pre>
+  <p>
+    Four tools: <code>get_market_map</code>, <code>check_wallet</code>, <code>get_findings</code>
+    and <code>get_limits</code>. Every response carries its coverage and provenance tier — a model
+    quoting a figure to someone who will never visit this site is exactly where a missing limit
+    does the most damage, so it is not an optional field.
+  </p>
+
   <h2>For agents</h2>
   <p>
     Every page carries JSON-LD describing the same measurements, so a retrieval system can cite a
