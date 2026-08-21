@@ -145,6 +145,24 @@ export const TIERS: Record<Tier, string> = {
   historical: 'measured over an archive',
 };
 
+/**
+ * How to describe the population a figure was drawn from.
+ *
+ * F-0011: the hourly fast tier is the top 300 wallets by position notional, and those sit
+ * FURTHER from liquidation than the full universe -- deep scans show median distance 15.5% and
+ * 42.8% within 10%, against the fast tier's 31.6% and 23.0%. So an unqualified headline drawn
+ * from the fast tier overstates how representative it is.
+ *
+ * Written once and used on every surface -- home page, map, social card, llms.txt, MCP -- because
+ * a caveat that appears on one page and not another is worse than none: it looks like the
+ * unqualified number is the reliable one.
+ */
+export function population(tier: string, wallets: number): string {
+  return tier === 'fast'
+    ? `${wallets} positions from the hourly scan of the 300 largest, which sit further from liquidation than the full universe (F-0011)`
+    : `${wallets} positions from the full frozen universe`;
+}
+
 /** Resolve a site-root-relative path against the configured base. */
 export function url(path: string): string {
   const base = import.meta.env.BASE_URL.replace(/\/$/, '');

@@ -28,6 +28,14 @@ const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 const t = map.totals;
 const cov = Math.round(map.coverage.observed_fraction * 100);
 
+// F-0011: the fast tier is the 300 largest positions and they sit further from liquidation than
+// the full universe, so the card must not imply the figure is representative. This wording is
+// duplicated from web/src/lib/data.ts population() -- this script runs before Astro and cannot
+// import it. Change one, check the other.
+const from = map.coverage.tier === 'fast'
+  ? `${t.wallets_in_band} of the 300 largest positions`
+  : `${t.wallets_in_band} positions, full universe`;
+
 // 1200x630 is the size every platform crops to. Anything important stays well inside it.
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630">
   <rect width="1200" height="630" fill="#14130f"/>
@@ -51,7 +59,7 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630">
 
   <line x1="80" y1="562" x2="1120" y2="562" stroke="#2e2b23" stroke-width="1"/>
   <text x="80" y="596" font-family="Menlo,monospace" font-size="20" fill="#726d61">
-    ${t.wallets_in_band} positions observed · ${cov}% of open interest · read from Hyperliquid</text>
+    ${from} · ${cov}% of open interest · read live from Hyperliquid</text>
 </svg>`;
 
 const out = fileURLToPath(new URL('public/og.png', ROOT));

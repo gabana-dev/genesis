@@ -14,7 +14,7 @@ import Base from '../layouts/Base.astro';
 import AddressHelp from '../components/AddressHelp.astro';
 import Note from '../components/Note.astro';
 import Prov from '../components/Prov.astro';
-import { age, liveExample, marketMap, scorecard, url, usd } from '../lib/data';
+import { age, liveExample, marketMap, population, scorecard, url, usd } from '../lib/data';
 
 const m = marketMap();
 const sc = scorecard();
@@ -80,7 +80,10 @@ const jsonld = {
     They cannot move their liquidation price without depositing from outside.
   </p>
   <p style="margin-bottom:1.6rem">
-    <Prov tier="observed" detail={`${t.wallets_in_band} positions · ${Math.round(cov.observed_fraction * 100)}% of open interest observed · ${age(m.map_age_seconds)} old`} />
+    <Prov
+      tier="observed"
+      detail={`${population(cov.tier, t.wallets_in_band)} · ${Math.round(cov.observed_fraction * 100)}% of open interest observed · ${age(m.map_age_seconds)} old`}
+    />
     <br /><a href={url('markets/btc.html')}>The full BTC map →</a>
   </p>
 

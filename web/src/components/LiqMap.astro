@@ -16,7 +16,7 @@
  * reads a ladder. Above spot is where shorts are bought back; below is where longs are sold.
  */
 import Prov from './Prov.astro';
-import { signed, usd } from '../lib/data';
+import { population, signed, usd } from '../lib/data';
 import type { Cluster } from '../types/data';
 
 interface Props {
@@ -79,6 +79,6 @@ const row = (c: Cluster) => ({
 <p class="hint">
   <Prov
     tier="calculated"
-    detail={`0.5% buckets from ${wallets} positions in the ${tier} scan — the ${tier === 'fast' ? 'largest 300 positions, which sit further from liquidation than the full population (F-0011)' : 'full frozen universe'}`}
+    detail={`0.5% buckets from ${population(tier, wallets)}`}
   />
 </p>

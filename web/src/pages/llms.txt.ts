@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
-import { SITE, marketMap, scorecard, usd } from '../lib/data';
+import { SITE, marketMap, population, scorecard, usd } from '../lib/data';
 
 /**
  * llms.txt -- the site stated plainly for a retrieval system.
@@ -41,7 +41,7 @@ later refuted stay published.
 
 - Forced exposure within ±10%: ${usd(m.totals.forced_notional_usd)}
 - Cannot defend: ${m.totals.cannot_defend_pct}% (${usd(m.totals.cannot_defend_usd)})
-- Positions observed: ${m.totals.wallets_in_band} of ${m.coverage.wallets_scanned} wallets scanned
+- Drawn from: ${population(m.coverage.tier, m.totals.wallets_in_band)}
 - Coverage of exchange open interest, THIS scan: ${(m.coverage.observed_fraction * 100).toFixed(1)}%
 - Map taken at: ${m.map_taken_at}
 

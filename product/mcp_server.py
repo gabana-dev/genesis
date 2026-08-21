@@ -91,6 +91,14 @@ def tool_market_map(asset="BTC"):
             "scan_tier": cov["tier"],
             "method": cov["method"],
             "caveat": cov["note"],
+            # F-0011. An agent relaying this figure to someone who will never see the site is
+            # exactly where an unstated selection bias does the most damage.
+            "population_bias": (
+                "the hourly fast tier is the 300 largest positions by notional, which sit "
+                "further from liquidation than the full universe (F-0011); this figure is not "
+                "representative of all leveraged positions"
+                if cov["tier"] == "fast" else "full frozen universe"
+            ),
         },
         "provenance": "observed (positions) + calculated (bucketing); no predicted tier exists",
         "we_do_not_claim": m.get("we_do_not_claim", []),
