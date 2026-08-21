@@ -80,8 +80,19 @@ of charts. None of them is readable.
 
 ## Positioning
 
-> **Genesis — market intelligence for leveraged crypto traders.**
-> See the risk behind the liquidation map.
+> **Every liquidation map shows you where the exposure is.**
+> **We measure how much of it can actually defend itself.**
+
+Let the incumbents own *liquidation maps* -- that fight is against years of brand, traffic and
+exchange coverage. We own *liquidation vulnerability*, which is adjacent and uncontested. The
+free map is deliberately familiar enough that someone arriving from a competitor understands it
+immediately; the moment they ask "but how much of this is real", that is our answer.
+
+Deliberately not "a liquidation intelligence service": today it is liquidation and vulnerability,
+and the same engine extends to positioning, crowding, funding and liquidity risk without
+rebranding.
+
+**The build order and the distribution surface attached to each step are in `product/PLAN.md`.**
 
 Deliberately not "a liquidation intelligence service": today it is liquidation and defensibility,
 and the same engine extends to positioning, crowding, funding and liquidity risk without

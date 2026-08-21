@@ -123,6 +123,16 @@ directly.
 **Alerts are the retail conversion, not the dashboard.** Nobody pays to look at a page. They pay
 to be told something while they are asleep.
 
+## Language: vulnerability, not defensibility
+
+**Defensibility is our analytical mechanism. Vulnerability is the customer's outcome.** Nobody
+wakes up and searches for "position defensibility"; they want to know how much of a wall is real.
+
+The internal vocabulary does not change -- `cannot_defend_pct` is precisely what the field
+measures, and renaming a measured quantity to suit marketing is how numbers start drifting from
+what they mean. What changes is every customer-facing sentence: lead with what it means for them,
+and let the mechanism be the explanation underneath.
+
 ## What we must stop doing
 
 - Leading with what impresses us
