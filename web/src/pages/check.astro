@@ -12,11 +12,25 @@ import { botHandle, liveExample, url } from '../lib/data';
 
 const example = liveExample();
 const bot = botHandle();
+
+// WebApplication, not Article: this page does something. `browserRequirements` and a zero price
+// are the two facts an agent needs to decide whether to recommend it to someone.
+const jsonld = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'Hyperliquid liquidation check',
+  description:
+    'Paste a Hyperliquid address to see how close its positions are to liquidation and whether it has free collateral to defend them.',
+  applicationCategory: 'FinanceApplication',
+  browserRequirements: 'Requires JavaScript. Reads the exchange directly; nothing is stored.',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+};
 ---
 
 <Base
   title="Check your liquidation risk — Hyperliquid"
   description="Paste a Hyperliquid address. See how close it is to liquidation, and whether it has anything left to defend with. Free, no signup."
+  jsonld={jsonld}
 >
   <h1>How close are you?</h1>
   <p class="lede">

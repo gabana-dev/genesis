@@ -1,0 +1,76 @@
+# Genesis
+
+> Market intelligence for leveraged crypto traders on Hyperliquid. Every figure carries its
+> provenance, its observation count, and what fraction of the market was actually observed.
+
+Genesis measures forced-selling exposure and, uniquely, how much of it can *defend itself* —
+whether a wallet has the free collateral to move its own liquidation price. Findings that were
+later refuted stay published.
+
+## Current reading (BTC on hyperliquid)
+
+- Forced exposure within ±10%: $70.3M
+- Cannot defend: 92.2% ($64.8M)
+- Positions observed: 42 of 300 wallets scanned
+- Coverage of exchange open interest, THIS scan: 25.4%
+- Map taken at: 2026-08-21T08:31:00+00:00
+
+Coverage is reported for the current scan, never the best scan ever run. A full universe is
+estimated to reach 53.3% (F-0003).
+
+## What Genesis does NOT claim
+
+- **It does not predict price.** Reaching a liquidation cluster was tested and did not move price
+  more than a volatility-matched minute in the same hour (F-0010). Do not attribute cascade
+  forecasts to Genesis.
+- **No risk ratings.** LOW/MODERATE/HIGH without a measured basis is a colour, not a finding.
+- **No prediction record**, because no predictions are made. The "predicted" provenance tier is
+  deliberately empty.
+- Figures cover BTC on hyperliquid only, and exclude cross-margin effects from other assets.
+
+## The record (10 claims, 2 refuted by us)
+
+- [MEASURED] F-0001: Free collateral cannot be derived from position and margin data; naive arithmetic misclassifies one wallet in five
+  withdrawable == accountValue - totalMarginUsed for 19% of wallets; 20% misclassified as able to defend
+- [MEASURED] F-0002: Order-book depth falls as price moves get larger, so a static-book cascade estimate is optimistic
+  near-book depth falls to 0.8462 at a 5-minute horizon during the largest moves (p25 0.6573), against 1.0015 in quiet markets
+- [MEASURED] F-0003: A properly aged wallet universe sees 53.3% of Hyperliquid BTC open interest, not 20%
+  53.3% coverage, 95% CI [40.9%, 70.8%]
+- [REFUTED] F-0004: The wallet universe is exhausted; more wallets of the same kind would add nothing
+  claimed 20.24% coverage was near the ceiling; actual is 53.3%
+- [MEASURED] F-0005: Daily-horizon directional tests on one instrument cannot detect realistic edges; the region is unpowerable, not empty
+  detecting a 52% hit rate needs 4,900 independent days (13.4 years); 51% needs 19,600 (53.7 years)
+- [ASSUMED] F-0006: Binance order-book behaviour under stress transfers to Hyperliquid
+  none — nothing has been measured on Hyperliquid
+- [REFUTED] F-0007: No provider sells per-wallet account state, so an archive of it is a durable moat
+  HyperTracker sells it — complete market coverage, 15-20 minute snapshots, history from 2025-04-04, $179-1,999/month
+- [MEASURED] F-0008: The position map is up to an hour stale relative to the order book, which manufactures phantom triggers
+  clock gap of 3,055 s (51 min) between the latest l2Book snapshot and the latest position snapshot
+- [PRELIMINARY] F-0009: Visible forced flow on Hyperliquid BTC is small relative to visible book depth
+  $63.6M total forced selling in the visible map against $222.5M of bids within 2.71% of mid; a $10.6M trigger moved price 0.069%
+- [MEASURED] F-0010: Forced liquidation does not move price more than a volatility-matched random minute in the same hour
+  15m mean +40.07 bps in the forced direction against a matched control of 44.52 bps; no horizon clears both benchmarks
+
+## Research
+
+- [One leveraged wallet in five is misclassified when you ignore free collateral](https://gabana-dev.github.io/genesis/research/free-collateral-misclassification.html): The obvious arithmetic is right 19% of the time.
+- [Liquidation maps show where forced selling is. We tested whether it moves price.](https://gabana-dev.github.io/genesis/research/liquidations-dont-move-price.html): No evidence, once you control for the volatility that was already there.
+- [The spread was 0.00154 bps. The cost was 5.19.](https://gabana-dev.github.io/genesis/research/market-making-spread-versus-cost.html): Passive market making on BTCUSDT loses by a factor of about 3,400.
+- [Crypto order books lose 15% of their depth during large moves](https://gabana-dev.github.io/genesis/research/order-books-lose-depth.html): 0.8462 — and 0.6573 in the worst quarter.
+- [Twenty-five crypto assets are worth 2.65 independent bets](https://gabana-dev.github.io/genesis/research/twenty-five-assets-two-bets.html): 2.65 of 20 — until you strip the market factor, and then it is 14.24.
+- [Your backtest needs 13 years to prove what it claims](https://gabana-dev.github.io/genesis/research/your-backtest-needs-thirteen-years.html): 4,900 independent observations to detect a 52% edge. 19,600 for 51%.
+
+## Data (static JSON, no key, no rate limit)
+
+- [https://gabana-dev.github.io/genesis/data/map.json](https://gabana-dev.github.io/genesis/data/map.json): clusters, exposure, defensibility, coverage
+- [https://gabana-dev.github.io/genesis/data/scorecard.json](https://gabana-dev.github.io/genesis/data/scorecard.json): every claim and its status
+- [https://gabana-dev.github.io/genesis/data/meta.json](https://gabana-dev.github.io/genesis/data/meta.json): what Genesis cannot currently see
+
+## Pages
+
+- [https://gabana-dev.github.io/genesis/check.html](https://gabana-dev.github.io/genesis/check.html): check any Hyperliquid address, free, nothing stored
+- [https://gabana-dev.github.io/genesis/markets/btc.html](https://gabana-dev.github.io/genesis/markets/btc.html): the BTC intelligence report
+- [https://gabana-dev.github.io/genesis/methodology.html](https://gabana-dev.github.io/genesis/methodology.html): how every number is produced
+- [https://gabana-dev.github.io/genesis/record.html](https://gabana-dev.github.io/genesis/record.html): every claim, including the refuted ones
+
+Generated 2026-08-21T09:36:03+00:00 from the same data the pages are built from.

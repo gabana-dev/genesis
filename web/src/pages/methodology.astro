@@ -8,6 +8,15 @@ const m = marketMap();
 
 // The ladder is data, so the page cannot drift from the type. Adding a fifth tier means changing
 // `Tier` first -- and `predicted` is deliberately absent from both.
+const jsonld = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: 'How Genesis produces every number',
+  description:
+    'The provenance ladder, how defensibility and coverage are computed, and what Genesis deliberately does not publish.',
+  dateModified: m.generated_at,
+};
+
 const ladder: [Tier, string][] = [
   ['observed', 'read directly from the venue — liquidation price, free collateral'],
   ['calculated', 'arithmetic over observations — cluster notional, defensibility'],
@@ -19,6 +28,7 @@ const ladder: [Tier, string][] = [
 <Base
   title="Methodology — Genesis"
   description="How Genesis produces every number, and the four tiers of evidence it distinguishes."
+  jsonld={jsonld}
 >
   <h1>Methodology</h1>
   <p class="lede">How each number is produced, and which tier of evidence it sits on.</p>

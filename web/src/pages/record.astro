@@ -7,11 +7,31 @@ import { scorecard } from '../lib/data';
 
 const sc = scorecard();
 const counts = Object.entries(sc.counts).sort(([a], [b]) => a.localeCompare(b));
+
+// The record's job for a retrieval system is to hand over the structured file, not to restate it
+// in markup. `distribution` is the whole point: every claim, its status and its method, in JSON.
+const jsonld = {
+  '@context': 'https://schema.org',
+  '@type': 'Dataset',
+  name: 'Genesis research record',
+  description:
+    'Every claim Genesis has published, with its status, sample and method — including the ones we refuted ourselves.',
+  dateModified: sc.generated_at,
+  variableMeasured: Object.entries(sc.counts).map(([name, value]) => ({
+    '@type': 'PropertyValue', name, value,
+  })),
+  distribution: {
+    '@type': 'DataDownload',
+    encodingFormat: 'application/json',
+    contentUrl: 'https://gabana-dev.github.io/genesis/data/scorecard.json',
+  },
+};
 ---
 
 <Base
   title="Our record — Genesis"
   description="Every claim Genesis has published, including the ones we refuted ourselves."
+  jsonld={jsonld}
 >
   <h1>Our record</h1>
   <p class="lede">

@@ -14,3 +14,5 @@ User-agent: PerplexityBot
 Allow: /
 
 Sitemap: https://gabana-dev.github.io/genesis/sitemap-index.xml
+# Plain-language summary for retrieval systems, generated from the same data:
+# https://gabana-dev.github.io/genesis/llms.txt
