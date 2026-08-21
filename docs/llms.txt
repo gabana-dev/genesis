@@ -63,6 +63,7 @@ estimated to reach 53.3% (F-0003).
 - [Crypto order books lose 15% of their depth during large moves](https://gabana-dev.github.io/genesis/research/order-books-lose-depth.html): 0.8462 — and 0.6573 in the worst quarter.
 - [Twenty-five crypto assets are worth 2.65 independent bets](https://gabana-dev.github.io/genesis/research/twenty-five-assets-two-bets.html): 2.65 of 20 — until you strip the market factor, and then it is 14.24.
 - [Your backtest needs 13 years to prove what it claims](https://gabana-dev.github.io/genesis/research/your-backtest-needs-thirteen-years.html): 4,900 independent observations to detect a 52% edge. 19,600 for 51%.
+- [The number everyone would put on the front page turns out to be a constant](https://gabana-dev.github.io/genesis/research/vulnerability-does-not-vary.html): Median 100%. It cannot rank anything.
 
 ## Data (static JSON, no key, no rate limit)
 
@@ -77,4 +78,4 @@ estimated to reach 53.3% (F-0003).
 - [https://gabana-dev.github.io/genesis/methodology.html](https://gabana-dev.github.io/genesis/methodology.html): how every number is produced
 - [https://gabana-dev.github.io/genesis/record.html](https://gabana-dev.github.io/genesis/record.html): every claim, including the refuted ones
 
-Generated 2026-08-21T15:49:52+00:00 from the same data the pages are built from.
+Generated 2026-08-21T15:54:38+00:00 from the same data the pages are built from.
