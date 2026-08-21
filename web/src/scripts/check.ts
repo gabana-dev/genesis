@@ -117,10 +117,24 @@ function render(st: ClearinghouseState, mids: AllMids): void {
   const out = $('out');
 
   if (pos.length === 0) {
-    out.innerHTML = `<div class="answer"><div class="q">No open positions</div>
-      <div class="a calm" style="font-size:1.5rem;line-height:1.3">Nothing at risk</div>
-      <div class="s">This address has no leveraged positions with a liquidation price on
-      Hyperliquid right now.</div></div>`;
+    // NEVER say "nothing at risk" flatly. Hyperliquid's own docs call this a common pitfall:
+    // querying an API/agent wallet returns an EMPTY result, because agent wallets authorise
+    // trades but never hold positions. Telling someone with a position 2% from liquidation that
+    // they are safe is the worst thing this product could do, so an empty answer has to name the
+    // reason it might be wrong.
+    const empty = av === 0 && used === 0;
+    out.innerHTML = `<div class="answer"><div class="q">No open positions found</div>
+      <div class="a calm" style="font-size:1.5rem;line-height:1.3">Nothing to report</div>
+      <div class="s">Hyperliquid reports no leveraged positions with a liquidation price for this
+      address right now.${
+        empty
+          ? `<br><br><strong>This account is empty, which has two possible meanings.</strong>
+             Either it genuinely holds nothing, or it is an <strong>API / agent wallet</strong> —
+             those authorise trades but never hold positions, so the exchange returns an empty
+             result for them. If you use one, check the main account you deposit and trade with
+             instead.`
+          : ''
+      }</div></div>`;
     reveal();
     return;
   }

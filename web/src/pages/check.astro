@@ -7,6 +7,7 @@
  * public endpoint -- no server, no key, nothing stored.
  */
 import Base from '../layouts/Base.astro';
+import AddressHelp from '../components/AddressHelp.astro';
 import Note from '../components/Note.astro';
 import { botHandle, liveExample, url } from '../lib/data';
 
@@ -46,6 +47,8 @@ const jsonld = {
     No signup, nothing stored. The lookup happens in your browser, straight to Hyperliquid.
     {example && <button class="linkish" id="demo" type="button" data-address={example}>Try an example</button>}
   </p>
+
+  <AddressHelp />
 
   <div id="out"></div>
 

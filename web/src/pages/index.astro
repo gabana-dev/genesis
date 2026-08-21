@@ -11,6 +11,7 @@
  * lookup, and the resulting URL is shareable, which is the only way this spreads.
  */
 import Base from '../layouts/Base.astro';
+import AddressHelp from '../components/AddressHelp.astro';
 import Note from '../components/Note.astro';
 import { liveExample, marketMap, scorecard, url, usd } from '../lib/data';
 
@@ -55,6 +56,8 @@ const soon = ['ETH', 'SOL'];
     Free, no signup, nothing stored. The lookup happens in your browser, straight to Hyperliquid.
     {example && <a href={`${url('check.html')}?a=${example}`}>See a real one →</a>}
   </p>
+
+  <AddressHelp />
 
   <h2>Where the rest of the market stands</h2>
   <p class="lede">Your position does not sit alone. This is the forced selling around it.</p>
