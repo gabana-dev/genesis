@@ -13,7 +13,8 @@
 import Base from '../layouts/Base.astro';
 import AddressHelp from '../components/AddressHelp.astro';
 import Note from '../components/Note.astro';
-import { liveExample, marketMap, scorecard, url, usd } from '../lib/data';
+import Prov from '../components/Prov.astro';
+import { age, liveExample, marketMap, scorecard, url, usd } from '../lib/data';
 
 const m = marketMap();
 const sc = scorecard();
@@ -33,7 +34,6 @@ const jsonld = {
   ],
 };
 
-const soon = ['ETH', 'SOL'];
 ---
 
 <Base
@@ -59,31 +59,30 @@ const soon = ['ETH', 'SOL'];
 
   <AddressHelp />
 
-  <h2>Where the rest of the market stands</h2>
-  <p class="lede">Your position does not sit alone. This is the forced selling around it.</p>
+  <h2>Why not just read a liquidation map?</h2>
+  <p>
+    Because the number every map shows you is the amount at risk, and the number that decides
+    whether you survive is whether you can move your own liquidation price. That depends on free
+    collateral — and the obvious way to compute it is wrong.
+  </p>
+  <p>
+    We checked the arithmetic against the exchange's own figure on 74 wallets. It agreed
+    <strong>19%</strong> of the time and called <strong>one wallet in five</strong> able to defend
+    itself when it was not. Always in the direction of looking safer.
+    <a href={url('research/free-collateral-misclassification.html')}>The measurement →</a>
+  </p>
 
-  <div class="asset-row">
-    <a class="asset" href={url('markets/btc.html')}>
-      <div class="sym">BTC</div>
-      <div class="stat" style="border:0;padding:.6rem 0 0;background:none">
-        <div class="k">Cannot defend</div>
-        <div class="v" style="color:var(--hot)">{t.cannot_defend_pct}%</div>
-        <div class="n">
-          {usd(t.forced_notional_usd)} forced exposure · {Math.round(cov.observed_fraction * 100)}% visible
-        </div>
-      </div>
-    </a>
-    {soon.map((sym) => (
-      <div class="asset" style="opacity:.55">
-        <div class="sym">{sym}</div>
-        <div class="stat" style="border:0;padding:.6rem 0 0;background:none">
-          <div class="k">Not yet scanned</div>
-          <div class="v" style="color:var(--ink-faint)">—</div>
-          <div class="n">the scanner covers BTC only today</div>
-        </div>
-      </div>
-    ))}
-  </div>
+  <h2>Right now, on Hyperliquid</h2>
+
+  <p class="lede">
+    Of {usd(t.forced_notional_usd)} in BTC exposure within ±10% of spot,
+    <strong>{usd(t.cannot_defend_usd)}</strong> sits with wallets holding zero free collateral.
+    They cannot move their liquidation price without depositing from outside.
+  </p>
+  <p style="margin-bottom:1.6rem">
+    <Prov tier="observed" detail={`${t.wallets_in_band} positions · ${Math.round(cov.observed_fraction * 100)}% of open interest observed · ${age(m.map_age_seconds)} old`} />
+    <br /><a href={url('markets/btc.html')}>The full BTC map →</a>
+  </p>
 
   <Note title="What Isobath does not tell you.">
     It does not predict price. We tested whether reaching a liquidation cluster causes a further
