@@ -1,11 +1,11 @@
 {
- "generated_at": "2026-08-21T14:16:10+00:00",
+ "generated_at": "2026-08-21T14:22:18+00:00",
  "note": "Every claim Genesis has published, including the ones that turned out wrong. REFUTED entries are never removed.",
  "counts": {
   "MEASURED": 6,
   "REFUTED": 2,
   "ASSUMED": 1,
-  "PRELIMINARY": 1
+  "PRELIMINARY": 2
  },
  "findings": [
   {
@@ -115,6 +115,17 @@
    "sample": "228 independent episodes >=$250k across 28 symbols (n=106 with price data), Binance market-wide, 2026-08-18 to 2026-08-20",
    "method": "CASCADE-1, contract frozen sha256 7dee22eed9cdaecb before any outcome; episodes not events; permutation null plus same-symbol same-hour control",
    "confidence": "K1 met at 228 episodes, so this is not an underpowered null; three days, one venue, and only two of four declared benchmark tiers were implemented",
+   "first_recorded": "2026-08-21",
+   "last_updated": "2026-08-21"
+  },
+  {
+   "id": "F-0011",
+   "title": "The hourly map systematically under-represents the positions closest to liquidation",
+   "status": "PRELIMINARY",
+   "observation": "\"deep scan (5,395 wallets): median distance to liquidation 15.5%, 42.8% of positions within 10%. Fast scan (top 300 by notional) at the same period: median 31.6%, 23.0% within 10%.\"",
+   "sample": "one deep snapshot of 1,327 BTC positions against three fast snapshots of 267-270, 2026-08-21",
+   "method": "distance to liquidation as |liquidationPx - spot| / spot, per position, compared across scan tiers",
+   "confidence": "one deep snapshot against three fast ones, same day, single venue, single asset. Needs several deep/fast pairs across different market conditions before it is more than PRELIMINARY.",
    "first_recorded": "2026-08-21",
    "last_updated": "2026-08-21"
   }
