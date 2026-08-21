@@ -1,171 +1,259 @@
+/* ==========================================================================================
+   Isobath — the design system. Reasoning lives in product/DESIGN.md.
+
+   The concept is the name: an isobath is a depth contour on a nautical chart. Charts exist to
+   stop a vessel running aground, which is what this product does, so the visual language is the
+   INFORMATION DESIGN of a chart -- fine linework, ruthless hierarchy, hazard magenta -- and
+   never its props. No parchment, no compass rose, no rope.
+   ========================================================================================== */
+
+@font-face{font-family:Instrument;src:url(/genesis/fonts/instrument-serif-400.woff2) format('woff2');
+  font-weight:400;font-display:swap}
+@font-face{font-family:Geist;src:url(/genesis/fonts/geist-300.woff2) format('woff2');
+  font-weight:300;font-display:swap}
+@font-face{font-family:Geist;src:url(/genesis/fonts/geist-400.woff2) format('woff2');
+  font-weight:400;font-display:swap}
+@font-face{font-family:Geist;src:url(/genesis/fonts/geist-500.woff2) format('woff2');
+  font-weight:500;font-display:swap}
+@font-face{font-family:Geist;src:url(/genesis/fonts/geist-600.woff2) format('woff2');
+  font-weight:600;font-display:swap}
+@font-face{font-family:GeistMono;src:url(/genesis/fonts/geist-mono-400.woff2) format('woff2');
+  font-weight:400;font-display:swap}
+@font-face{font-family:GeistMono;src:url(/genesis/fonts/geist-mono-500.woff2) format('woff2');
+  font-weight:500;font-display:swap}
+
 :root{
-  --ink:#16150f; --ink-soft:#57544a; --ink-faint:#8b8779;
-  --paper:#f7f4ec; --card:#fffdf7; --rule:#e2ddcf;
-  --hot:#a4341f; --hot-bg:#f3e2dd; --cool:#4a6b52;
-  --mono:ui-monospace,"SF Mono",Menlo,monospace;
-  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
-  --sans:system-ui,-apple-system,"Segoe UI",sans-serif;
+  /* Depth palette. Real charts encode danger by saturation: deep water is safe, shallow water
+     grows bluer, hazards are magenta. Lightness is inverted for a dark interface; the logic is
+     not. The ground carries real chroma because neutral near-black is what "dull" looks like. */
+  --abyss:#0a1416; --deep:#0f1e21; --shoal:#162c30; --reef:#1d3a3e;
+  --sounding:#e8ede9; --ink:#a9bdb8; --faint:#62807d;
+
+  /* HAZARD IS MAGENTA, and it is the most load-bearing decision in the system. Every competitor
+     uses red, which in a trading context also means "price down" -- an ambiguity we inherit for
+     free and refuse. On a chart magenta means one thing: hazard, and it does not move. */
+  --hazard:#e8467f; --hazard-dim:#7d2445; --hazard-wash:#2a0f1c;
+  --safe:#5fd4a3; --safe-dim:#2c6b55;
+  --depth:#4a9db5;
+
+  --display:Instrument,'Iowan Old Style',Palatino,Georgia,serif;
+  --ui:Geist,system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:GeistMono,ui-monospace,'SF Mono',Menlo,monospace;
+
+  /* A scale, not a number. The old single 46rem was a prose measure applied to a data product,
+     which is why the map had nowhere to breathe. One page may use several. */
+  --w-prose:38rem; --w-page:64rem; --w-wide:82rem;
+
+  --step:0.35rem;
+  --rule:var(--reef);
+  --ease:cubic-bezier(.22,.61,.36,1);
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --ink:#ece8dc; --ink-soft:#a8a294; --ink-faint:#726d61;
-  --paper:#14130f; --card:#1c1a15; --rule:#2e2b23;
-  --hot:#d9705a; --hot-bg:#2e1d18; --cool:#7fa389;
-}}
-:root[data-theme="dark"]{
-  --ink:#ece8dc; --ink-soft:#a8a294; --ink-faint:#726d61;
-  --paper:#14130f; --card:#1c1a15; --rule:#2e2b23;
-  --hot:#d9705a; --hot-bg:#2e1d18; --cool:#7fa389;
-}
+
 *{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
-  line-height:1.55;-webkit-font-smoothing:antialiased}
-.wrap{max-width:46rem;margin:0 auto;padding:0 1.25rem}
-main.wrap{padding-bottom:4rem}
-
-.nav{display:flex;gap:1.1rem;align-items:baseline;flex-wrap:wrap;
-  max-width:46rem;margin:0 auto;padding:1.4rem 1.25rem 2.2rem;font-size:.9rem}
-.nav a{color:var(--ink-soft);text-decoration:none}
-.nav a:hover{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
-.nav .brand{font-family:var(--serif);font-size:1.15rem;font-weight:600;color:var(--ink);
-  margin-right:auto;letter-spacing:-.01em}
-
-h1{font-family:var(--serif);font-size:clamp(1.8rem,5vw,2.5rem);font-weight:600;
-  margin:0 0 .4rem;letter-spacing:-.015em;text-wrap:balance}
-h2{font-family:var(--serif);font-size:1.28rem;font-weight:600;margin:2.6rem 0 .3rem;
-  letter-spacing:-.01em}
-h3{font-size:.95rem;font-weight:600;margin:1.5rem 0 .3rem}
-.lede{color:var(--ink-soft);margin:0 0 1.1rem;font-size:1rem;text-wrap:balance}
-p{margin:0 0 .9rem}
-
-.answer{background:var(--card);border:1px solid var(--rule);border-radius:3px;
-  padding:1.7rem;margin:1.4rem 0}
-.answer .q{font-size:.78rem;letter-spacing:.07em;text-transform:uppercase;
-  color:var(--ink-faint);margin-bottom:.5rem}
-.answer .a{font-family:var(--mono);font-size:clamp(2.1rem,8vw,3.2rem);font-weight:600;
-  line-height:1;letter-spacing:-.03em;color:var(--hot);font-variant-numeric:tabular-nums}
-.answer .a.calm{color:var(--cool)}
-.answer .s{color:var(--ink-soft);margin-top:.8rem;font-size:.95rem}
-
-.grid{display:grid;gap:.7rem;grid-template-columns:repeat(auto-fit,minmax(10.5rem,1fr));margin:1.1rem 0}
-.stat{background:var(--card);border:1px solid var(--rule);border-radius:3px;padding:.95rem 1.05rem}
-.stat .k{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint)}
-.stat .v{font-family:var(--mono);font-size:1.3rem;font-weight:600;margin-top:.15rem;
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--abyss);color:var(--ink);font-family:var(--ui);
+  font-weight:400;line-height:1.6;-webkit-font-smoothing:antialiased;
   font-variant-numeric:tabular-nums}
-.stat .n{font-size:.78rem;color:var(--ink-soft);margin-top:.2rem}
 
-.prov{font-family:var(--mono);font-size:.62rem;letter-spacing:.05em;text-transform:uppercase;
-  padding:.1rem .32rem;border-radius:2px;border:1px solid var(--rule);color:var(--ink-faint)}
-.prov-observed{border-color:var(--cool);color:var(--cool)}
-.prov-calculated{border-color:var(--ink-faint)}
-.prov-historical{border-color:var(--ink-faint)}
+.wrap{width:100%;max-width:var(--w-page);margin:0 auto;padding:0 1.5rem}
+.wrap-wide{max-width:var(--w-wide)}
+.prose{max-width:var(--w-prose)}
+main.wrap{padding-bottom:6rem}
+
+/* ---- hierarchy ------------------------------------------------------------------------
+   Three tiers with real distance between them. The old failure was that headings, body,
+   provenance and notes all sat inside a narrow contrast band, so nothing led and the eye had
+   nowhere to land. */
+h1{font-family:var(--display);font-weight:400;font-size:clamp(2.4rem,6vw,3.9rem);
+  line-height:1.03;letter-spacing:-.015em;color:var(--sounding);margin:0 0 1rem;
+  text-wrap:balance}
+h2{font-family:var(--display);font-weight:400;font-size:clamp(1.5rem,3vw,2rem);
+  line-height:1.15;letter-spacing:-.01em;color:var(--sounding);margin:3.5rem 0 .6rem}
+h3{font-family:var(--ui);font-weight:500;font-size:.94rem;letter-spacing:.01em;
+  color:var(--sounding);margin:2rem 0 .4rem}
+p{margin:0 0 1rem;max-width:var(--w-prose)}
+.lede{font-size:1.06rem;color:var(--ink);margin-bottom:1.3rem;text-wrap:pretty}
+a{color:var(--depth);text-decoration:none;border-bottom:1px solid color-mix(in oklab,var(--depth) 35%,transparent);
+  transition:border-color .12s var(--ease),color .12s var(--ease)}
+a:hover{color:var(--sounding);border-bottom-color:var(--sounding)}
+strong{color:var(--sounding);font-weight:500}
+em{font-style:italic}
+
+/* Chart convention: labels name a thing without competing with it. */
+.label{font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--faint)}
+
+/* ---- the answer -----------------------------------------------------------------------
+   Tier one. ONE per page. Nothing else may use this size -- that rule is the hierarchy. */
+.answer{border:1px solid var(--rule);border-radius:3px;background:var(--deep);
+  padding:2rem 2rem 1.7rem;margin:1.8rem 0;position:relative;overflow:hidden}
+.answer::before{content:"";position:absolute;inset:0 auto 0 0;width:2px;background:var(--hazard)}
+.answer .q{composes:label}
+.answer .q{font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--faint);margin-bottom:.9rem}
+.answer .a{font-family:var(--mono);font-weight:500;
+  font-size:clamp(2.8rem,9vw,4.4rem);line-height:1;letter-spacing:-.045em;color:var(--hazard)}
+.answer .a.calm{color:var(--safe)}
+.answer .s{color:var(--ink);margin-top:1.1rem;font-size:1rem;max-width:52ch}
+
+/* ---- surfaces -------------------------------------------------------------------------- */
+.grid{display:grid;gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:3px;
+  grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));margin:1.4rem 0}
+.stat{background:var(--deep);padding:1.1rem 1.2rem}
+.stat .k{font-family:var(--mono);font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--faint)}
+.stat .v{font-family:var(--mono);font-weight:500;font-size:1.45rem;margin-top:.35rem;
+  color:var(--sounding);letter-spacing:-.02em}
+.stat .n{font-size:.8rem;color:var(--faint);margin-top:.25rem;line-height:1.4}
+
+.note{background:var(--hazard-wash);border-left:2px solid var(--hazard);padding:1rem 1.2rem;
+  margin:1.6rem 0;font-size:.94rem;border-radius:0 3px 3px 0;max-width:var(--w-prose)}
+.note strong{color:var(--sounding)}
+
+/* ---- provenance ----------------------------------------------------------------------
+   Tier three, and never allowed to disappear. A caveat that is invisible is not honesty. */
+.prov{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;
+  padding:.16rem .4rem;border-radius:2px;border:1px solid currentColor;color:var(--faint);
+  white-space:nowrap}
+.prov-observed{color:var(--safe)}
+.prov-calculated,.prov-historical{color:var(--depth)}
 .prov-estimated{border-style:dashed}
-.prov-d{font-size:.76rem;color:var(--ink-faint)}
+.prov-d{font-size:.78rem;color:var(--faint);line-height:1.5}
 
-.scroll{overflow-x:auto;border:1px solid var(--rule);border-radius:3px;background:var(--card)}
-table{border-collapse:collapse;width:100%;font-size:.88rem}
-th,td{padding:.55rem .8rem;text-align:right;white-space:nowrap}
-th{font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);
-  font-weight:500;border-bottom:1px solid var(--rule)}
-td{font-family:var(--mono);font-variant-numeric:tabular-nums;border-bottom:1px solid var(--rule)}
+/* ---- data ------------------------------------------------------------------------------ */
+.scroll{overflow-x:auto;border:1px solid var(--rule);border-radius:3px;background:var(--deep)}
+table{border-collapse:collapse;width:100%;font-size:.86rem;font-family:var(--mono)}
+th,td{padding:.6rem .9rem;text-align:right;white-space:nowrap}
+th{font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);
+  font-weight:400;border-bottom:1px solid var(--rule)}
+td{border-bottom:1px solid color-mix(in oklab,var(--rule) 55%,transparent);color:var(--ink)}
 tr:last-child td{border-bottom:0}
 th:first-child,td:first-child{text-align:left}
-.sell{color:var(--hot)} .buy{color:var(--cool)}
-.bar{display:inline-block;height:.5rem;background:var(--hot);opacity:.5;border-radius:1px;
-  vertical-align:middle;min-width:1px}
+.sell{color:var(--hazard)} .buy{color:var(--safe)}
 
-.note{background:var(--hot-bg);border-left:2px solid var(--hot);padding:.85rem 1.05rem;
-  margin:1.2rem 0;font-size:.9rem;border-radius:0 3px 3px 0}
-.note strong{font-weight:600}
+pre{background:var(--deep);border:1px solid var(--rule);border-radius:3px;padding:1rem 1.1rem;
+  overflow-x:auto;font-size:.8rem;font-family:var(--mono);color:var(--ink);line-height:1.6}
+code{font-family:var(--mono);font-size:.86em;color:var(--sounding)}
 
-ul.plain{list-style:none;padding:0;margin:.4rem 0 0}
-ul.plain li{padding:.5rem 0;border-bottom:1px solid var(--rule);font-size:.9rem;color:var(--ink-soft)}
+ul.plain{list-style:none;padding:0;margin:.6rem 0 0}
+ul.plain li{padding:.7rem 0;border-bottom:1px solid color-mix(in oklab,var(--rule) 55%,transparent);
+  font-size:.92rem;color:var(--ink)}
 ul.plain li:last-child{border-bottom:0}
-ul.plain a{color:var(--ink);text-decoration:none}
-ul.plain a:hover{text-decoration:underline;text-underline-offset:2px}
 
-.tag{font-family:var(--mono);font-size:.65rem;letter-spacing:.04em;padding:.1rem .38rem;
-  border:1px solid var(--rule);border-radius:2px;color:var(--ink-faint)}
-.tag.REFUTED{color:var(--hot);border-color:var(--hot)}
+.tag{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;padding:.16rem .45rem;
+  border:1px solid currentColor;border-radius:2px;color:var(--faint)}
+.tag.REFUTED{color:var(--hazard)}
+.tag.MEASURED{color:var(--safe)}
 .tag.ASSUMED{border-style:dashed}
-.tag.MEASURED{color:var(--cool);border-color:var(--cool)}
 
-.foot{margin-top:3rem;padding-top:1.2rem;border-top:1px solid var(--rule);
-  color:var(--ink-faint);font-size:.82rem}
-.foot a{color:var(--ink-faint)}
-code{font-family:var(--mono);font-size:.85em}
-pre{background:var(--card);border:1px solid var(--rule);border-radius:3px;padding:.9rem 1rem;
-  overflow-x:auto;font-size:.82rem}
-a{color:inherit;text-underline-offset:2px}
-.asset-row{display:flex;gap:.7rem;flex-wrap:wrap}
-.asset{flex:1 1 12rem;background:var(--card);border:1px solid var(--rule);border-radius:3px;
-  padding:1rem 1.1rem;text-decoration:none;color:inherit;display:block}
-.asset:hover{border-color:var(--ink-faint)}
-.asset .sym{font-family:var(--serif);font-size:1.3rem;font-weight:600}
+/* ---- navigation ------------------------------------------------------------------------ */
+.nav{display:flex;gap:1.4rem;align-items:baseline;flex-wrap:wrap;width:100%;
+  max-width:var(--w-wide);margin:0 auto;padding:1.6rem 1.5rem 3rem;font-size:.86rem}
+.nav a{color:var(--faint);border-bottom:0}
+.nav a:hover{color:var(--sounding)}
+.nav .brand{font-family:var(--display);font-size:1.35rem;color:var(--sounding);
+  margin-right:auto;letter-spacing:-.01em;display:flex;align-items:center;gap:.55rem}
 
-/* wallet check */
-.checkform{display:flex;gap:.5rem;margin:1.2rem 0 .5rem;flex-wrap:wrap}
-.checkform input{flex:1 1 22rem;font-family:var(--mono);font-size:.95rem;padding:.75rem .9rem;
-  background:var(--card);color:var(--ink);border:1px solid var(--rule);border-radius:3px}
-.checkform input:focus{outline:2px solid var(--cool);outline-offset:1px;border-color:var(--cool)}
-.checkform button{font-family:var(--sans);font-size:.95rem;font-weight:600;padding:.75rem 1.4rem;
-  background:var(--ink);color:var(--paper);border:0;border-radius:3px;cursor:pointer}
-.checkform button:hover{opacity:.88}
-.hint{font-size:.84rem;color:var(--ink-faint);margin:.2rem 0 1.4rem}
-.linkish{background:none;border:0;padding:0;font:inherit;color:var(--cool);cursor:pointer;
-  text-decoration:underline;text-underline-offset:2px}
+/* The mark: three contours. An isobath IS a line, so the identity is the thing itself rather
+   than a symbol standing for it. */
+.brandmark{width:1.5rem;height:1.05rem;overflow:visible}
+.brandmark path{fill:none;stroke:var(--depth);stroke-width:1.15;stroke-linecap:round}
+.brandmark path:nth-child(2){stroke:color-mix(in oklab,var(--depth) 62%,transparent)}
+.brandmark path:nth-child(3){stroke:color-mix(in oklab,var(--depth) 34%,transparent)}
 
-.cta{display:inline-block;background:var(--ink);color:var(--paper);text-decoration:none;
-  font-weight:600;padding:.75rem 1.4rem;border-radius:3px}
-.cta:hover{opacity:.88}
+.foot{margin-top:5rem;padding-top:1.4rem;border-top:1px solid var(--rule);color:var(--faint);
+  font-size:.82rem;max-width:var(--w-wide)}
+.foot p{max-width:60ch}
 
-/* Progressive disclosure: the answer stays first, the reassurance is one click away for the
-   people who need it and invisible to the people who do not. */
-.disclose{border:1px solid var(--rule);border-radius:3px;background:var(--card);
-  padding:.15rem .95rem;margin:0 0 1.5rem}
-.disclose summary{cursor:pointer;padding:.65rem 0;font-size:.9rem;color:var(--ink-soft)}
-.disclose summary:hover{color:var(--ink)}
-.disclose[open] summary{color:var(--ink);border-bottom:1px solid var(--rule);margin-bottom:.7rem}
-.disclose p{font-size:.88rem;color:var(--ink-soft);margin:0 0 .7rem}
+/* ---- forms ----------------------------------------------------------------------------- */
+.checkform{display:flex;gap:.6rem;margin:1.6rem 0 .6rem;flex-wrap:wrap;max-width:var(--w-prose)}
+.checkform input{flex:1 1 20rem;font-family:var(--mono);font-size:.92rem;padding:.85rem 1rem;
+  background:var(--deep);color:var(--sounding);border:1px solid var(--rule);border-radius:3px;
+  transition:border-color .15s var(--ease)}
+.checkform input::placeholder{color:var(--faint)}
+.checkform input:focus{outline:none;border-color:var(--depth)}
+.checkform button,.cta{font-family:var(--ui);font-size:.92rem;font-weight:500;
+  padding:.85rem 1.5rem;background:var(--sounding);color:var(--abyss);border:0;border-radius:3px;
+  cursor:pointer;transition:background .15s var(--ease);display:inline-block;text-decoration:none}
+.checkform button:hover,.cta:hover{background:#fff}
+.hint{font-size:.83rem;color:var(--faint);margin:.3rem 0 1.6rem;max-width:var(--w-prose)}
+.linkish{background:none;border:0;padding:0;font:inherit;color:var(--depth);cursor:pointer;
+  border-bottom:1px solid color-mix(in oklab,var(--depth) 35%,transparent)}
+.linkish:hover{color:var(--sounding)}
 
-/* ---- liquidation map ------------------------------------------------------------------
-   Rows are a grid rather than a table so the bar column can flex on a phone while the price
-   and value columns stay aligned. Tabular numerals throughout: a ladder whose digits shift
-   width as prices change is unreadable at a glance, which is the only way it gets read. */
-.liqmap{border:1px solid var(--rule);border-radius:3px;background:var(--card);
-  padding:.5rem .2rem;margin:1.1rem 0}
-.liqmap-key{display:flex;gap:1.1rem;flex-wrap:wrap;font-size:.74rem;color:var(--ink-faint);
-  padding:.35rem .9rem .6rem}
-.sw{display:inline-block;width:.7rem;height:.55rem;vertical-align:-1px;margin-right:.25rem;
-  border:1px solid var(--hot);border-radius:1px}
-.sw-solid{background:var(--hot)}
+.disclose{border:1px solid var(--rule);border-radius:3px;background:var(--deep);
+  padding:.2rem 1.1rem;margin:0 0 1.8rem;max-width:var(--w-prose)}
+.disclose summary{cursor:pointer;padding:.8rem 0;font-size:.88rem;color:var(--ink);
+  list-style:none}
+.disclose summary::-webkit-details-marker{display:none}
+.disclose summary::before{content:"+ ";color:var(--depth);font-family:var(--mono)}
+.disclose[open] summary::before{content:"− "}
+.disclose[open] summary{border-bottom:1px solid var(--rule);margin-bottom:.9rem}
+.disclose p{font-size:.87rem;color:var(--ink);margin:0 0 .8rem}
+
+/* ---- motion ---------------------------------------------------------------------------
+   One orchestrated moment, then stillness. Charts do not animate, but a page that never moves
+   feels dead. No parallax, no scroll-jacking, no reveal-on-scroll -- those signal template. */
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes draw{from{stroke-dashoffset:var(--len)}to{stroke-dashoffset:0}}
+.enter{animation:rise .5s var(--ease) both}
+.enter-1{animation-delay:.04s} .enter-2{animation-delay:.1s} .enter-3{animation-delay:.17s}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;
+    transition-duration:.001ms!important}
+}
+
+@media (max-width:40rem){
+  .wrap{padding:0 1.15rem}
+  .answer{padding:1.5rem 1.3rem}
+  .nav{gap:1rem;padding:1.2rem 1.15rem 2.2rem;font-size:.82rem}
+}
+
+/* ---- the liquidation map ----------------------------------------------------------------
+   The most distinctive thing here, so it gets the most deliberate treatment.
+
+   Bars extend from zero on first paint, staggered, so the ladder reads as depth being sounded
+   rather than a table appearing. The stagger is capped: past ~30 rows a longer delay stops
+   feeling orchestrated and starts feeling slow. */
+.liqmap{border:1px solid var(--rule);border-radius:3px;background:var(--deep);
+  padding:.6rem 0;margin:1.6rem 0}
+.liqmap-key{display:flex;gap:1.4rem;flex-wrap:wrap;font-size:.7rem;color:var(--faint);
+  padding:.5rem 1.2rem .9rem;font-family:var(--mono);letter-spacing:.04em}
+.sw{display:inline-block;width:.75rem;height:.5rem;vertical-align:0;margin-right:.35rem;
+  border:1px solid var(--hazard);border-radius:1px}
+.sw-solid{background:var(--hazard)}
 .sw-hollow{background:none}
 
-.liqmap-row{display:grid;grid-template-columns:4.6rem 3.1rem 1fr 4.4rem 2.2rem;
-  align-items:center;gap:.5rem;padding:.16rem .9rem;font-family:var(--mono);font-size:.78rem;
-  font-variant-numeric:tabular-nums}
-.liqmap-row:hover{background:var(--paper)}
-.liqmap-price{color:var(--ink)}
-.liqmap-dist{color:var(--ink-faint);text-align:right}
-.liqmap-track{display:block;height:.62rem}
-.liqmap-bar{display:block;height:100%;border:1px solid var(--hot);border-radius:1px;
-  min-width:2px;position:relative}
-.liqmap-bar.buy{border-color:var(--cool)}
-.liqmap-fill{display:block;height:100%;background:var(--hot)}
-.liqmap-bar.buy .liqmap-fill{background:var(--cool)}
-.liqmap-val{text-align:right;color:var(--ink-soft)}
-.liqmap-wal{text-align:right;color:var(--ink-faint);font-size:.72rem}
+.liqmap-row{display:grid;grid-template-columns:5rem 3.4rem 1fr 4.8rem 2.4rem;align-items:center;
+  gap:.6rem;padding:.2rem 1.2rem;font-family:var(--mono);font-size:.78rem;
+  transition:background .1s var(--ease)}
+.liqmap-row:hover{background:var(--shoal)}
+.liqmap-price{color:var(--sounding)}
+.liqmap-dist{color:var(--faint);text-align:right;font-size:.73rem}
+.liqmap-track{display:block;height:.68rem}
+.liqmap-bar{display:block;height:100%;border:1px solid var(--hazard);border-radius:1px;
+  min-width:2px;transform-origin:left;animation:sound .55s var(--ease) both}
+.liqmap-bar.buy{border-color:var(--safe)}
+.liqmap-fill{display:block;height:100%;background:var(--hazard)}
+.liqmap-bar.buy .liqmap-fill{background:var(--safe)}
+.liqmap-val{text-align:right;color:var(--ink)}
+.liqmap-wal{text-align:right;color:var(--faint);font-size:.71rem}
+@keyframes sound{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 
-/* Spot is the one row that is not a cluster, so it reads as a rule across the ladder rather
-   than another bar competing with them. */
-.liqmap-spot{display:flex;align-items:center;gap:.6rem;margin:.45rem 0;padding:0 .9rem;
-  color:var(--ink)}
-.liqmap-spot::after{content:"";flex:1;height:1px;background:var(--ink-faint);opacity:.55}
-.liqmap-spot-label{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;
-  color:var(--ink-faint)}
-.liqmap-spot-price{font-family:var(--mono);font-size:.86rem;font-weight:600;
-  font-variant-numeric:tabular-nums}
+/* Spot is not a cluster, so it reads as a rule across the ladder rather than another bar
+   competing with them. */
+.liqmap-spot{display:flex;align-items:center;gap:.7rem;margin:.6rem 0;padding:0 1.2rem;
+  color:var(--sounding)}
+.liqmap-spot::after{content:"";flex:1;height:1px;
+  background:linear-gradient(90deg,var(--depth),transparent)}
+.liqmap-spot-label{font-family:var(--mono);font-size:.64rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--depth)}
+.liqmap-spot-price{font-family:var(--mono);font-weight:500;font-size:.95rem;
+  color:var(--sounding)}
 
-@media (max-width:34rem){
-  .liqmap-row{grid-template-columns:4.1rem 1fr 4rem;gap:.4rem;font-size:.74rem}
+@media (max-width:40rem){
+  .liqmap-row{grid-template-columns:4.4rem 1fr 4.4rem;gap:.5rem;font-size:.74rem;padding:.2rem .9rem}
   .liqmap-dist,.liqmap-wal{display:none}
+  .liqmap-key,.liqmap-spot{padding-left:.9rem;padding-right:.9rem}
 }

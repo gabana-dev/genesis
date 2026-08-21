@@ -11,10 +11,12 @@ import '../styles/site.css';
 interface Props {
   title: string;
   description: string;
+  /** Data-heavy pages take the wide measure; prose inside them stays narrow via .prose. */
+  wide?: boolean;
   /** JSON-LD, so an agent can cite a figure with its method rather than parsing a chart. */
   jsonld?: Record<string, unknown>;
 }
-const { title, description, jsonld } = Astro.props;
+const { title, description, jsonld, wide = false } = Astro.props;
 const bot = botHandle();
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 ---
@@ -47,7 +49,14 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
   </head>
   <body>
     <nav class="nav">
-      <a class="brand" href={url('index.html')}>Isobath</a>
+      <a class="brand" href={url('index.html')}>
+        <svg class="brandmark" viewBox="0 0 24 17" aria-hidden="true">
+          <path d="M1 14C4 14 5.5 9.5 9 9.5S14 14 17.5 14 22 11 23 10.5" />
+          <path d="M2 10C5 10 6 5.5 9.5 5.5S14.5 10 18 10 22 7.5 23 7" />
+          <path d="M3 6C6 6 7 1.5 10 1.5S15 6 18.5 6 22.5 4 23 3.5" />
+        </svg>
+        Isobath
+      </a>
       <a href={url('check.html')}>Check a wallet</a>
       {bot && <a href={url('alerts.html')}>Alerts</a>}
       <a href={url('markets/btc.html')}>Markets</a>
@@ -56,7 +65,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
       <a href={url('methodology.html')}>Methodology</a>
       <a href={url('api.html')}>API</a>
     </nav>
-    <main class="wrap"><slot /></main>
+    <main class={`wrap${wide ? ' wrap-wide' : ''}`}><slot /></main>
     <footer class="wrap foot">
       <p>
         <strong>Isobath</strong> — an isobath is a chart line joining points of equal depth. It is
