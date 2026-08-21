@@ -1,9 +1,9 @@
 {
  "asset": "BTC",
  "venue": "hyperliquid",
- "generated_at": "2026-08-21T23:07:12+00:00",
+ "generated_at": "2026-08-21T23:21:25+00:00",
  "map_taken_at": "2026-08-21T22:34:08+00:00",
- "map_age_seconds": 1984,
+ "map_age_seconds": 2838,
  "spot_at_map": 78559.5,
  "coverage": {
   "observed_fraction": 0.3259,
@@ -13,6 +13,15 @@
   "note": "every figure below is a LOWER BOUND -- forced flow from wallets outside this scan is invisible",
   "full_universe_estimate": 0.533,
   "reference": "F-0003"
+ },
+ "book": {
+  "standing_notional_usd": 205040971.42,
+  "band_pct": 1.0,
+  "mid": 78650.0,
+  "observable_reach_pct": 2.48,
+  "source": "hyperliquid l2Book, nSigFigs=3, fetched live",
+  "note": "the denominator for every cluster below. Outside +/-1% it is a proxy, not an observation -- the book at a distant price is not visible today",
+  "reference": "F-0014"
  },
  "totals": {
   "wallets_with_positions": 267,
@@ -344,6 +353,7 @@
  },
  "we_do_not_claim": [
   "that reaching a cluster causes a further price move -- tested on Binance and it did not beat a volatility-matched control (F-0010)",
-  "anything about clusters we cannot see; coverage is stated above"
+  "anything about clusters we cannot see; coverage is stated above",
+  "that a cluster is large. Against the book standing in front of it the median published cluster is 0.44% and the p90 is 5.1% (F-0014) -- which is why reaching one moves price about a tenth as much as the move it arrives on"
  ]
 }
