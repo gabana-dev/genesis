@@ -1,9 +1,9 @@
 {
  "asset": "BTC",
  "venue": "hyperliquid",
- "generated_at": "2026-08-21T11:11:08+00:00",
+ "generated_at": "2026-08-21T11:26:40+00:00",
  "map_taken_at": "2026-08-21T10:33:10+00:00",
- "map_age_seconds": 2278,
+ "map_age_seconds": 3210,
  "spot_at_map": 78037.5,
  "coverage": {
   "observed_fraction": 0.325,
