@@ -33,6 +33,9 @@ the thing most likely to be wrong.
 than none, because it teaches the customer the alarm cannot be trusted. The engine is written
 host-agnostic (stdlib only, two state files) so it moves to the always-on box unchanged.
 
+**Moved 2026-08-21.** It now runs on `187.124.32.36` under systemd as a dedicated `genesis`
+account. No code changed — see `deploy/README.md`. The measurement that forced it is below.
+
 ## What we alert on
 
 Two rules ship. Both are **observed or calculated** — nothing on the predicted tier, which stays
@@ -144,5 +147,7 @@ start and stop (since pointed at the data file).
 of history. A missed alert costs the customer the thing they subscribed for, at the exact moment
 it mattered — and they only find out afterwards.
 
-Target host: `187.124.32.36` — Ubuntu 24.04, systemd 255, Python 3.12.3, up 11 weeks, 19 GB free.
-The engine is stdlib-only and host-agnostic for exactly this move.
+Moved the same day to `187.124.32.36` — Ubuntu 24.04, systemd 255, Python 3.12.3, up 11 weeks.
+The move needed **no code changes at all**: stdlib only, and `~/genesis-evidence` /
+`~/genesis-private` resolve under the service account's home because systemd sets `HOME`. That
+portability was the point of writing it that way. See `deploy/README.md`.

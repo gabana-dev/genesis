@@ -1,0 +1,24 @@
+[Unit]
+# One LIQ-2 scan. %i is the tier: fast (top 300 by notional, hourly) or deep (whole frozen
+# universe, 6-hourly, re-ranks the fast set).
+Description=Genesis LIQ-2 scan (%i tier)
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=genesis
+Group=genesis
+WorkingDirectory=/opt/genesis
+# flock serialises the two tiers against each other: they share the fast set and the archive,
+# and a deep scan runs ~2h22m. systemd alone only prevents a unit overlapping ITSELF.
+ExecStart=/usr/bin/flock -n /home/genesis/genesis-evidence/liqmap/.scan.lock \
+  /usr/bin/python3 /opt/genesis/market/liqmap.py %i
+# -n means a tier that cannot get the lock exits immediately rather than queueing behind a
+# two-hour scan and then scanning a stale market.
+SuccessExitStatus=1
+TimeoutStartSec=3h
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/genesis/genesis-evidence

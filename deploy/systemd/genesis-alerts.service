@@ -1,0 +1,19 @@
+[Unit]
+Description=Genesis liquidation alerts - one evaluation pass
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=genesis
+Group=genesis
+WorkingDirectory=/opt/genesis
+EnvironmentFile=/home/genesis/genesis-private/alerts/env
+ExecStart=/usr/bin/python3 /opt/genesis/product/alerts.py
+# A pass reads one wallet per subscriber; if it has not finished in 10 minutes something is
+# wrong and the next tick should not pile on top of it.
+TimeoutStartSec=600
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/genesis/genesis-private

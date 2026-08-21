@@ -1,0 +1,27 @@
+[Unit]
+# The subscription bot. Long-polls Telegram; owns the watchlist file.
+Description=Genesis liquidation alerts - subscription bot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=genesis
+Group=genesis
+WorkingDirectory=/opt/genesis
+EnvironmentFile=/home/genesis/genesis-private/alerts/env
+ExecStart=/usr/bin/python3 /opt/genesis/product/alertbot.py
+Restart=always
+RestartSec=15
+# It only needs outbound HTTPS and its own state directory.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/genesis/genesis-private
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+
+[Install]
+WantedBy=multi-user.target

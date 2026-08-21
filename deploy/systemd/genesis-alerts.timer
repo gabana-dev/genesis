@@ -1,0 +1,12 @@
+[Unit]
+Description=Genesis alerts every 5 minutes
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=5min
+# systemd will not start a run while the previous one is still active, so passes cannot overlap.
+AccuracySec=15s
+Persistent=true
+
+[Install]
+WantedBy=timers.target

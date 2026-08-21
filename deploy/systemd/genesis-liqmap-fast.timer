@@ -1,0 +1,10 @@
+[Unit]
+Description=LIQ-2 fast scan, hourly
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=1h
+Unit=genesis-liqmap@fast.service
+AccuracySec=1min
+Persistent=true
+[Install]
+WantedBy=timers.target

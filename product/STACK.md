@@ -19,7 +19,8 @@ the ones worth still being able to read.
 | the alert engine | Python (`product/alerts.py`) | imports the scanner's own HTTP path — one implementation |
 | the site | **Astro 5 + TypeScript** (`web/`) | components, a typed data contract, one shared stylesheet |
 | the wallet check | a TypeScript island (`web/src/scripts/check.ts`) | calls Hyperliquid directly — no server, no key, scales without us |
-| scheduling | launchd | cron is dead on this machine (`d918c8a`) |
+| scheduling, local | launchd | cron is dead on this machine (`d918c8a`) |
+| scheduling, server | systemd timers | the laptop slept through 52% of the archive (`deploy/README.md`) |
 | hosting | GitHub Pages | free, and the repo is already the deploy artifact |
 | storage | JSONL + JSON files | no database, because nothing here needs one yet |
 
@@ -29,7 +30,9 @@ time by `web/src/lib/data.ts` — a renamed field in the engine fails the build 
 publishing a page that renders `undefined%`.
 
 Everything runs on hardware already owned and costs nothing per month. That was the binding
-constraint and it still holds.
+constraint and it still holds — the alert bot, the alert engine and the LIQ-2 scanner moved to
+the existing server on 2026-08-21 because a sleeping laptop was losing half the archive, not
+because anything needed buying.
 
 ## Astro and TypeScript — the confusion worth clearing up
 

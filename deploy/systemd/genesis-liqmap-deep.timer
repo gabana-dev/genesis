@@ -1,0 +1,10 @@
+[Unit]
+Description=LIQ-2 deep scan, every 6 hours
+[Timer]
+OnBootSec=20min
+OnUnitActiveSec=6h
+Unit=genesis-liqmap@deep.service
+AccuracySec=1min
+Persistent=true
+[Install]
+WantedBy=timers.target
