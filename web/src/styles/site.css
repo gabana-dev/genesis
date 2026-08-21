@@ -225,7 +225,7 @@ ul.plain li:last-child{border-bottom:0}
 .sw-solid{background:var(--hazard)}
 .sw-hollow{background:none}
 
-.liqmap-row{display:grid;grid-template-columns:5rem 3.4rem 1fr 4.8rem 2.4rem;align-items:center;
+.liqmap-row{display:grid;grid-template-columns:5rem 3.4rem 1fr 4.8rem 3.6rem 2.4rem;align-items:center;
   gap:.6rem;padding:.2rem 1.2rem;font-family:var(--mono);font-size:.78rem;
   transition:background .1s var(--ease)}
 .liqmap-row:hover{background:var(--shoal)}
@@ -239,6 +239,10 @@ ul.plain li:last-child{border-bottom:0}
 .liqmap-bar.buy .liqmap-fill{background:var(--safe)}
 .liqmap-val{text-align:right;color:var(--ink)}
 .liqmap-wal{text-align:right;color:var(--faint);font-size:.71rem}
+/* The absolute reading (F-0014). Held at --ink rather than --faint because it outranks the
+   wallet count: a cluster's share of the book is what decides whether it can move anything. */
+.liqmap-book{text-align:right;color:var(--ink);font-size:.73rem;cursor:help}
+.liqmap-key-book{color:var(--faint)}
 @keyframes sound{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 
 /* Spot is not a cluster, so it reads as a rule across the ladder rather than another bar
@@ -253,7 +257,9 @@ ul.plain li:last-child{border-bottom:0}
   color:var(--sounding)}
 
 @media (max-width:40rem){
-  .liqmap-row{grid-template-columns:4.4rem 1fr 4.4rem;gap:.5rem;font-size:.74rem;padding:.2rem .9rem}
+  /* Phone keeps price, bar, size and share-of-book. Distance is legible from the ladder itself
+     and the wallet count is the least load-bearing number on the row. */
+  .liqmap-row{grid-template-columns:4.4rem 1fr 4.2rem 3.2rem;gap:.5rem;font-size:.74rem;padding:.2rem .9rem}
   .liqmap-dist,.liqmap-wal{display:none}
   .liqmap-key,.liqmap-spot{padding-left:.9rem;padding-right:.9rem}
 }

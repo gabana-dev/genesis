@@ -17,7 +17,7 @@
  */
 import Prov from './Prov.astro';
 import { population, signed, usd } from '../lib/data';
-import type { Cluster } from '../types/data';
+import type { Book, Cluster } from '../types/data';
 
 interface Props {
   clusters: Cluster[];
@@ -25,8 +25,23 @@ interface Props {
   /** The scan population these clusters came from — see F-0011. Stated, never implied. */
   tier: string;
   wallets: number;
+  /** The standing book, so each row can be read against it rather than against its neighbours. */
+  book: Book;
 }
-const { clusters, spot, tier, wallets } = Astro.props;
+const { clusters, spot, tier, wallets, book } = Astro.props;
+
+/**
+ * A cluster as a share of the liquidity in front of it (F-0014). Bar length still scales to the
+ * widest cluster, because a ladder of hairlines is unreadable — this column is what stops that
+ * relative scale from being read as an absolute one.
+ */
+const ofBook = (n: number) => {
+  const p = (n / book.standing_notional_usd) * 100;
+  // A $10k cluster rounds to 0.00%, which reads as "none" rather than "negligible". The floor
+  // says the same thing without claiming a zero we did not measure.
+  if (p < 0.005) return '<0.01%';
+  return p < 1 ? `${p.toFixed(2)}%` : `${p.toFixed(1)}%`;
+};
 
 const widest = Math.max(...clusters.map((c) => c.notional_usd));
 // Sorted by price descending so the column reads like a ladder: high prices at the top.
@@ -46,6 +61,7 @@ const row = (c: Cluster, i: number) => ({
   <div class="liqmap-key">
     <span><i class="sw sw-solid"></i> cannot defend — zero free collateral</span>
     <span><i class="sw sw-hollow"></i> can still move its liquidation price</span>
+    <span class="liqmap-key-book">% of book = share of the {usd(book.standing_notional_usd)} standing within ±{book.band_pct}% of spot</span>
   </div>
 
   {[above, below].map((group, gi) => (
@@ -66,6 +82,7 @@ const row = (c: Cluster, i: number) => ({
             </span>
           </span>
           <span class="liqmap-val">{usd(c.notional_usd)}</span>
+          <span class="liqmap-book" title="share of the book standing within ±1% of spot">{ofBook(c.notional_usd)}</span>
           <span class="liqmap-wal">{c.wallets}w</span>
         </div>
       ))}
@@ -76,7 +93,8 @@ const row = (c: Cluster, i: number) => ({
 <p class="hint" style="margin-top:.9rem">
   Above spot is where shorts are bought back; below is where longs are sold. Bar length is
   exposure; the solid portion is the part held by wallets that cannot move their own liquidation
-  price.
+  price. Bar length is relative to the largest cluster here — the <b>% of book</b> column is the
+  absolute reading, and it is the one that decides whether any of this can move the market.
 </p>
 <p class="hint">
   <Prov

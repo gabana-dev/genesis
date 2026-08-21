@@ -132,6 +132,47 @@ def spot_prices(budget, coins):
     return out
 
 
+def standing_book(budget, coin=None, band_pct=1.0):
+    """
+    Notional resting within band_pct of mid, both sides, from the venue's own l2Book.
+
+    WHY THE MAP NEEDS THIS. F-0014 measured that the median published cluster is 0.44% of the
+    book standing in front of it. A map that scales clusters against each other -- which is what
+    every heatmap including ours has done -- invites the reader to compare a wall to another wall
+    and never to the ocean it has to move. This is the denominator that makes the numerator mean
+    something.
+
+    Returns (notional_usd, mid, reach_pct) or None. `reach_pct` is how far the returned levels
+    actually extend: at nSigFigs=3 the book spans roughly 2.5% either side, so a band wider than
+    that would be silently truncated. The caller is told rather than guessing.
+    """
+    # nSigFigs=3 is not cosmetic. The venue returns 20 levels per side whatever the aggregation,
+    # so full precision reaches 0.03% either side -- $4.4M, which would understate the book by
+    # a factor of fifty and make every cluster look enormous against it. At 3 the buckets are
+    # $100 wide and 20 of them reach ~2.5%, so a 1% band is fully covered rather than truncated.
+    # Measured on 2026-08-22: 0.03% / 0.25% / 2.48% / 24.84% reach at nSigFigs 5 / 4 / 3 / 2.
+    r = _post({"type": "l2Book", "coin": coin or COIN, "nSigFigs": 3}, budget)
+    try:
+        bids, asks = r["levels"]
+        best_bid = max(float(l["px"]) for l in bids)
+        best_ask = min(float(l["px"]) for l in asks)
+    except (TypeError, KeyError, ValueError):
+        return None
+    mid = (best_bid + best_ask) / 2
+    if mid <= 0:
+        return None
+    total = 0.0
+    reach = 0.0
+    for side in (bids, asks):
+        for l in side:
+            px = float(l["px"])
+            d = abs(px - mid) / mid * 100
+            reach = max(reach, d)
+            if d <= band_pct:
+                total += px * float(l["sz"])
+    return total, mid, reach
+
+
 def snapshot(recording, budget=None):
     """
     One hourly snapshot: every scanned wallet's BTC position and liquidation price, bucketed.

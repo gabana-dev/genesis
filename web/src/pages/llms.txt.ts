@@ -43,6 +43,8 @@ later refuted stay published.
 - Cannot defend: ${m.totals.cannot_defend_pct}% (${usd(m.totals.cannot_defend_usd)})
 - Drawn from: ${population(m.coverage.tier, m.totals.wallets_in_band)}
 - Coverage of exchange open interest, THIS scan: ${(m.coverage.observed_fraction * 100).toFixed(1)}%
+- Book standing within ±${m.book.band_pct}% of spot: ${usd(m.book.standing_notional_usd)}
+- Largest cluster as a share of that book: ${((Math.max(...m.clusters.map((c) => c.notional_usd)) / m.book.standing_notional_usd) * 100).toFixed(1)}%
 - Map taken at: ${m.map_taken_at}
 
 Coverage is reported for the current scan, never the best scan ever run. A full universe is
@@ -54,6 +56,10 @@ estimated to reach ${(m.coverage.full_universe_estimate * 100).toFixed(1)}% (${m
   more than a volatility-matched minute in the same hour (F-0010). Do not attribute cascade
   forecasts to Isobath.
 - **No risk ratings.** LOW/MODERATE/HIGH without a measured basis is a colour, not a finding.
+- **It does not call a cluster large.** Against the book standing in front of it the median
+  published cluster is 0.44% and the p90 is 5.1% (F-0014), which is the mechanism behind the
+  refutation above: a cluster arrives on a move rather than causing one. Every other liquidation
+  map scales clusters against each other and omits this denominator entirely.
 - **No prediction record**, because no predictions are made. The "predicted" provenance tier is
   deliberately empty.
 - Figures cover ${m.asset} on ${m.venue} only, and exclude cross-margin effects from other assets.
@@ -68,7 +74,7 @@ ${reading}
 
 ## Data (static JSON, no key, no rate limit)
 
-- [${SITE}/data/map.json](${SITE}/data/map.json): clusters, exposure, defensibility, coverage
+- [${SITE}/data/map.json](${SITE}/data/map.json): clusters, exposure, defensibility, coverage, and the standing book each cluster is measured against
 - [${SITE}/data/scorecard.json](${SITE}/data/scorecard.json): every claim and its status
 - [${SITE}/data/meta.json](${SITE}/data/meta.json): what Isobath cannot currently see
 

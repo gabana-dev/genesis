@@ -45,6 +45,7 @@ export function marketMap(): MarketMap {
     'map_age_seconds', 'spot_at_map', 'coverage.observed_fraction', 'coverage.wallets_scanned',
     'coverage.full_universe_estimate', 'totals.forced_notional_usd', 'totals.cannot_defend_usd',
     'totals.cannot_defend_pct', 'totals.wallets_in_band',
+    'book.standing_notional_usd', 'book.band_pct', 'book.observable_reach_pct',
   ]) need(d, p, 'number');
   need(d, 'clusters', 'array');
   const m = d as MarketMap;

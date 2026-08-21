@@ -159,6 +159,13 @@ def main():
     clusters, total, zero, n_in_band, n_pos = build_map(snap)
     age_s = (now.timestamp() * 1000 - snap["t"]) / 1000.0
 
+    # THE DENOMINATOR. F-0014 measured the median published cluster at 0.44% of the book standing
+    # in front of it, and named the reason every heatmap misleads: it scales clusters against each
+    # other and never against the liquidity they would have to move. This site made that mistake
+    # too. Fetched live rather than read from the archive, because generate.py runs on the laptop
+    # and the hl2 recorder now runs on the server.
+    book = L.standing_book({"sleep": L.BASE_SLEEP, "throttled": 0})
+
     map_doc = {
         "asset": "BTC", "venue": "hyperliquid",
         "generated_at": now.isoformat(timespec="seconds"),
@@ -181,6 +188,19 @@ def main():
             "full_universe_estimate": 0.533,
             "reference": "F-0003",
         },
+        # Only the +/-1% band is observable: 20 levels at nSigFigs=3 reach ~2.5%. Clusters beyond
+        # that are compared against the book at spot, which is a PROXY and is labelled as one --
+        # the book that will exist at a price 6% away is not something we can see today.
+        "book": {
+            "standing_notional_usd": round(book[0], 2) if book else None,
+            "band_pct": 1.0,
+            "mid": book[1] if book else None,
+            "observable_reach_pct": round(book[2], 2) if book else None,
+            "source": "hyperliquid l2Book, nSigFigs=3, fetched live",
+            "note": "the denominator for every cluster below. Outside +/-1% it is a proxy, not "
+                    "an observation -- the book at a distant price is not visible today",
+            "reference": "F-0014",
+        },
         "totals": {
             "wallets_with_positions": n_pos,
             "wallets_in_band": n_in_band,
@@ -200,6 +220,9 @@ def main():
             "that reaching a cluster causes a further price move -- tested on Binance and it "
             "did not beat a volatility-matched control (F-0010)",
             "anything about clusters we cannot see; coverage is stated above",
+            "that a cluster is large. Against the book standing in front of it the median "
+            "published cluster is 0.44% and the p90 is 5.1% (F-0014) -- which is why reaching "
+            "one moves price about a tenth as much as the move it arrives on",
         ],
     }
 

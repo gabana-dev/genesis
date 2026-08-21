@@ -5,11 +5,12 @@ import Grid from '../../components/Grid.astro';
 import Note from '../../components/Note.astro';
 import Prov from '../../components/Prov.astro';
 import LiqMap from '../../components/LiqMap.astro';
+import BookScale from '../../components/BookScale.astro';
 import Stat from '../../components/Stat.astro';
 import { age, marketMap, signed, url, usd } from '../../lib/data';
 
 const m = marketMap();
-const { totals: t, coverage: cov } = m;
+const { totals: t, coverage: cov, book } = m;
 const near = m.clusters[0]!;
 
 const jsonld = {
@@ -53,20 +54,30 @@ const jsonld = {
   </Grid>
 
   <Note title="What happens if a cluster is reached?">
-    Our research found <strong>no evidence</strong> that it moves price beyond ordinary volatility.
-    Forced flow at 15 minutes returned +40.07 bps — and a random minute in the same hour returned
-    44.52 bps.
+    Less than you would think, and we can now say <strong>why</strong>. Forced flow at 15 minutes
+    returned +40.07 bps — and a random minute in the same hour returned 44.52 bps. The mechanism is
+    below: a cluster is small against the book it would have to move, so it arrives on the move
+    rather than causing it.
     <a href={url('research/liquidations-dont-move-price.html')}>The full test →</a>
   </Note>
 
+  <h2>How big is any of this, really?</h2>
+  <p>
+    Every liquidation map scales its clusters against each other, so the biggest one always looks
+    like a wall. Against the liquidity actually standing in front of it, it usually is not.
+  </p>
+  <BookScale book={book} clusters={m.clusters} />
+
   <h2>Where the forced selling sits</h2>
-  <LiqMap clusters={m.clusters} spot={m.spot_at_map} tier={cov.tier} wallets={t.wallets_in_band} />
+  <LiqMap clusters={m.clusters} spot={m.spot_at_map} tier={cov.tier} wallets={t.wallets_in_band} book={book} />
 
   <h2>What we cannot see</h2>
   <ul class="plain">
     <li>{Math.round((1 - cov.observed_fraction) * 100)}% of open interest — wallets outside this scan</li>
     <li>cross-margin effects from positions in other assets</li>
     <li>anything that changed in the last {age(m.map_age_seconds)}</li>
+    <li>the book beyond ±{book.observable_reach_pct}% — a cluster further out is measured against
+      the book at spot, which is a proxy for one we cannot see</li>
   </ul>
   <p style="margin-top:.8rem"><a href={url('methodology.html')}>How every number here is produced →</a></p>
 </Base>

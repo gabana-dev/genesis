@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import Prov from '../components/Prov.astro';
-import { marketMap, url } from '../lib/data';
+import { marketMap, url, usd } from '../lib/data';
 import type { Tier } from '../types/data';
 
 const m = marketMap();
@@ -62,6 +62,26 @@ const ladder: [Tier, string][] = [
     {' '}{Math.round(m.coverage.observed_fraction * 100)}%; a full universe reaches an estimated
     {' '}{(m.coverage.full_universe_estimate * 100).toFixed(1)}%. Publishing the better number on a
     narrower scan would be exactly the dishonesty this site exists to avoid.
+  </p>
+
+  <h2>Scale — the denominator</h2>
+  <p>
+    A cluster's size means nothing on its own. What decides whether it can move the market is its
+    size against the liquidity standing in front of it, and no liquidation map publishes that
+    comparison — including, until recently, this one.
+  </p>
+  <p>
+    We read the venue's own order book at three significant figures, which aggregates it into
+    hundred-dollar buckets and reaches roughly ±2.5% of mid. Within ±{m.book.band_pct}% that
+    currently stands at <strong>{usd(m.book.standing_notional_usd)}</strong>. Every cluster on the
+    map is divided by it. Beyond the book's reach the figure is a proxy — we use the book at spot,
+    because the book that will exist at a price several percent away is not something anyone can
+    observe today, and the badge says <Prov tier="estimated" detail="rather than pretending otherwise" />.
+  </p>
+  <p>
+    This is what turned a refutation into an explanation. We had measured that reaching a cluster
+    does not move price beyond ordinary volatility; the ratio is why. The median cluster is under
+    half a percent of the book (<a href={url('record.html')}>F-0014</a>).
   </p>
 
   <h2>Map age</h2>

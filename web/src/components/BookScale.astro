@@ -1,0 +1,213 @@
+---
+/**
+ * The denominator every liquidation map leaves out.
+ *
+ * WHY IT EXISTS. F-0014 measured the median published cluster at 0.44% of the book standing in
+ * front of it, and named the reason heatmaps mislead: they scale clusters against each other, so
+ * the reader compares a wall to another wall and never to the liquidity it would have to move.
+ * The map below this component made exactly that mistake, and so does every competitor's.
+ *
+ * This draws the one comparison that matters, at TRUE scale. The track is the whole standing
+ * book; the marks inside it are real clusters at their real proportion. Nothing is exaggerated to
+ * make it visible -- a cluster that is half a percent of the book is drawn as half a percent,
+ * because the point is that it is small.
+ *
+ * The bars grow once on load and then hold, like Contours. A measurement is not a loading bar.
+ */
+import Prov from './Prov.astro';
+import { usd } from '../lib/data';
+import type { Book, Cluster } from '../types/data';
+
+interface Props {
+  book: Book;
+  clusters: Cluster[];
+}
+const { book, clusters } = Astro.props;
+
+const B = book.standing_notional_usd;
+const sorted = [...clusters].sort((a, b) => b.notional_usd - a.notional_usd);
+const biggest = sorted[0]!;
+const median = sorted[Math.floor(sorted.length / 2)]!;
+
+/**
+ * Only clusters inside the book's observable reach are a measurement. Beyond it we are dividing
+ * by the book at spot, which is a proxy for a book we cannot see -- so the badge changes rather
+ * than the caveat hiding in a footnote.
+ */
+const within = (c: Cluster) => Math.abs(c.distance_pct) <= book.band_pct;
+const marks = [
+  { c: biggest, label: 'largest cluster' },
+  { c: median, label: 'median cluster' },
+];
+const pct = (c: Cluster) => (c.notional_usd / B) * 100;
+// Sub-pixel bars are invisible and would quietly restore the lie. A floor of 0.35% keeps the
+// smallest mark perceptible while staying honest about the order of magnitude.
+const drawn = (c: Cluster) => Math.max(0.35, pct(c));
+---
+
+<div class="bookscale">
+  <div class="bookscale-head">
+    <span class="bookscale-k">Book standing within ±{book.band_pct}% of spot</span>
+    <span class="bookscale-v">{usd(B)}</span>
+  </div>
+
+  <div class="bookscale-track">
+    {marks.map((m, i) => (
+      <span
+        class={`bookscale-mark ${m.c.side} lane-${i}`}
+        style={`width:${drawn(m.c)}%;animation-delay:${180 + i * 140}ms`}
+      ></span>
+    ))}
+  </div>
+
+  <dl class="bookscale-legend">
+    {marks.map((m) => (
+      <div class={m.c.side}>
+        <dt>{m.label}</dt>
+        <dd>
+          <b>{pct(m.c) < 1 ? pct(m.c).toFixed(2) : pct(m.c).toFixed(1)}%</b>
+          <span>{usd(m.c.notional_usd)} at {Math.round(m.c.price).toLocaleString('en-US')}</span>
+        </dd>
+      </div>
+    ))}
+  </dl>
+
+  <p class="hint">
+    Drawn at true scale: the track is the whole book, the marks are those clusters inside it. This
+    is the comparison a heatmap never shows you, and it is why reaching a cluster moves price about
+    a tenth as much as the move it arrived on.
+  </p>
+  <p class="hint">
+    <Prov
+      tier={marks.every((m) => within(m.c)) ? 'calculated' : 'estimated'}
+      detail={
+        marks.every((m) => within(m.c))
+          ? `${book.source}; both clusters sit inside the ±${book.band_pct}% band`
+          : `${book.source}. Levels reach ±${book.observable_reach_pct}%; a cluster beyond that is` +
+            ` divided by the book at spot, because the book at its own price is not observable`
+      }
+    />
+  </p>
+</div>
+
+<style>
+  .bookscale {
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    background: var(--deep);
+    padding: 1.1rem 1.2rem 1rem;
+    margin: 1.4rem 0;
+  }
+  .bookscale-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .bookscale-k {
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: var(--faint);
+  }
+  .bookscale-v {
+    font-family: var(--mono);
+    font-size: 1.35rem;
+    color: var(--sounding);
+    font-variant-numeric: tabular-nums;
+  }
+  .bookscale-track {
+    position: relative;
+    height: 1.6rem;
+    margin: 0.85rem 0 0.9rem;
+    border: 1px solid var(--reef);
+    border-radius: 2px;
+    background:
+      repeating-linear-gradient(90deg, transparent 0 calc(10% - 1px),
+        var(--reef) calc(10% - 1px), var(--reef) 10%);
+  }
+  /* Two lanes, both starting at the left edge, so the median mark is not swallowed by the larger
+     one. Overlapping them was the first attempt and the median — 5px against 240 — vanished
+     underneath, which is the exact illusion this component exists to remove. */
+  .bookscale-mark {
+    position: absolute;
+    left: 0;
+    height: 50%;
+    background: var(--hazard);
+    transform-origin: left center;
+    transform: scaleX(0);
+    animation: grow 0.7s var(--ease) forwards;
+  }
+  .bookscale-mark.buy {
+    background: var(--safe);
+  }
+  .bookscale-mark.lane-0 {
+    top: 0;
+  }
+  /* The typical cluster is drawn quiet rather than coloured: it is the baseline the eye should
+     read as "ordinary", not a second alarm. */
+  .bookscale-mark.lane-1 {
+    bottom: 0;
+    background: var(--faint);
+  }
+  @keyframes grow {
+    to {
+      transform: scaleX(1);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bookscale-mark {
+      transform: scaleX(1);
+      animation: none;
+    }
+  }
+  .bookscale-legend {
+    display: flex;
+    gap: 2.2rem;
+    flex-wrap: wrap;
+    margin: 0 0 0.7rem;
+  }
+  /* The swatch ties each legend entry to its lane. Without it the reader has to guess which of
+     two bars is which, and the whole point is that the small one is the typical one. */
+  .bookscale-legend dt::before {
+    content: '';
+    display: inline-block;
+    width: 0.62rem;
+    height: 0.62rem;
+    margin-right: 0.42rem;
+    vertical-align: -0.02rem;
+    border-radius: 1px;
+  }
+  .bookscale-legend div:first-child dt::before {
+    background: var(--hazard);
+  }
+  .bookscale-legend div:first-child.buy dt::before {
+    background: var(--safe);
+  }
+  .bookscale-legend div:last-child dt::before {
+    background: var(--faint);
+  }
+  .bookscale-legend dt {
+    font-size: 0.68rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+  .bookscale-legend dd {
+    margin: 0.15rem 0 0;
+    display: flex;
+    align-items: baseline;
+    gap: 0.55rem;
+  }
+  .bookscale-legend b {
+    font-family: var(--mono);
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--sounding);
+    font-variant-numeric: tabular-nums;
+  }
+  .bookscale-legend span {
+    font-size: 0.74rem;
+    color: var(--faint);
+  }
+</style>

@@ -46,6 +46,23 @@ export interface Cluster {
   thinly_defended_pct: number;
 }
 
+/**
+ * The liquidity a cluster would have to move. F-0014: the median published cluster is 0.44% of
+ * this and the p90 is 5.1%, which is why reaching one moves price about a tenth as much as the
+ * move it arrives on. Every other heatmap omits this number, and so did this one.
+ */
+export interface Book {
+  /** Resting notional within `band_pct` of mid, both sides. */
+  standing_notional_usd: number;
+  band_pct: number;
+  mid: number;
+  /** How far the returned levels actually reach. Beyond this the book is not observable. */
+  observable_reach_pct: number;
+  source: string;
+  note: string;
+  reference: string;
+}
+
 export interface MarketMap {
   asset: string;
   venue: string;
@@ -54,6 +71,7 @@ export interface MarketMap {
   map_age_seconds: number;
   spot_at_map: number;
   coverage: Coverage;
+  book: Book;
   totals: Totals;
   clusters: Cluster[];
   definitions: Record<string, string>;
