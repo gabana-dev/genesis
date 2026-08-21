@@ -9,13 +9,10 @@ Type=oneshot
 User=genesis
 Group=genesis
 WorkingDirectory=/opt/genesis
-# flock serialises the two tiers against each other: they share the fast set and the archive,
-# and a deep scan runs ~2h22m. systemd alone only prevents a unit overlapping ITSELF.
-ExecStart=/usr/bin/flock -n /home/genesis/genesis-evidence/liqmap/.scan.lock \
-  /usr/bin/python3 /opt/genesis/market/liqmap.py %i
-# -n means a tier that cannot get the lock exits immediately rather than queueing behind a
-# two-hour scan and then scanning a stale market.
-SuccessExitStatus=1
+# scan.sh wraps flock: the two tiers share the fast set and the archive, and systemd alone only
+# prevents a unit overlapping ITSELF. The wrapper exists so a lock skip and a real failure cannot
+# produce the same journal line -- see deploy/scan.sh.
+ExecStart=/opt/genesis/scan.sh %i
 TimeoutStartSec=3h
 NoNewPrivileges=true
 PrivateTmp=true

@@ -61,11 +61,21 @@ The token is **not** in this repo and not in any unit — it lives only in
 
 ## Two things worth knowing about the units
 
-**`genesis-liqmap@.service` is templated on the tier** (`fast`, `deep`) and wrapped in
-`flock -n`. systemd stops a unit overlapping *itself*, but fast and deep are separate units
-sharing one archive and one fast set, and a deep scan runs ~2h22m. `-n` means a tier that cannot
-take the lock exits immediately rather than queueing behind two hours of work and then scanning a
-market that has moved. `SuccessExitStatus=1` keeps that skip from being logged as a failure.
+**`genesis-liqmap@.service` is templated on the tier** (`fast`, `deep`) and calls `scan.sh`,
+which wraps `flock -n`. systemd stops a unit overlapping *itself*, but fast and deep are separate
+units sharing one archive and one fast set, and a deep scan runs ~2h22m. `-n` means a tier that
+cannot take the lock exits immediately rather than queueing behind two hours of work and then
+scanning a market that has moved.
+
+The wrapper exists because the first version put `flock` straight in `ExecStart` with
+`SuccessExitStatus=1` — which made a lock skip and a genuine python failure produce the
+**identical** journal line, "Deactivated successfully" in zero seconds. It cost twenty minutes of
+misdiagnosis on the day it was deployed. `flock -E 99` now gives the skip its own exit code, and
+the wrapper logs it in words:
+
+```
+scan.sh[1384626]: skipped: the fast tier could not take the scan lock; another scan is in progress
+```
 
 **`Persistent=true`** on every timer: a run missed while the box was down fires once on boot
 rather than waiting a full interval.
