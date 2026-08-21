@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Regenerate the site every 15 minutes from the latest position snapshot.
+
+  RunAtLoad is true because a launchd job that has never run does not reliably get its
+  StartInterval timer on this machine -- the liqmap agents sat at runs=0 for eleven hours with
+  it false, while disk-guard with it true has run cleanly throughout.
+
+  Faster than the hourly position scan on purpose: the page shows MAP AGE, and a stale page
+  showing a stale age is two lies instead of one.
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key><string>dev.gabana.genesis.refresh</string>
+    <key>ProgramArguments</key>
+    <array><string>/Users/gabana/genesis/product/refresh.sh</string></array>
+    <key>WorkingDirectory</key><string>/Users/gabana/genesis</string>
+    <key>StartInterval</key><integer>900</integer>
+    <key>RunAtLoad</key><true/>
+    <key>StandardOutPath</key><string>/Users/gabana/genesis-evidence/product/launchd.log</string>
+    <key>StandardErrorPath</key><string>/Users/gabana/genesis-evidence/product/launchd.log</string>
+</dict>
+</plist>

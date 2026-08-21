@@ -1,0 +1,16 @@
+# Genesis. Research and data are meant to be read, by people and by machines.
+User-agent: *
+Allow: /
+
+# Named explicitly: the research is written to be cited, and a robots file that
+# silently blocks AI crawlers is how a body of work becomes invisible.
+User-agent: GPTBot
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+User-agent: Google-Extended
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+
+Sitemap: https://genesis.example/sitemap.xml

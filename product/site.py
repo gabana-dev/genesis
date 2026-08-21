@@ -276,6 +276,116 @@ their window. An earlier version of this analysis reported <strong>0.726</strong
 bucket — the most dramatic number in the table — and that bucket vanished entirely once
 overlapping observations were removed. It was 26 views of the same few minutes.</p>
 """},
+  {"slug":"your-backtest-needs-thirteen-years",
+   "title":"Your backtest needs 13 years to prove what it claims",
+   "finding":"F-0005",
+   "answer":"4,900 independent observations to detect a 52% edge. 19,600 for 51%.",
+   "sub":"We found this by discovering our own tests were underpowered by one to two orders of "
+         "magnitude. The best result in one experiment sat below the threshold that experiment "
+         "could detect.",
+   "body":"""
+<p>A directional strategy claiming a 52% hit rate sounds modest. Detecting one, at 80% power,
+needs <strong>4,900 independent observations</strong>. On a single instrument at a daily horizon
+that is <strong>13.4 years</strong>. A 51% edge needs 53.7.</p>
+
+<div class="scroll"><table>
+<thead><tr><th>Independent observations</th><th>Smallest detectable hit rate</th></tr></thead>
+<tbody>
+<tr><td>270</td><td>0.5852</td></tr><tr><td>900</td><td>0.5467</td></tr>
+<tr><td>2,695</td><td>0.5270</td></tr><tr><td>5,000</td><td>0.5198</td></tr>
+<tr><td>20,000</td><td>0.5099</td></tr>
+</tbody></table></div>
+
+<h3>How we found it</h3>
+<p>By auditing our own work. One experiment ran 2,695 rows per cell and could resolve nothing
+below <strong>54.67%</strong>. Its best cell measured <strong>52.10%</strong> — the best result
+in the experiment sat <em>below</em> the threshold the experiment could detect. A real 52% edge
+would have produced exactly the data we saw, and we would have missed it every time.</p>
+
+<h3>The trap is the independence count</h3>
+<p>Those 2,695 rows were really <strong>898</strong> independent observations. Decisions were
+taken three times a day against a one-day horizon, so each measurement overlapped the next
+twofold. Overlapping windows inflate the apparent sample threefold and the apparent t-statistic
+by the square root of three.</p>
+
+<p>A second experiment looked like 234 observations and was <strong>80</strong>: 90% of its events
+fell within a minute of another, making them episodes rather than independent draws.</p>
+
+<h3>What it means for anyone selling a signal</h3>
+<p>Most crypto strategies are validated on a few hundred trades. At that sample the smallest
+detectable edge is around <strong>58%</strong> — far above anything realistic. The honest
+statement after such a test is not "this works" or "this fails" but <strong>"this test cannot
+tell."</strong></p>
+
+<p>We now require every experiment to state, before it runs, the effect size it can detect, the
+independent observations that requires, and how long collecting them takes. Several of our own
+would not have been run under that rule.</p>
+"""},
+  {"slug":"twenty-five-assets-two-bets",
+   "title":"Twenty-five crypto assets are worth 2.65 independent bets",
+   "finding":"breadth",
+   "answer":"2.65 of 20 — until you strip the market factor, and then it is 14.24.",
+   "sub":"60.4% of all variance in a basket of liquid perpetuals is a single common factor. "
+         "Diversifying across coins mostly buys you the same bet in different colours.",
+   "body":"""
+<p>Twenty liquid perpetuals, 293 common days. We measured how many <em>independent</em> bets that
+basket really contains, using the participation ratio of the correlation matrix.</p>
+
+<div class="scroll"><table><tbody>
+<tr><td>effective independent bets, raw daily returns</td><td><strong>2.65</strong> of 20</td></tr>
+<tr><td>variance explained by the first component</td><td><strong>60.4%</strong></td></tr>
+<tr><td>effective bets after removing that factor</td><td><strong>14.24</strong></td></tr>
+</tbody></table></div>
+
+<p>Holding twenty coins feels diversified. Statistically it is closer to holding <strong>two and
+a half</strong>. Sixty percent of everything that happens is one factor moving.</p>
+
+<h3>Why the second number matters more</h3>
+<p>Strip the common factor and the residuals are <strong>5.4× more independent</strong>. That is
+the whole argument for market-neutral construction: not that it earns more, but that it lets you
+learn faster, because you get fourteen observations a day instead of one.</p>
+
+<p>For anyone testing a signal, that is the difference between needing <strong>13 years</strong>
+and needing about <strong>eleven months</strong> to establish the same edge.</p>
+
+<h3>The cost side</h3>
+<p>Residual moves are 0.63× the size of raw ones and you pay two legs instead of one, so the
+break-even hit rate rises from roughly 50.24% to 50.76%. Still low. The statistical gain is far
+larger than the economic cost.</p>
+"""},
+  {"slug":"market-making-spread-versus-cost",
+   "title":"The spread was 0.00154 bps. The cost was 5.19.",
+   "finding":"EXEC-1",
+   "answer":"Passive market making on BTCUSDT loses by a factor of about 3,400.",
+   "sub":"And a zero maker fee does not rescue it. We checked, because that is the first thing "
+         "anyone assumes.",
+   "body":"""
+<p>Market making sounds like the safe way to earn in crypto: quote both sides, capture the
+spread, stay flat. We measured what that actually pays on BTCUSDT.</p>
+
+<div class="scroll"><table><tbody>
+<tr><td>spread captured per round trip</td><td><strong>0.00154 bps</strong></td></tr>
+<tr><td>cost per round trip</td><td><strong>5.19 bps</strong></td></tr>
+<tr><td>measured maker advantage</td><td>1.83 bps</td></tr>
+</tbody></table></div>
+
+<p>The obvious objection is fees. So we asked what happens at a <strong>zero maker fee</strong> —
+the tier the largest firms actually trade on. It still loses. The gap is not a fee problem.</p>
+
+<h3>The finding that outlived the strategy</h3>
+<p>The useful result came out of the wreckage. Adverse selection — how much the market moves
+against you right after you are filled — is brutal at short horizons and <strong>decays by roughly
+a hundredfold</strong> between sixty seconds and one day, to 0.1301 bps.</p>
+
+<p>We had predicted around 1 bps and were wrong by a factor of nine, in the direction that
+matters: longer horizons are far more economically survivable than the short-horizon numbers
+suggest. That single measurement reopened a line of work the market-making result had closed.</p>
+
+<h3>Why publish a failure</h3>
+<p>Because the arithmetic is checkable and the conclusion is not obvious. A ratio of 3,400 to one
+is not a near miss to be optimised away — it says the strategy is unavailable at this latency and
+this fee tier, and no amount of tuning changes that.</p>
+"""},
   {"slug":"free-collateral-misclassification",
    "title":"One leveraged wallet in five is misclassified when you ignore free collateral",
    "finding":"F-0001",
