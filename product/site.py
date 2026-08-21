@@ -65,6 +65,28 @@ def age(s):
 # Pages
 # --------------------------------------------------------------------------------------
 
+def live_example():
+    """An address to demonstrate the check with, PULLED FROM THE LATEST SNAPSHOT, never hardcoded.
+
+    The first version hardcoded one I had reconstructed from a truncated log line -- I saw
+    "0xb83de012..." and invented the remaining 32 characters. The page then reported "no open
+    positions" for an address that does not exist, which is the same class of error as filling
+    a mockup with plausible numbers: inventing detail to close a gap.
+
+    Chosen mechanically: the largest position in the current scan that has zero free collateral,
+    so the example always demonstrates the thing the product is about.
+    """
+    try:
+        snap = json.loads(open(L_SNAP).readlines()[-1])
+        trapped = [p for p in snap["positions"]
+                   if float(p.get("withdrawable") or 0) <= 0 and p.get("forced_notional")]
+        if trapped:
+            return max(trapped, key=lambda p: p["forced_notional"])["wallet"]
+    except Exception:
+        pass
+    return ""
+
+
 def page_home(m, sc):
     t, cov = m["totals"], m["coverage"]
     ld = {"@context":"https://schema.org","@type":"Dataset",
@@ -75,10 +97,28 @@ def page_home(m, sc):
             {"@type":"PropertyValue","name":"forced_notional_usd","value":t["forced_notional_usd"]},
             {"@type":"PropertyValue","name":"cannot_defend_pct","value":t["cannot_defend_pct"]},
             {"@type":"PropertyValue","name":"coverage","value":cov["observed_fraction"]}]}
+    # THE HIERARCHY IS THE FUNNEL (product/CUSTOMERS.md). A frightened trader on a phone asks
+    # "how vulnerable am I", not "how vulnerable is the market", so the personal check is the
+    # front door and the market aggregate is what they read once calm. Coverage, provenance and
+    # the record stay on the page -- they are why the number is believable -- but below the fold.
+    #
+    # The form is a plain GET to check.html: no JavaScript on the entry point, one page owns the
+    # lookup, and the resulting URL is shareable, which is the only way this spreads.
     body = f"""
-<h1>See the risk behind the liquidation map</h1>
-<p class="lede">Every map shows you where forced selling sits. Genesis shows you how much of it
-can actually defend itself — and how much of the market we can see.</p>
+<h1>Are you about to be liquidated?</h1>
+<p class="lede">Paste your Hyperliquid address. You will see how far price has to move before your
+position is closed for you — and the thing most tools leave out: whether you have anything left
+to defend it with.</p>
+
+<form class="checkform" action="check.html" method="get" autocomplete="off">
+  <input name="a" type="text" spellcheck="false" placeholder="0x…" aria-label="Hyperliquid address">
+  <button type="submit">Check</button>
+</form>
+<p class="hint">Free, no signup, nothing stored. The lookup happens in your browser, straight to
+Hyperliquid.{f' <a href="check.html?a={ex}">See a real one →</a>' if (ex := live_example()) else ''}</p>
+
+<h2>Where the rest of the market stands</h2>
+<p class="lede">Your position does not sit alone. This is the forced selling around it.</p>
 
 <div class="asset-row">
   <a class="asset" href="markets/btc.html">
@@ -115,9 +155,9 @@ Refuted findings are never removed.</p>
 </ul>
 <p style="margin-top:.8rem"><a href="record.html">The full record →</a></p>
 """
-    return shell("Genesis — market intelligence for leveraged crypto traders",
-                 "Forced-selling exposure on Hyperliquid, how much of it can defend itself, "
-                 "and how much of the market we can see.", body, ld)
+    return shell("Check your liquidation risk on Hyperliquid — Genesis",
+                 "Paste a Hyperliquid address and see how close it is to liquidation, and "
+                 "whether it has anything left to defend with. Free, no signup.", body, ld)
 
 
 def page_market(m):
@@ -568,26 +608,7 @@ def page_check():
     nothing stored, and it scales without us.
     """
     tpl = open(os.path.join(os.path.dirname(__file__), "templates", "check.html")).read()
-
-    # The example address is PULLED FROM THE LATEST SNAPSHOT, never hardcoded.
-    #
-    # The first version hardcoded one I had reconstructed from a truncated log line -- I saw
-    # "0xb83de012..." and invented the remaining 32 characters. The page then reported "no open
-    # positions" for an address that does not exist, which is the same class of error as filling
-    # a mockup with plausible numbers: inventing detail to close a gap.
-    #
-    # Chosen mechanically: the largest position in the current scan that has zero free
-    # collateral, so the example always demonstrates the thing the product is about.
-    example = ""
-    try:
-        snap = json.loads(open(L_SNAP).readlines()[-1])
-        trapped = [p for p in snap["positions"]
-                   if float(p.get("withdrawable") or 0) <= 0 and p.get("forced_notional")]
-        if trapped:
-            example = max(trapped, key=lambda p: p["forced_notional"])["wallet"]
-    except Exception:
-        pass
-    return tpl.replace("__CSS__", css()).replace("__EXAMPLE__", example)
+    return tpl.replace("__CSS__", css()).replace("__EXAMPLE__", live_example())
 
 
 def main():
