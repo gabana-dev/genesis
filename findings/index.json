@@ -135,6 +135,21 @@
    "last_updated": "2026-08-20",
    "supersedes": "none",
    "path": "findings/F-0009-forced-flow-small-vs-depth.md"
+  },
+  {
+   "id": "F-0010",
+   "title": "Forced liquidation does not move price more than a volatility-matched random minute in the same hour",
+   "status": "MEASURED",
+   "observation": "15m mean +40.07 bps in the forced direction against a matched control of 44.52 bps; no horizon clears both benchmarks",
+   "sample": "228 independent episodes >=$250k across 28 symbols (n=106 with price data), Binance market-wide, 2026-08-18 to 2026-08-20",
+   "method": "CASCADE-1, contract frozen sha256 7dee22eed9cdaecb before any outcome; episodes not events; permutation null plus same-symbol same-hour control",
+   "evidence": "research/cascade-1-result.md, market/cascade1.py",
+   "confidence": "K1 met at 228 episodes, so this is not an underpowered null; three days, one venue, and only two of four declared benchmark tiers were implemented",
+   "market_gap": "no liquidation product publishes a volatility-matched control",
+   "first_recorded": "2026-08-21",
+   "last_updated": "2026-08-21",
+   "supersedes": "none",
+   "path": "findings/F-0010-liquidations-dont-cause-moves.md"
   }
  ]
 }
