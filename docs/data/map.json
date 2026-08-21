@@ -1,260 +1,377 @@
 {
  "asset": "BTC",
  "venue": "hyperliquid",
- "generated_at": "2026-08-21T10:24:38+00:00",
- "map_taken_at": "2026-08-21T08:31:00+00:00",
- "map_age_seconds": 6818,
- "spot_at_map": 77070.5,
+ "generated_at": "2026-08-21T10:40:08+00:00",
+ "map_taken_at": "2026-08-21T10:33:10+00:00",
+ "map_age_seconds": 418,
+ "spot_at_map": 78037.5,
  "coverage": {
-  "observed_fraction": 0.2543,
-  "tier": "fast",
-  "wallets_scanned": 300,
+  "observed_fraction": 0.325,
+  "tier": "deep",
+  "wallets_scanned": 5395,
   "method": "scanned position notional / exchange open interest",
   "note": "every figure below is a LOWER BOUND -- forced flow from wallets outside this scan is invisible",
   "full_universe_estimate": 0.533,
   "reference": "F-0003"
  },
  "totals": {
-  "wallets_with_positions": 199,
-  "wallets_in_band": 42,
-  "forced_notional_usd": 70307874.23,
-  "cannot_defend_usd": 64827684.0,
-  "cannot_defend_pct": 92.2
+  "wallets_with_positions": 1268,
+  "wallets_in_band": 536,
+  "forced_notional_usd": 58809097.35,
+  "cannot_defend_usd": 57928923.19,
+  "cannot_defend_pct": 98.5
  },
  "clusters": [
   {
    "distance_pct": 0.0,
-   "price": 77070.5,
+   "price": 78037.5,
    "side": "buy",
-   "notional_usd": 54183.3,
-   "wallets": 2,
-   "cannot_defend_pct": 90.9,
-   "thinly_defended_pct": 90.9
-  },
-  {
-   "distance_pct": 0.5,
-   "price": 77455.85,
-   "side": "buy",
-   "notional_usd": 75859.73,
+   "notional_usd": 322.32,
    "wallets": 1,
    "cannot_defend_pct": 100.0,
    "thinly_defended_pct": 100.0
   },
   {
-   "distance_pct": 1.0,
-   "price": 77841.21,
+   "distance_pct": 0.5,
+   "price": 78427.69,
    "side": "buy",
-   "notional_usd": 1001182.79,
-   "wallets": 4,
-   "cannot_defend_pct": 99.9,
-   "thinly_defended_pct": 99.9
+   "notional_usd": 138936.91,
+   "wallets": 25,
+   "cannot_defend_pct": 86.2,
+   "thinly_defended_pct": 86.2
+  },
+  {
+   "distance_pct": -0.5,
+   "price": 77647.31,
+   "side": "sell",
+   "notional_usd": 77975.59,
+   "wallets": 11,
+   "cannot_defend_pct": 46.4,
+   "thinly_defended_pct": 46.4
+  },
+  {
+   "distance_pct": 1.0,
+   "price": 78817.88,
+   "side": "buy",
+   "notional_usd": 34686977.14,
+   "wallets": 15,
+   "cannot_defend_pct": 100.0,
+   "thinly_defended_pct": 100.0
   },
   {
    "distance_pct": -1.0,
-   "price": 76299.79,
+   "price": 77257.12,
    "side": "sell",
-   "notional_usd": 2082.89,
-   "wallets": 1,
+   "notional_usd": 1480271.12,
+   "wallets": 79,
+   "cannot_defend_pct": 84.7,
+   "thinly_defended_pct": 84.7
+  },
+  {
+   "distance_pct": 1.5,
+   "price": 79208.06,
+   "side": "buy",
+   "notional_usd": 509072.68,
+   "wallets": 7,
    "cannot_defend_pct": 100.0,
    "thinly_defended_pct": 100.0
   },
   {
    "distance_pct": -1.5,
-   "price": 75914.44,
+   "price": 76866.94,
    "side": "sell",
-   "notional_usd": 484079.76,
-   "wallets": 2,
-   "cannot_defend_pct": 100.0,
-   "thinly_defended_pct": 100.0
-  },
-  {
-   "distance_pct": 1.5,
-   "price": 78226.56,
-   "side": "buy",
-   "notional_usd": 81994.16,
-   "wallets": 1,
-   "cannot_defend_pct": 100.0,
-   "thinly_defended_pct": 100.0
+   "notional_usd": 120020.04,
+   "wallets": 55,
+   "cannot_defend_pct": 72.1,
+   "thinly_defended_pct": 72.1
   },
   {
    "distance_pct": 2.0,
-   "price": 78611.91,
+   "price": 79598.25,
    "side": "buy",
-   "notional_usd": 36661490.63,
-   "wallets": 4,
-   "cannot_defend_pct": 100.0,
-   "thinly_defended_pct": 100.0
+   "notional_usd": 302238.59,
+   "wallets": 11,
+   "cannot_defend_pct": 93.7,
+   "thinly_defended_pct": 93.7
   },
   {
    "distance_pct": -2.0,
-   "price": 75529.09,
+   "price": 76476.75,
    "side": "sell",
-   "notional_usd": 765547.45,
-   "wallets": 1,
-   "cannot_defend_pct": 100.0,
-   "thinly_defended_pct": 100.0
+   "notional_usd": 196099.27,
+   "wallets": 11,
+   "cannot_defend_pct": 96.1,
+   "thinly_defended_pct": 96.1
+  },
+  {
+   "distance_pct": 2.5,
+   "price": 79988.44,
+   "side": "buy",
+   "notional_usd": 1490579.35,
+   "wallets": 16,
+   "cannot_defend_pct": 99.9,
+   "thinly_defended_pct": 99.9
+  },
+  {
+   "distance_pct": -2.5,
+   "price": 76086.56,
+   "side": "sell",
+   "notional_usd": 595364.78,
+   "wallets": 7,
+   "cannot_defend_pct": 95.9,
+   "thinly_defended_pct": 95.9
+  },
+  {
+   "distance_pct": -3.0,
+   "price": 75696.38,
+   "side": "sell",
+   "notional_usd": 269287.24,
+   "wallets": 11,
+   "cannot_defend_pct": 94.7,
+   "thinly_defended_pct": 94.7
+  },
+  {
+   "distance_pct": 3.0,
+   "price": 80378.62,
+   "side": "buy",
+   "notional_usd": 533290.99,
+   "wallets": 15,
+   "cannot_defend_pct": 93.8,
+   "thinly_defended_pct": 93.8
   },
   {
    "distance_pct": 3.5,
-   "price": 79767.97,
+   "price": 80768.81,
    "side": "buy",
-   "notional_usd": 13153150.57,
-   "wallets": 3,
-   "cannot_defend_pct": 100.0,
-   "thinly_defended_pct": 100.0
+   "notional_usd": 208746.09,
+   "wallets": 9,
+   "cannot_defend_pct": 39.3,
+   "thinly_defended_pct": 39.3
   },
   {
-   "distance_pct": -4.0,
-   "price": 73987.68,
+   "distance_pct": -3.5,
+   "price": 75306.19,
    "side": "sell",
-   "notional_usd": 290965.23,
-   "wallets": 1,
-   "cannot_defend_pct": 100.0,
-   "thinly_defended_pct": 100.0
+   "notional_usd": 531106.5,
+   "wallets": 10,
+   "cannot_defend_pct": 98.0,
+   "thinly_defended_pct": 98.0
   },
   {
    "distance_pct": 4.0,
-   "price": 80153.32,
+   "price": 81159.0,
    "side": "buy",
-   "notional_usd": 22696.1,
-   "wallets": 1,
-   "cannot_defend_pct": 100.0,
-   "thinly_defended_pct": 100.0
+   "notional_usd": 85824.22,
+   "wallets": 10,
+   "cannot_defend_pct": 99.9,
+   "thinly_defended_pct": 99.9
+  },
+  {
+   "distance_pct": -4.0,
+   "price": 74916.0,
+   "side": "sell",
+   "notional_usd": 33196.58,
+   "wallets": 10,
+   "cannot_defend_pct": 65.4,
+   "thinly_defended_pct": 65.4
+  },
+  {
+   "distance_pct": -4.5,
+   "price": 74525.81,
+   "side": "sell",
+   "notional_usd": 119548.07,
+   "wallets": 18,
+   "cannot_defend_pct": 54.2,
+   "thinly_defended_pct": 54.2
   },
   {
    "distance_pct": 4.5,
-   "price": 80538.67,
+   "price": 81549.19,
    "side": "buy",
-   "notional_usd": 171594.7,
-   "wallets": 1,
+   "notional_usd": 507359.86,
+   "wallets": 7,
+   "cannot_defend_pct": 99.7,
+   "thinly_defended_pct": 99.7
+  },
+  {
+   "distance_pct": -5.0,
+   "price": 74135.62,
+   "side": "sell",
+   "notional_usd": 1201314.91,
+   "wallets": 12,
+   "cannot_defend_pct": 99.6,
+   "thinly_defended_pct": 99.6
+  },
+  {
+   "distance_pct": 5.0,
+   "price": 81939.38,
+   "side": "buy",
+   "notional_usd": 200700.48,
+   "wallets": 10,
+   "cannot_defend_pct": 91.5,
+   "thinly_defended_pct": 91.5
+  },
+  {
+   "distance_pct": 5.5,
+   "price": 82329.56,
+   "side": "buy",
+   "notional_usd": 1034213.55,
+   "wallets": 6,
    "cannot_defend_pct": 100.0,
    "thinly_defended_pct": 100.0
   },
   {
    "distance_pct": -5.5,
-   "price": 72831.62,
+   "price": 73745.44,
    "side": "sell",
-   "notional_usd": 608758.76,
-   "wallets": 2,
-   "cannot_defend_pct": 100.0,
-   "thinly_defended_pct": 100.0
+   "notional_usd": 204959.0,
+   "wallets": 19,
+   "cannot_defend_pct": 81.0,
+   "thinly_defended_pct": 81.0
   },
   {
-   "distance_pct": 5.5,
-   "price": 81309.38,
-   "side": "buy",
-   "notional_usd": 89845.13,
-   "wallets": 1,
-   "cannot_defend_pct": 100.0,
-   "thinly_defended_pct": 100.0
+   "distance_pct": -6.0,
+   "price": 73355.25,
+   "side": "sell",
+   "notional_usd": 366496.5,
+   "wallets": 6,
+   "cannot_defend_pct": 98.9,
+   "thinly_defended_pct": 98.9
   },
   {
    "distance_pct": 6.0,
-   "price": 81694.73,
+   "price": 82719.75,
    "side": "buy",
-   "notional_usd": 1202468.77,
-   "wallets": 3,
+   "notional_usd": 113738.01,
+   "wallets": 5,
    "cannot_defend_pct": 100.0,
    "thinly_defended_pct": 100.0
   },
   {
    "distance_pct": -6.5,
-   "price": 72060.92,
+   "price": 72965.06,
    "side": "sell",
-   "notional_usd": 281139.66,
-   "wallets": 2,
-   "cannot_defend_pct": 100.0,
-   "thinly_defended_pct": 100.0
+   "notional_usd": 621368.99,
+   "wallets": 7,
+   "cannot_defend_pct": 99.4,
+   "thinly_defended_pct": 99.4
   },
   {
    "distance_pct": 6.5,
-   "price": 82080.08,
+   "price": 83109.94,
    "side": "buy",
-   "notional_usd": 77905.21,
-   "wallets": 1,
-   "cannot_defend_pct": 100.0,
-   "thinly_defended_pct": 100.0
-  },
-  {
-   "distance_pct": 7.0,
-   "price": 82465.43,
-   "side": "buy",
-   "notional_usd": 140048.45,
-   "wallets": 1,
-   "cannot_defend_pct": 100.0,
-   "thinly_defended_pct": 100.0
+   "notional_usd": 147176.46,
+   "wallets": 10,
+   "cannot_defend_pct": 98.2,
+   "thinly_defended_pct": 98.2
   },
   {
    "distance_pct": -7.0,
-   "price": 71675.57,
+   "price": 72574.88,
    "side": "sell",
-   "notional_usd": 7153024.6,
-   "wallets": 1,
+   "notional_usd": 74008.16,
+   "wallets": 4,
+   "cannot_defend_pct": 99.8,
+   "thinly_defended_pct": 99.8
+  },
+  {
+   "distance_pct": 7.0,
+   "price": 83500.12,
+   "side": "buy",
+   "notional_usd": 204027.15,
+   "wallets": 8,
    "cannot_defend_pct": 100.0,
    "thinly_defended_pct": 100.0
   },
   {
    "distance_pct": -7.5,
-   "price": 71290.21,
+   "price": 72184.69,
    "side": "sell",
-   "notional_usd": 951720.49,
-   "wallets": 1,
-   "cannot_defend_pct": 100.0,
-   "thinly_defended_pct": 100.0
+   "notional_usd": 166660.4,
+   "wallets": 11,
+   "cannot_defend_pct": 85.6,
+   "thinly_defended_pct": 85.6
+  },
+  {
+   "distance_pct": 7.5,
+   "price": 83890.31,
+   "side": "buy",
+   "notional_usd": 111631.5,
+   "wallets": 6,
+   "cannot_defend_pct": 99.8,
+   "thinly_defended_pct": 99.8
+  },
+  {
+   "distance_pct": 8.0,
+   "price": 84280.5,
+   "side": "buy",
+   "notional_usd": 1029453.93,
+   "wallets": 18,
+   "cannot_defend_pct": 99.3,
+   "thinly_defended_pct": 99.3
   },
   {
    "distance_pct": -8.0,
-   "price": 70904.86,
+   "price": 71794.5,
    "side": "sell",
-   "notional_usd": 469133.49,
-   "wallets": 2,
+   "notional_usd": 7296818.35,
+   "wallets": 13,
    "cannot_defend_pct": 100.0,
    "thinly_defended_pct": 100.0
   },
   {
    "distance_pct": -8.5,
-   "price": 70519.51,
+   "price": 71404.31,
    "side": "sell",
-   "notional_usd": 885662.35,
-   "wallets": 1,
-   "cannot_defend_pct": 100.0,
-   "thinly_defended_pct": 100.0
+   "notional_usd": 2253286.3,
+   "wallets": 20,
+   "cannot_defend_pct": 99.7,
+   "thinly_defended_pct": 99.7
   },
   {
    "distance_pct": 8.5,
-   "price": 83621.49,
+   "price": 84670.69,
    "side": "buy",
-   "notional_usd": 209114.41,
-   "wallets": 2,
-   "cannot_defend_pct": 100.0,
-   "thinly_defended_pct": 100.0
+   "notional_usd": 513977.67,
+   "wallets": 13,
+   "cannot_defend_pct": 85.1,
+   "thinly_defended_pct": 85.1
   },
   {
    "distance_pct": -9.0,
-   "price": 70134.15,
+   "price": 71014.12,
    "side": "sell",
-   "notional_usd": 4870880.76,
-   "wallets": 1,
-   "cannot_defend_pct": 0.0,
-   "thinly_defended_pct": 0.0
+   "notional_usd": 313223.44,
+   "wallets": 20,
+   "cannot_defend_pct": 93.9,
+   "thinly_defended_pct": 95.3
   },
   {
    "distance_pct": 9.0,
-   "price": 84006.85,
+   "price": 85060.88,
    "side": "buy",
-   "notional_usd": 84166.64,
-   "wallets": 1,
-   "cannot_defend_pct": 0.0,
-   "thinly_defended_pct": 0.0
+   "notional_usd": 86550.5,
+   "wallets": 8,
+   "cannot_defend_pct": 45.1,
+   "thinly_defended_pct": 45.1
   },
   {
    "distance_pct": -9.5,
-   "price": 69748.8,
+   "price": 70623.94,
    "side": "sell",
-   "notional_usd": 519178.2,
-   "wallets": 1,
-   "cannot_defend_pct": 0.0,
-   "thinly_defended_pct": 0.0
+   "notional_usd": 499621.04,
+   "wallets": 8,
+   "cannot_defend_pct": 99.8,
+   "thinly_defended_pct": 99.8
+  },
+  {
+   "distance_pct": 9.5,
+   "price": 85451.06,
+   "side": "buy",
+   "notional_usd": 483653.67,
+   "wallets": 4,
+   "cannot_defend_pct": 100.0,
+   "thinly_defended_pct": 100.0
   }
  ],
  "definitions": {
