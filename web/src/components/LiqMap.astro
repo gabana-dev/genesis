@@ -1,0 +1,84 @@
+---
+/**
+ * The liquidation map.
+ *
+ * THE VISUAL THESIS. Every competitor draws a wall of forced selling and stops there. This one
+ * draws the SAME wall, then shows how much of it is hollow: the solid part of each bar is the
+ * exposure held by wallets with zero free collateral, the outlined part is exposure that can
+ * still move its own liquidation price. The gap between the two IS the product, and it should be
+ * legible without reading a single number.
+ *
+ * Built from HTML and CSS rather than SVG or a chart library: it ships no JavaScript, reflows on
+ * a phone without viewBox arithmetic, and every row stays selectable text. A trader on a phone in
+ * a bad moment is the design target.
+ *
+ * Price runs DOWN the page with spot in its true position, because that is how a trader already
+ * reads a ladder. Above spot is where shorts are bought back; below is where longs are sold.
+ */
+import Prov from './Prov.astro';
+import { signed, usd } from '../lib/data';
+import type { Cluster } from '../types/data';
+
+interface Props {
+  clusters: Cluster[];
+  spot: number;
+  /** The scan population these clusters came from — see F-0011. Stated, never implied. */
+  tier: string;
+  wallets: number;
+}
+const { clusters, spot, tier, wallets } = Astro.props;
+
+const widest = Math.max(...clusters.map((c) => c.notional_usd));
+// Sorted by price descending so the column reads like a ladder: high prices at the top.
+const above = clusters.filter((c) => c.price > spot).sort((a, b) => b.price - a.price);
+const below = clusters.filter((c) => c.price <= spot).sort((a, b) => b.price - a.price);
+
+const row = (c: Cluster) => ({
+  ...c,
+  pct: Math.max(0.7, (c.notional_usd / widest) * 100),
+  trapped: (c.cannot_defend_pct / 100) * Math.max(0.7, (c.notional_usd / widest) * 100),
+});
+---
+
+<div class="liqmap">
+  <div class="liqmap-key">
+    <span><i class="sw sw-solid"></i> cannot defend — zero free collateral</span>
+    <span><i class="sw sw-hollow"></i> can still move its liquidation price</span>
+  </div>
+
+  {[above, below].map((group, gi) => (
+    <>
+      {gi === 1 && (
+        <div class="liqmap-spot">
+          <span class="liqmap-spot-label">BTC now</span>
+          <span class="liqmap-spot-price">{spot.toLocaleString('en-US', { maximumFractionDigits: 0 })}</span>
+        </div>
+      )}
+      {group.map(row).map((c) => (
+        <div class="liqmap-row">
+          <span class="liqmap-price">{c.price.toLocaleString('en-US', { maximumFractionDigits: 0 })}</span>
+          <span class="liqmap-dist">{signed(c.distance_pct, 1)}</span>
+          <span class="liqmap-track">
+            <span class={`liqmap-bar ${c.side}`} style={`width:${c.pct}%`}>
+              <span class="liqmap-fill" style={`width:${(c.trapped / c.pct) * 100}%`}></span>
+            </span>
+          </span>
+          <span class="liqmap-val">{usd(c.notional_usd)}</span>
+          <span class="liqmap-wal">{c.wallets}w</span>
+        </div>
+      ))}
+    </>
+  ))}
+</div>
+
+<p class="hint" style="margin-top:.9rem">
+  Above spot is where shorts are bought back; below is where longs are sold. Bar length is
+  exposure; the solid portion is the part held by wallets that cannot move their own liquidation
+  price.
+</p>
+<p class="hint">
+  <Prov
+    tier="calculated"
+    detail={`0.5% buckets from ${wallets} positions in the ${tier} scan — the ${tier === 'fast' ? 'largest 300 positions, which sit further from liquidation than the full population (F-0011)' : 'full frozen universe'}`}
+  />
+</p>

@@ -4,14 +4,13 @@ import Answer from '../../components/Answer.astro';
 import Grid from '../../components/Grid.astro';
 import Note from '../../components/Note.astro';
 import Prov from '../../components/Prov.astro';
-import Scroll from '../../components/Scroll.astro';
+import LiqMap from '../../components/LiqMap.astro';
 import Stat from '../../components/Stat.astro';
 import { age, marketMap, signed, url, usd } from '../../lib/data';
 
 const m = marketMap();
 const { totals: t, coverage: cov } = m;
 const near = m.clusters[0]!;
-const widest = Math.max(...m.clusters.map((c) => c.notional_usd));
 
 const jsonld = {
   '@context': 'https://schema.org',
@@ -59,31 +58,8 @@ const jsonld = {
     <a href={url('research/liquidations-dont-move-price.html')}>The full test →</a>
   </Note>
 
-  <h2>Clusters</h2>
-  <p class="lede"><Prov tier="calculated" detail="0.5% buckets, ±10% of the map's spot" /></p>
-  <Scroll>
-    <table>
-      <thead>
-        <tr><th>Distance</th><th>Price</th><th>Side</th><th>Exposure</th><th>Wallets</th>
-        <th>Cannot defend</th></tr>
-      </thead>
-      <tbody>
-        {m.clusters.map((c) => (
-          <tr>
-            <td>{signed(c.distance_pct)}</td>
-            <td>{Math.round(c.price).toLocaleString('en-US')}</td>
-            <td class={c.side}>{c.side}</td>
-            <td>
-              {usd(c.notional_usd)}{' '}
-              <span class="bar" style={`width:${Math.max(1, Math.round((c.notional_usd / widest) * 54))}px`} />
-            </td>
-            <td>{c.wallets}</td>
-            <td>{Math.round(c.cannot_defend_pct)}%</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </Scroll>
+  <h2>Where the forced selling sits</h2>
+  <LiqMap clusters={m.clusters} spot={m.spot_at_map} tier={cov.tier} wallets={t.wallets_in_band} />
 
   <h2>What we cannot see</h2>
   <ul class="plain">

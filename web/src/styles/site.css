@@ -126,3 +126,46 @@ a{color:inherit;text-underline-offset:2px}
 .disclose summary:hover{color:var(--ink)}
 .disclose[open] summary{color:var(--ink);border-bottom:1px solid var(--rule);margin-bottom:.7rem}
 .disclose p{font-size:.88rem;color:var(--ink-soft);margin:0 0 .7rem}
+
+/* ---- liquidation map ------------------------------------------------------------------
+   Rows are a grid rather than a table so the bar column can flex on a phone while the price
+   and value columns stay aligned. Tabular numerals throughout: a ladder whose digits shift
+   width as prices change is unreadable at a glance, which is the only way it gets read. */
+.liqmap{border:1px solid var(--rule);border-radius:3px;background:var(--card);
+  padding:.5rem .2rem;margin:1.1rem 0}
+.liqmap-key{display:flex;gap:1.1rem;flex-wrap:wrap;font-size:.74rem;color:var(--ink-faint);
+  padding:.35rem .9rem .6rem}
+.sw{display:inline-block;width:.7rem;height:.55rem;vertical-align:-1px;margin-right:.25rem;
+  border:1px solid var(--hot);border-radius:1px}
+.sw-solid{background:var(--hot)}
+.sw-hollow{background:none}
+
+.liqmap-row{display:grid;grid-template-columns:4.6rem 3.1rem 1fr 4.4rem 2.2rem;
+  align-items:center;gap:.5rem;padding:.16rem .9rem;font-family:var(--mono);font-size:.78rem;
+  font-variant-numeric:tabular-nums}
+.liqmap-row:hover{background:var(--paper)}
+.liqmap-price{color:var(--ink)}
+.liqmap-dist{color:var(--ink-faint);text-align:right}
+.liqmap-track{display:block;height:.62rem}
+.liqmap-bar{display:block;height:100%;border:1px solid var(--hot);border-radius:1px;
+  min-width:2px;position:relative}
+.liqmap-bar.buy{border-color:var(--cool)}
+.liqmap-fill{display:block;height:100%;background:var(--hot)}
+.liqmap-bar.buy .liqmap-fill{background:var(--cool)}
+.liqmap-val{text-align:right;color:var(--ink-soft)}
+.liqmap-wal{text-align:right;color:var(--ink-faint);font-size:.72rem}
+
+/* Spot is the one row that is not a cluster, so it reads as a rule across the ladder rather
+   than another bar competing with them. */
+.liqmap-spot{display:flex;align-items:center;gap:.6rem;margin:.45rem 0;padding:0 .9rem;
+  color:var(--ink)}
+.liqmap-spot::after{content:"";flex:1;height:1px;background:var(--ink-faint);opacity:.55}
+.liqmap-spot-label{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-faint)}
+.liqmap-spot-price{font-family:var(--mono);font-size:.86rem;font-weight:600;
+  font-variant-numeric:tabular-nums}
+
+@media (max-width:34rem){
+  .liqmap-row{grid-template-columns:4.1rem 1fr 4rem;gap:.4rem;font-size:.74rem}
+  .liqmap-dist,.liqmap-wal{display:none}
+}
