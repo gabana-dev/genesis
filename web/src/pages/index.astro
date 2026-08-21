@@ -123,13 +123,21 @@ const jsonld = {
       across 433 published clusters, 71% at exactly 100%. Framing a constant as a live reading
       invites the reader to infer something from its level, and there is nothing to infer. The
       durable claim is more interesting anyway, and nobody else is able to make it. */}
-  <h2>Almost nothing near liquidation can defend itself</h2>
+  <h2>Almost nothing we can see near liquidation can defend itself</h2>
 
   <p class="lede">
-    Not today — <em>always</em>. Across every scan we have taken, the overwhelming majority of
-    forced BTC exposure sits with wallets holding zero free collateral. They cannot move their own
-    liquidation price without depositing from outside.
+    Not today — <em>always</em>. In every scan we have taken, the overwhelming majority of the
+    forced BTC exposure <em>within our observed universe</em> sits with wallets holding zero free
+    collateral. They cannot move their own liquidation price without depositing from outside.
     <a href={url('research/vulnerability-does-not-vary.html')}>We measured how constant it is →</a>
+  </p>
+  {/* The qualifier is load-bearing and was missing until 2026-08-22. This scan sees a third of
+      open interest, and F-0011 measured that the fast tier is NOT a random sample of it — the
+      300 largest positions sit further from liquidation than the full universe. A claim about
+      "everything near liquidation" is not one this population can support. */}
+  <p class="hint" style="margin-bottom:1.2rem">
+    That universe is {Math.round(cov.observed_fraction * 100)}% of open interest, and it is not a
+    random sample of the rest. <a href={url('methodology.html')}>What we can and cannot see →</a>
   </p>
   <p class="lede">
     In the latest scan: <strong>{usd(t.cannot_defend_usd)}</strong> of
