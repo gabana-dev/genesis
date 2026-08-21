@@ -220,6 +220,29 @@ def status_json_carries_collectors():
     return "gather() exposes collectors and stays serialisable"
 
 
+@check
+def test_a_remote_collector_that_cannot_be_reached_is_never_ok():
+    """LIQ-2 moved to the server, so the watch reaches it over SSH.
+
+    The failure mode to guard is a host that is down reading as healthy. _remote_mtimes returns
+    None for everything it could not stat -- unreachable host, missing file, timeout -- and the
+    caller must turn that into UNKNOWN, never OK. A watch that cannot check is a failed watch.
+    """
+    # 203.0.113.0/24 is TEST-NET-3, reserved by RFC 5737 and guaranteed not to route.
+    assert S._remote_mtimes("root@203.0.113.1", ["/tmp/a", "/tmp/b"]) == [None, None]
+    assert S._remote_mtimes("root@203.0.113.1", ["/tmp/a"]) == [None]
+
+
+@check
+def test_the_moved_collector_is_still_watched():
+    """Removing liqmap from the watch when it moved would have been the easy fix and the wrong
+    one: a collector nobody checks is a collector that has already stopped."""
+    liq = [c for c in S.COLLECTORS if c["name"] == "liqmap"]
+    assert len(liq) == 1, "liqmap must remain in the watch after moving hosts"
+    assert liq[0].get("remote"), "liqmap must be marked remote, not silently dropped"
+    assert liq[0]["data"].startswith("/home/genesis/"), liq[0]["data"]
+
+
 def main():
     failed = 0
     for fn in _checks:

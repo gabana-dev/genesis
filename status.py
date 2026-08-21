@@ -230,9 +230,17 @@ COLLECTORS = [
      # that fires before data can possibly exist teaches the reader to ignore it.
      "advance_from": "2026-08-23",
      "why": "ECON-1 forward test; ~270 points, first read ~mid-Nov"},
+    # LIQ-2 MOVED TO THE SERVER on 2026-08-21 (deploy/README.md): this laptop slept through 52%
+    # of the archive and clearinghouseState has no history, so those hours are gone. Watching a
+    # local copy that no longer advances would report STALLED forever, which trains the reader to
+    # ignore the monitor -- the failure mode that makes monitors worthless.
+    #
+    # It is NOT unwatched: `remote` names the host, and remote_status() below checks the archive
+    # over SSH. A collector nobody checks is a collector that has already stopped.
     {"name": "liqmap", "cadence_h": 2,
-     "log": f"{EVIDENCE}/liqmap/collect2.log",
-     "data": f"{EVIDENCE}/liqmap/snapshots-liq2.jsonl",
+     "remote": "root@187.124.32.36",
+     "log": "/home/genesis/genesis-evidence/liqmap/collect2.log",
+     "data": "/home/genesis/genesis-evidence/liqmap/snapshots-liq2.jsonl",
      "why": "LIQ-2 archive; clearinghouseState has no history, an uncollected hour is lost"},
     {"name": "hl2", "cadence_h": 1,
      # A long-running recorder writes recorder.out only at start and stop, so using it as the
@@ -250,6 +258,25 @@ COLLECTORS = [
      "advance_until": "2026-08-26",
      "why": "COND-1 recording; closes ~25 Aug"},
 ]
+
+
+def _remote_mtimes(host, paths):
+    """mtime of each path on `host`, in epoch seconds. None for anything missing or unreachable.
+
+    One SSH call for all of them, with a short timeout and BatchMode so it can never sit waiting
+    for a password. Unreachable is reported as UNKNOWN by the caller, never as OK: a watch that
+    cannot check is a failed watch.
+    """
+    import subprocess
+    cmd = ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=10", host,
+           "stat -c %Y " + " ".join(f"'{p}'" for p in paths) + " 2>/dev/null || true"]
+    try:
+        out = subprocess.run(cmd, capture_output=True, text=True, timeout=25).stdout.split()
+    except Exception:
+        return [None] * len(paths)
+    if len(out) != len(paths):
+        return [None] * len(paths)
+    return [float(x) for x in out]
 
 
 def _last_append(path):
@@ -277,15 +304,25 @@ def collectors_status():
         # grace of 2x cadence: one missed run is late, two is a stall worth waking someone for
         limit = c["cadence_h"] * 3600 * 2
 
-        if os.path.exists(c["log"]):
+        if c.get("remote"):
+            rec["host"] = c["remote"]
+            log_m, newest = _remote_mtimes(c["remote"], [c["log"], c["data"]])
+            if log_m is None:
+                rec["ran"] = UNKNOWN
+                rec["ran_detail"] = f"could not reach {c['remote']}"
+            else:
+                age = now - log_m
+                rec["ran_h_ago"] = round(age / 3600, 2)
+                rec["ran"] = "OK" if age <= limit else "STALLED"
+        elif os.path.exists(c["log"]):
             age = now - os.path.getmtime(c["log"])
             rec["ran_h_ago"] = round(age / 3600, 2)
             rec["ran"] = "OK" if age <= limit else "STALLED"
+            newest = _last_append(c["data"])
         else:
             rec["ran"] = UNKNOWN
             rec["ran_detail"] = "no log; the job has never run"
-
-        newest = _last_append(c["data"])
+            newest = _last_append(c["data"])
         due = True
         if c.get("advance_from"):
             start = datetime.fromisoformat(c["advance_from"] + "T00:00:00+00:00").timestamp()
