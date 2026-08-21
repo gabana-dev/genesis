@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Genesis — market intelligence for leveraged crypto traders</title>
-<meta name="description" content="Forced-selling exposure on Hyperliquid, how much of it can defend itself, and how much of the market we can see.">
+<title>One leveraged wallet in five is misclassified when you ignore free collateral — Genesis Research</title>
+<meta name="description" content="74 wallets holding open BTC positions. Naive margin maths says 96% could defend their position. The venue says 76%.">
 <style>:root{
   --ink:#16150f; --ink-soft:#57544a; --ink-faint:#8b8779;
   --paper:#f7f4ec; --card:#fffdf7; --rule:#e2ddcf;
@@ -106,51 +106,58 @@ a{color:inherit;text-underline-offset:2px}
   padding:1rem 1.1rem;text-decoration:none;color:inherit;display:block}
 .asset:hover{border-color:var(--ink-faint)}
 .asset .sym{font-family:var(--serif);font-size:1.3rem;font-weight:600}
-</style><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Dataset", "name": "Genesis liquidation intelligence \u2014 Hyperliquid BTC", "description": "Forced-selling exposure and defensibility, with stated coverage.", "dateModified": "2026-08-21T07:28:40+00:00", "variableMeasured": [{"@type": "PropertyValue", "name": "forced_notional_usd", "value": 73786031.58}, {"@type": "PropertyValue", "name": "cannot_defend_pct", "value": 99.8}, {"@type": "PropertyValue", "name": "coverage", "value": 0.2511}]}</script>
+</style><script type="application/ld+json">{"@context": "https://schema.org", "@type": "ScholarlyArticle", "headline": "One leveraged wallet in five is misclassified when you ignore free collateral", "abstract": "74 wallets holding open BTC positions. Naive margin maths says 96% could defend their position. The venue says 76%.", "identifier": "F-0001", "publisher": {"@type": "Organization", "name": "Genesis"}}</script>
 </head><body>
-<nav class="nav"><a class="brand" href="index.html">Genesis</a>
-<a href="markets/btc.html">Markets</a><a href="research/index.html">Research</a>
-<a href="record.html">Record</a><a href="methodology.html">Methodology</a>
-<a href="api.html">API</a></nav>
+<nav class="nav"><a class="brand" href="../index.html">Genesis</a>
+<a href="../markets/btc.html">Markets</a><a href="../research/index.html">Research</a>
+<a href="../record.html">Record</a><a href="../methodology.html">Methodology</a>
+<a href="../api.html">API</a></nav>
 <main class="wrap">
-<h1>See the risk behind the liquidation map</h1>
-<p class="lede">Every map shows you where forced selling sits. Genesis shows you how much of it
-can actually defend itself — and how much of the market we can see.</p>
-
-<div class="asset-row">
-  <a class="asset" href="markets/btc.html">
-    <div class="sym">BTC</div>
-    <div class="stat" style="border:0;padding:.6rem 0 0;background:none">
-      <div class="k">Cannot defend</div>
-      <div class="v" style="color:var(--hot)">99.8%</div>
-      <div class="n">$73.8M forced exposure · 25% visible</div>
-    </div></a>
-  <div class="asset" style="opacity:.55">
-    <div class="sym">ETH</div>
-    <div class="stat" style="border:0;padding:.6rem 0 0;background:none">
-      <div class="k">Not yet scanned</div><div class="v" style="color:var(--ink-faint)">—</div>
-      <div class="n">the scanner covers BTC only today</div></div></div>
-  <div class="asset" style="opacity:.55">
-    <div class="sym">SOL</div>
-    <div class="stat" style="border:0;padding:.6rem 0 0;background:none">
-      <div class="k">Not yet scanned</div><div class="v" style="color:var(--ink-faint)">—</div>
-      <div class="n">the scanner covers BTC only today</div></div></div>
+<h1>One leveraged wallet in five is misclassified when you ignore free collateral</h1>
+<p class="lede">74 wallets holding open BTC positions. Naive margin maths says 96% could defend their position. The venue says 76%.</p>
+<div class="answer"><div class="q">The answer</div>
+  <div class="a calm" style="font-size:1.5rem;line-height:1.3">The obvious arithmetic is right 19% of the time.</div>
+  <div style="margin-top:.9rem"><span class="prov prov-historical">historical</span> <span class="prov-d">F-0001 · see the record for status</span></div>
 </div>
 
-<div class="note"><strong>What Genesis does not tell you.</strong> It does not predict price. We
-tested whether reaching a liquidation cluster causes a further move and found it does not move
-price more than an ordinary volatile minute in the same hour.
-<a href="research/liquidations-dont-move-price.html">Read the test →</a></div>
+<p>When a leveraged position approaches its liquidation price, the trader can usually top up
+margin and push that price away. Whether they can is the difference between a cluster that is
+real and one that evaporates.</p>
 
-<h2>What we have published</h2>
-<p class="lede">10 claims, 2 of them refuted by us.
-Refuted findings are never removed.</p>
-<ul class="plain">
-<li><span class="tag MEASURED">MEASURED</span>&nbsp; Free collateral cannot be derived from position and margin data; naive arithmetic misclassifies one wallet in five</li><li><span class="tag MEASURED">MEASURED</span>&nbsp; Order-book depth falls as price moves get larger, so a static-book cascade estimate is optimistic</li><li><span class="tag MEASURED">MEASURED</span>&nbsp; A properly aged wallet universe sees 53.3% of Hyperliquid BTC open interest, not 20%</li><li><span class="tag REFUTED">REFUTED</span>&nbsp; The wallet universe is exhausted; more wallets of the same kind would add nothing</li><li><span class="tag MEASURED">MEASURED</span>&nbsp; Daily-horizon directional tests on one instrument cannot detect realistic edges; the region is unpowerable, not empty</li>
-</ul>
-<p style="margin-top:.8rem"><a href="record.html">The full record →</a></p>
+<p>The obvious way to work it out is <code>accountValue − totalMarginUsed</code>. We checked it
+against the venue's own <code>withdrawable</code> figure on 74 wallets holding open BTC
+positions.</p>
+
+<div class="scroll"><table><tbody>
+<tr><td>arithmetic matches the venue</td><td><strong>19%</strong></td></tr>
+<tr><td>naive says the wallet can defend</td><td>96%</td></tr>
+<tr><td>the venue says it can defend</td><td><strong>76%</strong></td></tr>
+<tr><td>misclassified</td><td><strong>20%</strong></td></tr>
+<tr><td>median overstatement</td><td>$4,906</td></tr>
+<tr><td>largest overstatement</td><td>$3,601,390</td></tr>
+</tbody></table></div>
+
+<p>The mismatch is one-directional. <code>withdrawable</code> is systematically <em>lower</em>
+than the margin arithmetic implies, and frequently <strong>exactly zero</strong> for wallets the
+calculation says hold six figures free.</p>
+
+<h3>Why it cannot be reconstructed</h3>
+<p>The venue applies constraints beyond position margin — plausibly margin reserved against open
+orders, isolated allocation, or restrictions on unrealised PnL. Whatever the cause, the number is
+computed by the exchange and is not a function of the fields a reconstruction would have.</p>
+
+<p>No data provider we surveyed exposes it. A defensibility metric built on their fields would be
+wrong for a fifth of wallets — always in the direction of making the market look safer.</p>
+
+<h3>And the money is more trapped than the headcount</h3>
+<p>In a live snapshot, 93% of wallets near liquidation held zero free collateral — but
+<strong>99.8% of the notional</strong> did. The large positions are disproportionately the
+undefendable ones.</p>
+
+<p style="margin-top:2rem"><a href="index.html">← All research</a> ·
+<a href="../record.html">Our record, including what we got wrong →</a></p>
 </main>
 <footer class="wrap foot"><p>Genesis — market intelligence for leveraged crypto traders.
 Every number carries its provenance, its observation count and how much of the market we could
-see. <a href="record.html">Including the claims we got wrong.</a></p></footer>
+see. <a href="../record.html">Including the claims we got wrong.</a></p></footer>
 </body></html>

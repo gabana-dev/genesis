@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Genesis — market intelligence for leveraged crypto traders</title>
-<meta name="description" content="Forced-selling exposure on Hyperliquid, how much of it can defend itself, and how much of the market we can see.">
+<title>Methodology — Genesis</title>
+<meta name="description" content="How Genesis produces every number, and the four tiers of evidence it distinguishes.">
 <style>:root{
   --ink:#16150f; --ink-soft:#57544a; --ink-faint:#8b8779;
   --paper:#f7f4ec; --card:#fffdf7; --rule:#e2ddcf;
@@ -106,49 +106,51 @@ a{color:inherit;text-underline-offset:2px}
   padding:1rem 1.1rem;text-decoration:none;color:inherit;display:block}
 .asset:hover{border-color:var(--ink-faint)}
 .asset .sym{font-family:var(--serif);font-size:1.3rem;font-weight:600}
-</style><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Dataset", "name": "Genesis liquidation intelligence \u2014 Hyperliquid BTC", "description": "Forced-selling exposure and defensibility, with stated coverage.", "dateModified": "2026-08-21T07:28:40+00:00", "variableMeasured": [{"@type": "PropertyValue", "name": "forced_notional_usd", "value": 73786031.58}, {"@type": "PropertyValue", "name": "cannot_defend_pct", "value": 99.8}, {"@type": "PropertyValue", "name": "coverage", "value": 0.2511}]}</script>
+</style>
 </head><body>
 <nav class="nav"><a class="brand" href="index.html">Genesis</a>
 <a href="markets/btc.html">Markets</a><a href="research/index.html">Research</a>
 <a href="record.html">Record</a><a href="methodology.html">Methodology</a>
 <a href="api.html">API</a></nav>
 <main class="wrap">
-<h1>See the risk behind the liquidation map</h1>
-<p class="lede">Every map shows you where forced selling sits. Genesis shows you how much of it
-can actually defend itself — and how much of the market we can see.</p>
+<h1>Methodology</h1>
+<p class="lede">How each number is produced, and which tier of evidence it sits on.</p>
 
-<div class="asset-row">
-  <a class="asset" href="markets/btc.html">
-    <div class="sym">BTC</div>
-    <div class="stat" style="border:0;padding:.6rem 0 0;background:none">
-      <div class="k">Cannot defend</div>
-      <div class="v" style="color:var(--hot)">99.8%</div>
-      <div class="n">$73.8M forced exposure · 25% visible</div>
-    </div></a>
-  <div class="asset" style="opacity:.55">
-    <div class="sym">ETH</div>
-    <div class="stat" style="border:0;padding:.6rem 0 0;background:none">
-      <div class="k">Not yet scanned</div><div class="v" style="color:var(--ink-faint)">—</div>
-      <div class="n">the scanner covers BTC only today</div></div></div>
-  <div class="asset" style="opacity:.55">
-    <div class="sym">SOL</div>
-    <div class="stat" style="border:0;padding:.6rem 0 0;background:none">
-      <div class="k">Not yet scanned</div><div class="v" style="color:var(--ink-faint)">—</div>
-      <div class="n">the scanner covers BTC only today</div></div></div>
-</div>
-
-<div class="note"><strong>What Genesis does not tell you.</strong> It does not predict price. We
-tested whether reaching a liquidation cluster causes a further move and found it does not move
-price more than an ordinary volatile minute in the same hour.
-<a href="research/liquidations-dont-move-price.html">Read the test →</a></div>
-
-<h2>What we have published</h2>
-<p class="lede">10 claims, 2 of them refuted by us.
-Refuted findings are never removed.</p>
+<h2>The provenance ladder</h2>
+<p>Every figure on this site carries one of four tiers. There is deliberately no
+<em>predicted</em> tier.</p>
 <ul class="plain">
-<li><span class="tag MEASURED">MEASURED</span>&nbsp; Free collateral cannot be derived from position and margin data; naive arithmetic misclassifies one wallet in five</li><li><span class="tag MEASURED">MEASURED</span>&nbsp; Order-book depth falls as price moves get larger, so a static-book cascade estimate is optimistic</li><li><span class="tag MEASURED">MEASURED</span>&nbsp; A properly aged wallet universe sees 53.3% of Hyperliquid BTC open interest, not 20%</li><li><span class="tag REFUTED">REFUTED</span>&nbsp; The wallet universe is exhausted; more wallets of the same kind would add nothing</li><li><span class="tag MEASURED">MEASURED</span>&nbsp; Daily-horizon directional tests on one instrument cannot detect realistic edges; the region is unpowerable, not empty</li>
+<li><span class="prov prov-observed">observed</span> <span class="prov-d">read directly from the venue — liquidation price, free collateral</span></li>
+<li><span class="prov prov-calculated">calculated</span> <span class="prov-d">arithmetic over observations — cluster notional, defensibility</span></li>
+<li><span class="prov prov-estimated">estimated</span> <span class="prov-d">a model with stated assumptions — full-universe coverage</span></li>
+<li><span class="prov prov-historical">historical</span> <span class="prov-d">measured over an archive — depth evaporation over 1,324 days</span></li>
 </ul>
-<p style="margin-top:.8rem"><a href="record.html">The full record →</a></p>
+
+<h2>Defensibility</h2>
+<p>The share of a cluster's notional held by wallets whose <code>withdrawable</code> is exactly
+zero. They cannot move their liquidation price without depositing from outside. This requires the
+venue's own figure — the obvious arithmetic misclassifies one wallet in five.
+<a href="research/free-collateral-misclassification.html">The measurement →</a></p>
+
+<h2>Coverage</h2>
+<p>Scanned position notional divided by exchange open interest, reported for
+<em>this</em> scan rather than the best scan we have ever run. The current map states
+25%; a full universe reaches an estimated
+53.3%. Publishing the better number on a narrower
+scan would be exactly the dishonesty this site exists to avoid.</p>
+
+<h2>Map age</h2>
+<p>The position scan runs on a slower cadence than the order book updates. Every figure carries
+how old the underlying scan is, because a map presented as current when it is an hour old is
+precision that does not exist.</p>
+
+<h2>What we do not publish</h2>
+<ul class="plain">
+<li>A cascade magnitude. We tested whether reaching a cluster moves price and it did not beat a
+volatility-matched minute.</li>
+<li>A risk rating without a measured basis. LOW/MODERATE/HIGH is a colour, not a finding.</li>
+<li>A prediction record before making predictions.</li>
+</ul>
 </main>
 <footer class="wrap foot"><p>Genesis — market intelligence for leveraged crypto traders.
 Every number carries its provenance, its observation count and how much of the market we could

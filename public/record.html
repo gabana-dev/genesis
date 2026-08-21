@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Genesis — market intelligence for leveraged crypto traders</title>
-<meta name="description" content="Forced-selling exposure on Hyperliquid, how much of it can defend itself, and how much of the market we can see.">
+<title>Our record — Genesis</title>
+<meta name="description" content="Every claim Genesis has published, including the ones we refuted ourselves.">
 <style>:root{
   --ink:#16150f; --ink-soft:#57544a; --ink-faint:#8b8779;
   --paper:#f7f4ec; --card:#fffdf7; --rule:#e2ddcf;
@@ -106,49 +106,23 @@ a{color:inherit;text-underline-offset:2px}
   padding:1rem 1.1rem;text-decoration:none;color:inherit;display:block}
 .asset:hover{border-color:var(--ink-faint)}
 .asset .sym{font-family:var(--serif);font-size:1.3rem;font-weight:600}
-</style><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Dataset", "name": "Genesis liquidation intelligence \u2014 Hyperliquid BTC", "description": "Forced-selling exposure and defensibility, with stated coverage.", "dateModified": "2026-08-21T07:28:40+00:00", "variableMeasured": [{"@type": "PropertyValue", "name": "forced_notional_usd", "value": 73786031.58}, {"@type": "PropertyValue", "name": "cannot_defend_pct", "value": 99.8}, {"@type": "PropertyValue", "name": "coverage", "value": 0.2511}]}</script>
+</style>
 </head><body>
 <nav class="nav"><a class="brand" href="index.html">Genesis</a>
 <a href="markets/btc.html">Markets</a><a href="research/index.html">Research</a>
 <a href="record.html">Record</a><a href="methodology.html">Methodology</a>
 <a href="api.html">API</a></nav>
 <main class="wrap">
-<h1>See the risk behind the liquidation map</h1>
-<p class="lede">Every map shows you where forced selling sits. Genesis shows you how much of it
-can actually defend itself — and how much of the market we can see.</p>
-
-<div class="asset-row">
-  <a class="asset" href="markets/btc.html">
-    <div class="sym">BTC</div>
-    <div class="stat" style="border:0;padding:.6rem 0 0;background:none">
-      <div class="k">Cannot defend</div>
-      <div class="v" style="color:var(--hot)">99.8%</div>
-      <div class="n">$73.8M forced exposure · 25% visible</div>
-    </div></a>
-  <div class="asset" style="opacity:.55">
-    <div class="sym">ETH</div>
-    <div class="stat" style="border:0;padding:.6rem 0 0;background:none">
-      <div class="k">Not yet scanned</div><div class="v" style="color:var(--ink-faint)">—</div>
-      <div class="n">the scanner covers BTC only today</div></div></div>
-  <div class="asset" style="opacity:.55">
-    <div class="sym">SOL</div>
-    <div class="stat" style="border:0;padding:.6rem 0 0;background:none">
-      <div class="k">Not yet scanned</div><div class="v" style="color:var(--ink-faint)">—</div>
-      <div class="n">the scanner covers BTC only today</div></div></div>
+<h1>Our record</h1>
+<p class="lede">Every claim Genesis has published, and what happened to it. Refuted findings are
+never removed — a record that keeps only its wins is a marketing page.</p>
+<div class="grid">
+<div class="stat"><div class="k">ASSUMED</div><div class="v">1</div></div><div class="stat"><div class="k">MEASURED</div><div class="v">6</div></div><div class="stat"><div class="k">PRELIMINARY</div><div class="v">1</div></div><div class="stat"><div class="k">REFUTED</div><div class="v">2</div></div>
 </div>
-
-<div class="note"><strong>What Genesis does not tell you.</strong> It does not predict price. We
-tested whether reaching a liquidation cluster causes a further move and found it does not move
-price more than an ordinary volatile minute in the same hour.
-<a href="research/liquidations-dont-move-price.html">Read the test →</a></div>
-
-<h2>What we have published</h2>
-<p class="lede">10 claims, 2 of them refuted by us.
-Refuted findings are never removed.</p>
-<ul class="plain">
-<li><span class="tag MEASURED">MEASURED</span>&nbsp; Free collateral cannot be derived from position and margin data; naive arithmetic misclassifies one wallet in five</li><li><span class="tag MEASURED">MEASURED</span>&nbsp; Order-book depth falls as price moves get larger, so a static-book cascade estimate is optimistic</li><li><span class="tag MEASURED">MEASURED</span>&nbsp; A properly aged wallet universe sees 53.3% of Hyperliquid BTC open interest, not 20%</li><li><span class="tag REFUTED">REFUTED</span>&nbsp; The wallet universe is exhausted; more wallets of the same kind would add nothing</li><li><span class="tag MEASURED">MEASURED</span>&nbsp; Daily-horizon directional tests on one instrument cannot detect realistic edges; the region is unpowerable, not empty</li>
-</ul>
-<p style="margin-top:.8rem"><a href="record.html">The full record →</a></p>
+<div class="note">Two of these were claims we made confidently and then disproved ourselves. They
+are the entries a competitor will not reproduce, because doing so means publishing when you were
+wrong.</div>
+<ul class="plain"><li><span class="tag MEASURED">MEASURED</span>&nbsp; <strong>Free collateral cannot be derived from position and margin data; naive arithmetic misclassifies one wallet in five</strong><br><span style="color:var(--ink-faint);font-size:.85rem">withdrawable == accountValue - totalMarginUsed for 19% of wallets; 20% misclassified as able to defend</span></li><li><span class="tag MEASURED">MEASURED</span>&nbsp; <strong>Order-book depth falls as price moves get larger, so a static-book cascade estimate is optimistic</strong><br><span style="color:var(--ink-faint);font-size:.85rem">near-book depth falls to 0.8462 at a 5-minute horizon during the largest moves (p25 0.6573), against 1.0015 in quiet markets</span></li><li><span class="tag MEASURED">MEASURED</span>&nbsp; <strong>A properly aged wallet universe sees 53.3% of Hyperliquid BTC open interest, not 20%</strong><br><span style="color:var(--ink-faint);font-size:.85rem">53.3% coverage, 95% CI [40.9%, 70.8%]</span></li><li><span class="tag REFUTED">REFUTED</span>&nbsp; <strong>The wallet universe is exhausted; more wallets of the same kind would add nothing</strong><br><span style="color:var(--ink-faint);font-size:.85rem">claimed 20.24% coverage was near the ceiling; actual is 53.3%</span></li><li><span class="tag MEASURED">MEASURED</span>&nbsp; <strong>Daily-horizon directional tests on one instrument cannot detect realistic edges; the region is unpowerable, not empty</strong><br><span style="color:var(--ink-faint);font-size:.85rem">detecting a 52% hit rate needs 4,900 independent days (13.4 years); 51% needs 19,600 (53.7 years)</span></li><li><span class="tag ASSUMED">ASSUMED</span>&nbsp; <strong>Binance order-book behaviour under stress transfers to Hyperliquid</strong><br><span style="color:var(--ink-faint);font-size:.85rem">none — nothing has been measured on Hyperliquid</span></li><li><span class="tag REFUTED">REFUTED</span>&nbsp; <strong>No provider sells per-wallet account state, so an archive of it is a durable moat</strong><br><span style="color:var(--ink-faint);font-size:.85rem">HyperTracker sells it — complete market coverage, 15-20 minute snapshots, history from 2025-04-04, $179-1,999/month</span></li><li><span class="tag MEASURED">MEASURED</span>&nbsp; <strong>The position map is up to an hour stale relative to the order book, which manufactures phantom triggers</strong><br><span style="color:var(--ink-faint);font-size:.85rem">clock gap of 3,055 s (51 min) between the latest l2Book snapshot and the latest position snapshot</span></li><li><span class="tag PRELIMINARY">PRELIMINARY</span>&nbsp; <strong>Visible forced flow on Hyperliquid BTC is small relative to visible book depth</strong><br><span style="color:var(--ink-faint);font-size:.85rem">$63.6M total forced selling in the visible map against $222.5M of bids within 2.71% of mid; a $10.6M trigger moved price 0.069%</span></li><li><span class="tag MEASURED">MEASURED</span>&nbsp; <strong>Forced liquidation does not move price more than a volatility-matched random minute in the same hour</strong><br><span style="color:var(--ink-faint);font-size:.85rem">15m mean +40.07 bps in the forced direction against a matched control of 44.52 bps; no horizon clears both benchmarks</span></li></ul>
 </main>
 <footer class="wrap foot"><p>Genesis — market intelligence for leveraged crypto traders.
 Every number carries its provenance, its observation count and how much of the market we could

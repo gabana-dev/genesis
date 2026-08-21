@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Genesis — market intelligence for leveraged crypto traders</title>
-<meta name="description" content="Forced-selling exposure on Hyperliquid, how much of it can defend itself, and how much of the market we can see.">
+<title>API — Genesis</title>
+<meta name="description" content="Static JSON: liquidation exposure, defensibility and coverage for Hyperliquid.">
 <style>:root{
   --ink:#16150f; --ink-soft:#57544a; --ink-faint:#8b8779;
   --paper:#f7f4ec; --card:#fffdf7; --rule:#e2ddcf;
@@ -106,49 +106,42 @@ a{color:inherit;text-underline-offset:2px}
   padding:1rem 1.1rem;text-decoration:none;color:inherit;display:block}
 .asset:hover{border-color:var(--ink-faint)}
 .asset .sym{font-family:var(--serif);font-size:1.3rem;font-weight:600}
-</style><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Dataset", "name": "Genesis liquidation intelligence \u2014 Hyperliquid BTC", "description": "Forced-selling exposure and defensibility, with stated coverage.", "dateModified": "2026-08-21T07:28:40+00:00", "variableMeasured": [{"@type": "PropertyValue", "name": "forced_notional_usd", "value": 73786031.58}, {"@type": "PropertyValue", "name": "cannot_defend_pct", "value": 99.8}, {"@type": "PropertyValue", "name": "coverage", "value": 0.2511}]}</script>
+</style>
 </head><body>
 <nav class="nav"><a class="brand" href="index.html">Genesis</a>
 <a href="markets/btc.html">Markets</a><a href="research/index.html">Research</a>
 <a href="record.html">Record</a><a href="methodology.html">Methodology</a>
 <a href="api.html">API</a></nav>
 <main class="wrap">
-<h1>See the risk behind the liquidation map</h1>
-<p class="lede">Every map shows you where forced selling sits. Genesis shows you how much of it
-can actually defend itself — and how much of the market we can see.</p>
-
-<div class="asset-row">
-  <a class="asset" href="markets/btc.html">
-    <div class="sym">BTC</div>
-    <div class="stat" style="border:0;padding:.6rem 0 0;background:none">
-      <div class="k">Cannot defend</div>
-      <div class="v" style="color:var(--hot)">99.8%</div>
-      <div class="n">$73.8M forced exposure · 25% visible</div>
-    </div></a>
-  <div class="asset" style="opacity:.55">
-    <div class="sym">ETH</div>
-    <div class="stat" style="border:0;padding:.6rem 0 0;background:none">
-      <div class="k">Not yet scanned</div><div class="v" style="color:var(--ink-faint)">—</div>
-      <div class="n">the scanner covers BTC only today</div></div></div>
-  <div class="asset" style="opacity:.55">
-    <div class="sym">SOL</div>
-    <div class="stat" style="border:0;padding:.6rem 0 0;background:none">
-      <div class="k">Not yet scanned</div><div class="v" style="color:var(--ink-faint)">—</div>
-      <div class="n">the scanner covers BTC only today</div></div></div>
-</div>
-
-<div class="note"><strong>What Genesis does not tell you.</strong> It does not predict price. We
-tested whether reaching a liquidation cluster causes a further move and found it does not move
-price more than an ordinary volatile minute in the same hour.
-<a href="research/liquidations-dont-move-price.html">Read the test →</a></div>
-
-<h2>What we have published</h2>
-<p class="lede">10 claims, 2 of them refuted by us.
-Refuted findings are never removed.</p>
-<ul class="plain">
-<li><span class="tag MEASURED">MEASURED</span>&nbsp; Free collateral cannot be derived from position and margin data; naive arithmetic misclassifies one wallet in five</li><li><span class="tag MEASURED">MEASURED</span>&nbsp; Order-book depth falls as price moves get larger, so a static-book cascade estimate is optimistic</li><li><span class="tag MEASURED">MEASURED</span>&nbsp; A properly aged wallet universe sees 53.3% of Hyperliquid BTC open interest, not 20%</li><li><span class="tag REFUTED">REFUTED</span>&nbsp; The wallet universe is exhausted; more wallets of the same kind would add nothing</li><li><span class="tag MEASURED">MEASURED</span>&nbsp; Daily-horizon directional tests on one instrument cannot detect realistic edges; the region is unpowerable, not empty</li>
-</ul>
-<p style="margin-top:.8rem"><a href="record.html">The full record →</a></p>
+<h1>API</h1>
+<p class="lede">The same source of truth the pages are generated from. Static JSON — no key, no
+rate limit, no server to fall over.</p>
+<h2>Endpoints</h2>
+<pre>GET /data/map.json         clusters, exposure, defensibility, coverage
+GET /data/scorecard.json   every published claim and its status
+GET /data/meta.json        what we cannot currently see</pre>
+<h2>Example</h2>
+<pre>{
+ &quot;asset&quot;: &quot;BTC&quot;,
+ &quot;venue&quot;: &quot;hyperliquid&quot;,
+ &quot;map_taken_at&quot;: &quot;2026-08-21T06:42:57+00:00&quot;,
+ &quot;map_age_seconds&quot;: 2743
+}
+"coverage": {
+ &quot;observed_fraction&quot;: 0.2511,
+ &quot;tier&quot;: &quot;fast&quot;,
+ &quot;wallets_scanned&quot;: 300,
+ &quot;method&quot;: &quot;scanned position notional / exchange open interest&quot;,
+ &quot;note&quot;: &quot;every figure below is a LOWER BOUND -- forced flow from wallets outside this scan is invisible&quot;,
+ &quot;full_universe_estimate&quot;: 0.533,
+ &quot;reference&quot;: &quot;F-0003&quot;
+}</pre>
+<h2>For agents</h2>
+<p>Every page carries JSON-LD describing the same measurements, so a retrieval system can cite a
+figure together with its observation count, timestamp, coverage and method rather than parsing a
+chart.</p>
+<div class="note">Every response states what fraction of the market it observed. A number without
+its coverage is not an answer.</div>
 </main>
 <footer class="wrap foot"><p>Genesis — market intelligence for leveraged crypto traders.
 Every number carries its provenance, its observation count and how much of the market we could

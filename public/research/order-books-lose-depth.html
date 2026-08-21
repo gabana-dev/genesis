@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Genesis — market intelligence for leveraged crypto traders</title>
-<meta name="description" content="Forced-selling exposure on Hyperliquid, how much of it can defend itself, and how much of the market we can see.">
+<title>Crypto order books lose 15% of their depth during large moves — Genesis Research</title>
+<meta name="description" content="1,324 days of Binance order-book depth, 3,733,943 snapshots, zero missing days. In quiet markets the book is unchanged to four decimal places.">
 <style>:root{
   --ink:#16150f; --ink-soft:#57544a; --ink-faint:#8b8779;
   --paper:#f7f4ec; --card:#fffdf7; --rule:#e2ddcf;
@@ -106,51 +106,64 @@ a{color:inherit;text-underline-offset:2px}
   padding:1rem 1.1rem;text-decoration:none;color:inherit;display:block}
 .asset:hover{border-color:var(--ink-faint)}
 .asset .sym{font-family:var(--serif);font-size:1.3rem;font-weight:600}
-</style><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Dataset", "name": "Genesis liquidation intelligence \u2014 Hyperliquid BTC", "description": "Forced-selling exposure and defensibility, with stated coverage.", "dateModified": "2026-08-21T07:28:40+00:00", "variableMeasured": [{"@type": "PropertyValue", "name": "forced_notional_usd", "value": 73786031.58}, {"@type": "PropertyValue", "name": "cannot_defend_pct", "value": 99.8}, {"@type": "PropertyValue", "name": "coverage", "value": 0.2511}]}</script>
+</style><script type="application/ld+json">{"@context": "https://schema.org", "@type": "ScholarlyArticle", "headline": "Crypto order books lose 15% of their depth during large moves", "abstract": "1,324 days of Binance order-book depth, 3,733,943 snapshots, zero missing days. In quiet markets the book is unchanged to four decimal places.", "identifier": "F-0002", "publisher": {"@type": "Organization", "name": "Genesis"}}</script>
 </head><body>
-<nav class="nav"><a class="brand" href="index.html">Genesis</a>
-<a href="markets/btc.html">Markets</a><a href="research/index.html">Research</a>
-<a href="record.html">Record</a><a href="methodology.html">Methodology</a>
-<a href="api.html">API</a></nav>
+<nav class="nav"><a class="brand" href="../index.html">Genesis</a>
+<a href="../markets/btc.html">Markets</a><a href="../research/index.html">Research</a>
+<a href="../record.html">Record</a><a href="../methodology.html">Methodology</a>
+<a href="../api.html">API</a></nav>
 <main class="wrap">
-<h1>See the risk behind the liquidation map</h1>
-<p class="lede">Every map shows you where forced selling sits. Genesis shows you how much of it
-can actually defend itself — and how much of the market we can see.</p>
-
-<div class="asset-row">
-  <a class="asset" href="markets/btc.html">
-    <div class="sym">BTC</div>
-    <div class="stat" style="border:0;padding:.6rem 0 0;background:none">
-      <div class="k">Cannot defend</div>
-      <div class="v" style="color:var(--hot)">99.8%</div>
-      <div class="n">$73.8M forced exposure · 25% visible</div>
-    </div></a>
-  <div class="asset" style="opacity:.55">
-    <div class="sym">ETH</div>
-    <div class="stat" style="border:0;padding:.6rem 0 0;background:none">
-      <div class="k">Not yet scanned</div><div class="v" style="color:var(--ink-faint)">—</div>
-      <div class="n">the scanner covers BTC only today</div></div></div>
-  <div class="asset" style="opacity:.55">
-    <div class="sym">SOL</div>
-    <div class="stat" style="border:0;padding:.6rem 0 0;background:none">
-      <div class="k">Not yet scanned</div><div class="v" style="color:var(--ink-faint)">—</div>
-      <div class="n">the scanner covers BTC only today</div></div></div>
+<h1>Crypto order books lose 15% of their depth during large moves</h1>
+<p class="lede">1,324 days of Binance order-book depth, 3,733,943 snapshots, zero missing days. In quiet markets the book is unchanged to four decimal places.</p>
+<div class="answer"><div class="q">The answer</div>
+  <div class="a calm" style="font-size:1.5rem;line-height:1.3">0.8462 — and 0.6573 in the worst quarter.</div>
+  <div style="margin-top:.9rem"><span class="prov prov-historical">historical</span> <span class="prov-d">F-0002 · see the record for status</span></div>
 </div>
 
-<div class="note"><strong>What Genesis does not tell you.</strong> It does not predict price. We
-tested whether reaching a liquidation cluster causes a further move and found it does not move
-price more than an ordinary volatile minute in the same hour.
-<a href="research/liquidations-dont-move-price.html">Read the test →</a></div>
+<p>Every liquidation heatmap models cluster impact against a <strong>static book</strong>: forced
+selling meets whatever depth is showing, and price moves by however much that absorbs.</p>
 
-<h2>What we have published</h2>
-<p class="lede">10 claims, 2 of them refuted by us.
-Refuted findings are never removed.</p>
-<ul class="plain">
-<li><span class="tag MEASURED">MEASURED</span>&nbsp; Free collateral cannot be derived from position and margin data; naive arithmetic misclassifies one wallet in five</li><li><span class="tag MEASURED">MEASURED</span>&nbsp; Order-book depth falls as price moves get larger, so a static-book cascade estimate is optimistic</li><li><span class="tag MEASURED">MEASURED</span>&nbsp; A properly aged wallet universe sees 53.3% of Hyperliquid BTC open interest, not 20%</li><li><span class="tag REFUTED">REFUTED</span>&nbsp; The wallet universe is exhausted; more wallets of the same kind would add nothing</li><li><span class="tag MEASURED">MEASURED</span>&nbsp; Daily-horizon directional tests on one instrument cannot detect realistic edges; the region is unpowerable, not empty</li>
-</ul>
-<p style="margin-top:.8rem"><a href="record.html">The full record →</a></p>
+<p>We measured what the book actually does, over three and a half years of free public data.</p>
+
+<h3>Near book, ±0.2–1% of mid</h3>
+<div class="scroll"><table>
+<thead><tr><th>Horizon</th><th>Quiet market</th><th>Largest moves</th><th>Worst quarter</th>
+<th>Distinct days</th></tr></thead><tbody>
+<tr><td>1 min</td><td>1.0003</td><td>0.9773</td><td>0.8700</td><td>313</td></tr>
+<tr><td>5 min</td><td>1.0015</td><td><strong>0.8462</strong></td><td><strong>0.6573</strong></td><td>160</td></tr>
+<tr><td>15 min</td><td>1.0030</td><td>0.8586</td><td>0.6646</td><td>85</td></tr>
+</tbody></table></div>
+
+<p><strong>In quiet markets the book is unchanged to four decimal places</strong>, across 1,320
+distinct days. That is the control working: the effect appears only where it is claimed to.</p>
+
+<h3>Withdrawal takes minutes, not seconds</h3>
+<p>At one minute the book barely flinches. By five minutes it has fallen to 0.846. Liquidity does
+not vanish on impact — it leaves over the following minutes.</p>
+
+<p>The consequence is direct and nobody models it: <strong>a fast cascade meets a nearly full
+book, a slow grinding one meets a book that is leaving.</strong> Identical forced flow, different
+outcome depending on how long the move takes.</p>
+
+<p>Withdrawal is also concentrated near the touch — at five minutes the near book falls to 0.846
+while the far book holds at 0.887. The liquidity disappears exactly where the first forced flow
+lands.</p>
+
+<h3>What it does not show</h3>
+<p>Not causation. Depth falling during a move is equally consistent with makers withdrawing
+quotes and with quotes being consumed. And not prediction: it is a conditional description —
+given a move of this size, the book was this much thinner.</p>
+
+<h3>Method note</h3>
+<p>Snapshots are 30 seconds apart against horizons of 1–15 minutes, so raw rows share most of
+their window. An earlier version of this analysis reported <strong>0.726</strong> for the largest
+bucket — the most dramatic number in the table — and that bucket vanished entirely once
+overlapping observations were removed. It was 26 views of the same few minutes.</p>
+
+<p style="margin-top:2rem"><a href="index.html">← All research</a> ·
+<a href="../record.html">Our record, including what we got wrong →</a></p>
 </main>
 <footer class="wrap foot"><p>Genesis — market intelligence for leveraged crypto traders.
 Every number carries its provenance, its observation count and how much of the market we could
-see. <a href="record.html">Including the claims we got wrong.</a></p></footer>
+see. <a href="../record.html">Including the claims we got wrong.</a></p></footer>
 </body></html>

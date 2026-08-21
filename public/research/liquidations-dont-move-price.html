@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Genesis — market intelligence for leveraged crypto traders</title>
-<meta name="description" content="Forced-selling exposure on Hyperliquid, how much of it can defend itself, and how much of the market we can see.">
+<title>Liquidation maps show where forced selling is. We tested whether it moves price. — Genesis Research</title>
+<meta name="description" content="228 independent episodes across 28 symbols. Forced flow returned +40.07 bps at 15 minutes and beat a permutation null. A random minute in the same symbol in the same hour returned 44.52 bps.">
 <style>:root{
   --ink:#16150f; --ink-soft:#57544a; --ink-faint:#8b8779;
   --paper:#f7f4ec; --card:#fffdf7; --rule:#e2ddcf;
@@ -106,51 +106,62 @@ a{color:inherit;text-underline-offset:2px}
   padding:1rem 1.1rem;text-decoration:none;color:inherit;display:block}
 .asset:hover{border-color:var(--ink-faint)}
 .asset .sym{font-family:var(--serif);font-size:1.3rem;font-weight:600}
-</style><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Dataset", "name": "Genesis liquidation intelligence \u2014 Hyperliquid BTC", "description": "Forced-selling exposure and defensibility, with stated coverage.", "dateModified": "2026-08-21T07:28:40+00:00", "variableMeasured": [{"@type": "PropertyValue", "name": "forced_notional_usd", "value": 73786031.58}, {"@type": "PropertyValue", "name": "cannot_defend_pct", "value": 99.8}, {"@type": "PropertyValue", "name": "coverage", "value": 0.2511}]}</script>
+</style><script type="application/ld+json">{"@context": "https://schema.org", "@type": "ScholarlyArticle", "headline": "Liquidation maps show where forced selling is. We tested whether it moves price.", "abstract": "228 independent episodes across 28 symbols. Forced flow returned +40.07 bps at 15 minutes and beat a permutation null. A random minute in the same symbol in the same hour returned 44.52 bps.", "identifier": "F-0010", "publisher": {"@type": "Organization", "name": "Genesis"}}</script>
 </head><body>
-<nav class="nav"><a class="brand" href="index.html">Genesis</a>
-<a href="markets/btc.html">Markets</a><a href="research/index.html">Research</a>
-<a href="record.html">Record</a><a href="methodology.html">Methodology</a>
-<a href="api.html">API</a></nav>
+<nav class="nav"><a class="brand" href="../index.html">Genesis</a>
+<a href="../markets/btc.html">Markets</a><a href="../research/index.html">Research</a>
+<a href="../record.html">Record</a><a href="../methodology.html">Methodology</a>
+<a href="../api.html">API</a></nav>
 <main class="wrap">
-<h1>See the risk behind the liquidation map</h1>
-<p class="lede">Every map shows you where forced selling sits. Genesis shows you how much of it
-can actually defend itself — and how much of the market we can see.</p>
-
-<div class="asset-row">
-  <a class="asset" href="markets/btc.html">
-    <div class="sym">BTC</div>
-    <div class="stat" style="border:0;padding:.6rem 0 0;background:none">
-      <div class="k">Cannot defend</div>
-      <div class="v" style="color:var(--hot)">99.8%</div>
-      <div class="n">$73.8M forced exposure · 25% visible</div>
-    </div></a>
-  <div class="asset" style="opacity:.55">
-    <div class="sym">ETH</div>
-    <div class="stat" style="border:0;padding:.6rem 0 0;background:none">
-      <div class="k">Not yet scanned</div><div class="v" style="color:var(--ink-faint)">—</div>
-      <div class="n">the scanner covers BTC only today</div></div></div>
-  <div class="asset" style="opacity:.55">
-    <div class="sym">SOL</div>
-    <div class="stat" style="border:0;padding:.6rem 0 0;background:none">
-      <div class="k">Not yet scanned</div><div class="v" style="color:var(--ink-faint)">—</div>
-      <div class="n">the scanner covers BTC only today</div></div></div>
+<h1>Liquidation maps show where forced selling is. We tested whether it moves price.</h1>
+<p class="lede">228 independent episodes across 28 symbols. Forced flow returned +40.07 bps at 15 minutes and beat a permutation null. A random minute in the same symbol in the same hour returned 44.52 bps.</p>
+<div class="answer"><div class="q">The answer</div>
+  <div class="a calm" style="font-size:1.5rem;line-height:1.3">No evidence, once you control for the volatility that was already there.</div>
+  <div style="margin-top:.9rem"><span class="prov prov-historical">historical</span> <span class="prov-d">F-0010 · see the record for status</span></div>
 </div>
 
-<div class="note"><strong>What Genesis does not tell you.</strong> It does not predict price. We
-tested whether reaching a liquidation cluster causes a further move and found it does not move
-price more than an ordinary volatile minute in the same hour.
-<a href="research/liquidations-dont-move-price.html">Read the test →</a></div>
+<p>Every liquidation product on the market shows you where forced selling sits. Coinglass calls
+its heatmap a probability map and attaches no probability to anything. None of them publishes
+whether reaching a cluster actually does anything.</p>
 
-<h2>What we have published</h2>
-<p class="lede">10 claims, 2 of them refuted by us.
-Refuted findings are never removed.</p>
-<ul class="plain">
-<li><span class="tag MEASURED">MEASURED</span>&nbsp; Free collateral cannot be derived from position and margin data; naive arithmetic misclassifies one wallet in five</li><li><span class="tag MEASURED">MEASURED</span>&nbsp; Order-book depth falls as price moves get larger, so a static-book cascade estimate is optimistic</li><li><span class="tag MEASURED">MEASURED</span>&nbsp; A properly aged wallet universe sees 53.3% of Hyperliquid BTC open interest, not 20%</li><li><span class="tag REFUTED">REFUTED</span>&nbsp; The wallet universe is exhausted; more wallets of the same kind would add nothing</li><li><span class="tag MEASURED">MEASURED</span>&nbsp; Daily-horizon directional tests on one instrument cannot detect realistic edges; the region is unpowerable, not empty</li>
-</ul>
-<p style="margin-top:.8rem"><a href="record.html">The full record →</a></p>
+<p>We recorded 61,338 forced-order events across 757 symbols on Binance USD-M and collapsed them
+into <strong>228 independent episodes</strong> at $250k or more. Episodes, not events: 90% of
+large liquidations fall within 60 seconds of another, so counting events as observations inflates
+the sample threefold.</p>
+
+<h3>The result</h3>
+<div class="scroll"><table>
+<thead><tr><th>Horizon</th><th>Mean</th><th>Hit rate</th><th>Permutation p95</th>
+<th>Matched control</th></tr></thead><tbody>
+<tr><td>1 min</td><td>+6.27 bps</td><td>0.519</td><td>7.93 — fails</td><td>4.96 — clears</td></tr>
+<tr><td>5 min</td><td>+11.10 bps</td><td>0.557</td><td>14.99 — fails</td><td>25.13 — fails</td></tr>
+<tr><td>15 min</td><td>+40.07 bps</td><td>0.604</td><td>17.06 — clears</td><td>44.52 — fails</td></tr>
+</tbody></table></div>
+
+<p>At 15 minutes the effect is large: <strong>+40 bps with a 60% hit rate</strong>, comfortably
+beating a permutation null. That number alone would make a compelling product.</p>
+
+<p>Then take any other minute from the same hour in the same symbol. <strong>44.52 bps.</strong>
+More.</p>
+
+<h3>What it means</h3>
+<p>Liquidations happen because the market is already moving. The move is the volatility; the
+liquidation is a symptom of it. A liquidation map is a map of where leverage sat, not a map of
+what will happen next.</p>
+
+<h3>Limitations, stated</h3>
+<p>Three days of recording. One venue. 106 of 228 episodes had usable price data, biasing the
+surviving sample toward liquid symbols — which flatters a liquidity-driven effect rather than
+hiding one. And this is Binance: it says nothing about Hyperliquid, whose HLP backstop and far
+smaller book differ in ways that could cut either way. That test is running.</p>
+
+<p>The failure is against a matched control, not a power threshold. More data tightens the
+intervals; it does not repair a comparison the effect loses on its merits.</p>
+
+<p style="margin-top:2rem"><a href="index.html">← All research</a> ·
+<a href="../record.html">Our record, including what we got wrong →</a></p>
 </main>
 <footer class="wrap foot"><p>Genesis — market intelligence for leveraged crypto traders.
 Every number carries its provenance, its observation count and how much of the market we could
-see. <a href="record.html">Including the claims we got wrong.</a></p></footer>
+see. <a href="../record.html">Including the claims we got wrong.</a></p></footer>
 </body></html>

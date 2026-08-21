@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Genesis — market intelligence for leveraged crypto traders</title>
-<meta name="description" content="Forced-selling exposure on Hyperliquid, how much of it can defend itself, and how much of the market we can see.">
+<title>Genesis Research — evidence on crypto market structure</title>
+<meta name="description" content="Original measurements on liquidation cascades, order-book depth and leveraged positioning, with methods and limitations stated.">
 <style>:root{
   --ink:#16150f; --ink-soft:#57544a; --ink-faint:#8b8779;
   --paper:#f7f4ec; --card:#fffdf7; --rule:#e2ddcf;
@@ -106,51 +106,19 @@ a{color:inherit;text-underline-offset:2px}
   padding:1rem 1.1rem;text-decoration:none;color:inherit;display:block}
 .asset:hover{border-color:var(--ink-faint)}
 .asset .sym{font-family:var(--serif);font-size:1.3rem;font-weight:600}
-</style><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Dataset", "name": "Genesis liquidation intelligence \u2014 Hyperliquid BTC", "description": "Forced-selling exposure and defensibility, with stated coverage.", "dateModified": "2026-08-21T07:28:40+00:00", "variableMeasured": [{"@type": "PropertyValue", "name": "forced_notional_usd", "value": 73786031.58}, {"@type": "PropertyValue", "name": "cannot_defend_pct", "value": 99.8}, {"@type": "PropertyValue", "name": "coverage", "value": 0.2511}]}</script>
+</style>
 </head><body>
-<nav class="nav"><a class="brand" href="index.html">Genesis</a>
-<a href="markets/btc.html">Markets</a><a href="research/index.html">Research</a>
-<a href="record.html">Record</a><a href="methodology.html">Methodology</a>
-<a href="api.html">API</a></nav>
+<nav class="nav"><a class="brand" href="../index.html">Genesis</a>
+<a href="../markets/btc.html">Markets</a><a href="../research/index.html">Research</a>
+<a href="../record.html">Record</a><a href="../methodology.html">Methodology</a>
+<a href="../api.html">API</a></nav>
 <main class="wrap">
-<h1>See the risk behind the liquidation map</h1>
-<p class="lede">Every map shows you where forced selling sits. Genesis shows you how much of it
-can actually defend itself — and how much of the market we can see.</p>
-
-<div class="asset-row">
-  <a class="asset" href="markets/btc.html">
-    <div class="sym">BTC</div>
-    <div class="stat" style="border:0;padding:.6rem 0 0;background:none">
-      <div class="k">Cannot defend</div>
-      <div class="v" style="color:var(--hot)">99.8%</div>
-      <div class="n">$73.8M forced exposure · 25% visible</div>
-    </div></a>
-  <div class="asset" style="opacity:.55">
-    <div class="sym">ETH</div>
-    <div class="stat" style="border:0;padding:.6rem 0 0;background:none">
-      <div class="k">Not yet scanned</div><div class="v" style="color:var(--ink-faint)">—</div>
-      <div class="n">the scanner covers BTC only today</div></div></div>
-  <div class="asset" style="opacity:.55">
-    <div class="sym">SOL</div>
-    <div class="stat" style="border:0;padding:.6rem 0 0;background:none">
-      <div class="k">Not yet scanned</div><div class="v" style="color:var(--ink-faint)">—</div>
-      <div class="n">the scanner covers BTC only today</div></div></div>
-</div>
-
-<div class="note"><strong>What Genesis does not tell you.</strong> It does not predict price. We
-tested whether reaching a liquidation cluster causes a further move and found it does not move
-price more than an ordinary volatile minute in the same hour.
-<a href="research/liquidations-dont-move-price.html">Read the test →</a></div>
-
-<h2>What we have published</h2>
-<p class="lede">10 claims, 2 of them refuted by us.
-Refuted findings are never removed.</p>
-<ul class="plain">
-<li><span class="tag MEASURED">MEASURED</span>&nbsp; Free collateral cannot be derived from position and margin data; naive arithmetic misclassifies one wallet in five</li><li><span class="tag MEASURED">MEASURED</span>&nbsp; Order-book depth falls as price moves get larger, so a static-book cascade estimate is optimistic</li><li><span class="tag MEASURED">MEASURED</span>&nbsp; A properly aged wallet universe sees 53.3% of Hyperliquid BTC open interest, not 20%</li><li><span class="tag REFUTED">REFUTED</span>&nbsp; The wallet universe is exhausted; more wallets of the same kind would add nothing</li><li><span class="tag MEASURED">MEASURED</span>&nbsp; Daily-horizon directional tests on one instrument cannot detect realistic edges; the region is unpowerable, not empty</li>
-</ul>
-<p style="margin-top:.8rem"><a href="record.html">The full record →</a></p>
+<h1>Research</h1>
+<p class="lede">An evidence library, not a blog. Every finding carries its method, its sample and
+its limits — and the ones we later refuted stay published.</p>
+<ul class="plain"><li><a href="liquidations-dont-move-price.html"><strong>Liquidation maps show where forced selling is. We tested whether it moves price.</strong></a><br><span style="color:var(--ink-faint)">228 independent episodes across 28 symbols. Forced flow returned +40.07 bps at 15 minutes and beat a permutation null. A…</span></li><li><a href="order-books-lose-depth.html"><strong>Crypto order books lose 15% of their depth during large moves</strong></a><br><span style="color:var(--ink-faint)">1,324 days of Binance order-book depth, 3,733,943 snapshots, zero missing days. In quiet markets the book is unchanged t…</span></li><li><a href="free-collateral-misclassification.html"><strong>One leveraged wallet in five is misclassified when you ignore free collateral</strong></a><br><span style="color:var(--ink-faint)">74 wallets holding open BTC positions. Naive margin maths says 96% could defend their position. The venue says 76%.…</span></li></ul>
 </main>
 <footer class="wrap foot"><p>Genesis — market intelligence for leveraged crypto traders.
 Every number carries its provenance, its observation count and how much of the market we could
-see. <a href="record.html">Including the claims we got wrong.</a></p></footer>
+see. <a href="../record.html">Including the claims we got wrong.</a></p></footer>
 </body></html>
