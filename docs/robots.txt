@@ -2,8 +2,8 @@
 User-agent: *
 Allow: /
 
-# Named explicitly: the research is written to be cited, and a robots file that
-# silently blocks AI crawlers is how a body of work becomes invisible.
+# Named explicitly: a robots file that silently blocks AI crawlers is how a body of
+# work becomes invisible.
 User-agent: GPTBot
 Allow: /
 User-agent: ClaudeBot
@@ -13,4 +13,4 @@ Allow: /
 User-agent: PerplexityBot
 Allow: /
 
-Sitemap: https://genesis.example/sitemap.xml
+Sitemap: https://gabana-dev.github.io/genesis/sitemap.xml

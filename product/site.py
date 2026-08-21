@@ -18,7 +18,7 @@ from datetime import datetime, timezone
 
 ROOT = os.path.join(os.path.dirname(__file__), "..")
 DATA = os.path.join(ROOT, "public", "data")
-PUB = os.path.join(ROOT, "public")
+PUB = os.path.join(ROOT, "docs")   # GitHub Pages serves /docs from main
 
 def load(n):
     return json.load(open(os.path.join(DATA, f"{n}.json")))

@@ -39,7 +39,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "market"))
 import liqmap as L  # noqa: E402
 
 ROOT = os.path.join(os.path.dirname(__file__), "..")
-OUTDIR = os.path.join(ROOT, "public", "data")
+OUTDIR = os.path.join(ROOT, "docs", "data")
 
 BUCKET_PCT = 0.005          # 0.5% buckets, as LIQ-2
 RANGE_PCT = 0.10            # +/-10%
