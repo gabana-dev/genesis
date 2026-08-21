@@ -1,0 +1,32 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Liquidation alerts on Telegram — Genesis</title><meta name="description" content="Get a Telegram message when a Hyperliquid position approaches liquidation, or loses the free collateral to defend itself. Free for 3 addresses."><link rel="canonical" href="https://gabana-dev.github.io/genesis/alerts"><script type="application/ld+json">{"@context":"https://schema.org","@type":"Service","name":"Genesis liquidation alerts","description":"Telegram alerts when a Hyperliquid position approaches liquidation or loses the collateral to defend itself.","areaServed":"Hyperliquid","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script><link rel="stylesheet" href="/genesis/_assets/_alertsRoute_.BkMO9kSi.css"></head> <body> <nav class="nav"> <a class="brand" href="/genesis/index.html">Genesis</a> <a href="/genesis/check.html">Check a wallet</a> <a href="/genesis/alerts.html">Alerts</a> <a href="/genesis/markets/btc.html">Markets</a> <a href="/genesis/research/index.html">Research</a> <a href="/genesis/record.html">Record</a> <a href="/genesis/methodology.html">Methodology</a> <a href="/genesis/api.html">API</a> </nav> <main class="wrap"> <h1>Be told before it matters</h1> <p class="lede">
+You cannot watch a position at three in the morning. Give the bot an address and it watches for
+    you — and says nothing at all until something actually changes.
+</p> <p><a class="cta" href="https://t.me/hl_liqwatch_bot?start=watch">Open @hl_liqwatch_bot on Telegram →</a></p> <p class="hint">
+Free for up to 3 addresses. No signup, no email, no wallet connection — the bot only ever reads
+    public exchange data about an address you give it.
+</p> <h2>What it sends</h2> <div class="grid"> <div class="stat"> <div class="k">Getting close</div> <div class="v" style="font-size:1rem;font-family:var(--sans);">25 · 15 · 10 · 5 · 2%</div> <div class="n">once, when your closest position crosses into a tighter band</div> </div> <div class="stat"> <div class="k">Nothing left to defend with</div> <div class="v" style="font-size:1rem;font-family:var(--sans);">free collateral collapse</div> <div class="n">the one nobody else sends</div> </div> <div class="stat"> <div class="k">Clear</div> <div class="v" style="font-size:1rem;font-family:var(--sans);">stand down</div> <div class="n">once, when you are safely out again</div> </div> </div> <h2>Why the second one exists</h2> <p>
+Being close to liquidation is survivable if you can add margin and push the liquidation price
+    away. Whether you can depends on free collateral — and the obvious way to compute it is wrong.
+</p> <p>
+We compared the arithmetic against the exchange's own figure on 74 wallets. It agreed
+<strong>19%</strong> of the time and misclassified <strong>one wallet in five</strong> as able to
+    defend when it was not — always in the direction of looking safer. A tool that does the obvious
+    thing will reassure a trapped trader.
+<a href="/genesis/research/free-collateral-misclassification.html">The measurement →</a> </p> <h2>What it will never do</h2> <div class="note"><strong>Wake you for nothing.</strong> 
+An alert is a change of state, never a level. A band fires once; price oscillating around it
+    stays silent until distance has recovered a quarter past the threshold. No running commentary,
+    no daily digest, no noise to look busy.
+</div> <p>
+It will also never tell you a cascade is coming. We tested whether reaching a cluster of forced
+    selling moves price further and found it does not move price more than an ordinary volatile
+    minute in the same hour — so we do not sell it, however good the alert would look.
+<a href="/genesis/research/liquidations-dont-move-price.html">The test →</a> </p> <h2>Commands</h2> <pre>/watch 0x…     start watching an address
+/unwatch 0x…   stop
+/list          what it is watching for you
+/stop          forget you entirely</pre> <p class="hint">
+Your address is stored only so the bot knows what to check. <code>/stop</code> deletes it and
+    everything derived from it.
+</p> </main> <footer class="wrap foot"> <p>
+Genesis — market intelligence for leveraged crypto traders. Every number carries its
+        provenance, its observation count and how much of the market we could see.
+<a href="/genesis/record.html">Including the claims we got wrong.</a> </p> </footer> </body></html>
