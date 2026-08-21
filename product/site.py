@@ -39,7 +39,8 @@ def shell(title, desc, body, jsonld=None, depth=0):
 <style>{css()}</style>{ld}
 </head><body>
 <nav class="nav"><a class="brand" href="{up}index.html">Genesis</a>
-<a href="{up}check.html">Check a wallet</a><a href="{up}markets/btc.html">Markets</a><a href="{up}research/index.html">Research</a>
+<a href="{up}check.html">Check a wallet</a>{f'<a href="{up}alerts.html">Alerts</a>' if bot_handle() else ''}
+<a href="{up}markets/btc.html">Markets</a><a href="{up}research/index.html">Research</a>
 <a href="{up}record.html">Record</a><a href="{up}methodology.html">Methodology</a>
 <a href="{up}api.html">API</a></nav>
 <main class="wrap">{body}</main>
@@ -64,6 +65,21 @@ def age(s):
 # --------------------------------------------------------------------------------------
 # Pages
 # --------------------------------------------------------------------------------------
+
+def bot_handle():
+    """The Telegram bot's @name, read from the private env file.
+
+    Until a bot exists there is nothing to link to, so the alerts page and its nav entry are not
+    generated at all. A storefront advertising a door that does not open is worse than no door.
+    """
+    try:
+        for line in open(os.path.expanduser("~/genesis-private/alerts/env")):
+            if line.startswith("GENESIS_TG_BOT="):
+                return line.split("=", 1)[1].strip().lstrip("@")
+    except FileNotFoundError:
+        pass
+    return ""
+
 
 def live_example():
     """An address to demonstrate the check with, PULLED FROM THE LATEST SNAPSHOT, never hardcoded.
@@ -158,6 +174,73 @@ Refuted findings are never removed.</p>
     return shell("Check your liquidation risk on Hyperliquid — Genesis",
                  "Paste a Hyperliquid address and see how close it is to liquidation, and "
                  "whether it has anything left to defend with. Free, no signup.", body, ld)
+
+
+def page_alerts():
+    """The only surface anyone will pay for (product/ALERTS.md).
+
+    The page sells the SILENCE as hard as the alert. Every competitor's notification product is
+    a firehose, and a customer who gets woken for nothing turns the alarm off -- so the state
+    machine's discipline is the feature, not an implementation detail.
+    """
+    bot = bot_handle()
+    ld = {"@context":"https://schema.org","@type":"Service",
+          "name":"Genesis liquidation alerts",
+          "description":"Telegram alerts when a Hyperliquid position approaches liquidation "
+                        "or loses the collateral to defend itself.",
+          "areaServed":"Hyperliquid", "offers":{"@type":"Offer","price":"0",
+                                                "priceCurrency":"USD"}}
+    body = f"""
+<h1>Be told before it matters</h1>
+<p class="lede">You cannot watch a position at three in the morning. Give the bot an address and
+it watches for you — and says nothing at all until something actually changes.</p>
+
+<p><a class="cta" href="https://t.me/{bot}?start=watch">Open @{html.escape(bot)} on Telegram →</a></p>
+<p class="hint">Free for up to 3 addresses. No signup, no email, no wallet connection — the bot
+only ever reads public exchange data about an address you give it.</p>
+
+<h2>What it sends</h2>
+<div class="grid">
+  <div class="stat"><div class="k">Getting close</div>
+    <div class="v" style="font-size:1rem;font-family:var(--sans)">25 · 15 · 10 · 5 · 2%</div>
+    <div class="n">once, when your closest position crosses into a tighter band</div></div>
+  <div class="stat"><div class="k">Nothing left to defend with</div>
+    <div class="v" style="font-size:1rem;font-family:var(--sans)">free collateral collapse</div>
+    <div class="n">the one nobody else sends</div></div>
+  <div class="stat"><div class="k">Clear</div>
+    <div class="v" style="font-size:1rem;font-family:var(--sans)">stand down</div>
+    <div class="n">once, when you are safely out again</div></div>
+</div>
+
+<h2>Why the second one exists</h2>
+<p>Being close to liquidation is survivable if you can add margin and push the liquidation price
+away. Whether you can depends on free collateral — and the obvious way to compute it is wrong.</p>
+<p>We compared the arithmetic against the exchange's own figure on 74 wallets. It agreed
+<strong>19%</strong> of the time and misclassified <strong>one wallet in five</strong> as able to
+defend when it was not — always in the direction of looking safer. A tool that does the obvious
+thing will reassure a trapped trader.
+<a href="research/free-collateral-misclassification.html">The measurement →</a></p>
+
+<h2>What it will never do</h2>
+<div class="note"><strong>Wake you for nothing.</strong> An alert is a change of state, never a
+level. A band fires once; price oscillating around it stays silent until distance has recovered
+a quarter past the threshold. No running commentary, no daily digest, no noise to look busy.</div>
+<p>It will also never tell you a cascade is coming. We tested whether reaching a cluster of
+forced selling moves price further and found it does not move price more than an ordinary
+volatile minute in the same hour — so we do not sell it, however good the alert would look.
+<a href="research/liquidations-dont-move-price.html">The test →</a></p>
+
+<h2>Commands</h2>
+<pre>/watch 0x…     start watching an address
+/unwatch 0x…   stop
+/list          what it is watching for you
+/stop          forget you entirely</pre>
+<p class="hint">Your address is stored only so the bot knows what to check. <code>/stop</code>
+deletes it and everything derived from it.</p>
+"""
+    return shell("Liquidation alerts on Telegram — Genesis",
+                 "Get a Telegram message when a Hyperliquid position approaches liquidation, or "
+                 "loses the free collateral to defend itself. Free for 3 addresses.", body, ld)
 
 
 def page_market(m):
@@ -608,7 +691,18 @@ def page_check():
     nothing stored, and it scales without us.
     """
     tpl = open(os.path.join(os.path.dirname(__file__), "templates", "check.html")).read()
-    return tpl.replace("__CSS__", css()).replace("__EXAMPLE__", live_example())
+
+    # The check is where someone learns they are exposed. That is the only moment the alert is an
+    # obvious thing to want, so the offer belongs after the answer -- never before it.
+    cta = ('<div class="note"><strong>Want to be told when this changes?</strong> The bot '
+           'messages you when this address crosses into a tighter band, or loses the collateral '
+           'to defend itself — and says nothing at all otherwise. '
+           '<a href="alerts.html">Set it up →</a></div>') if bot_handle() else ""
+    nav = '<a href="check.html">Check a wallet</a>'
+    return (tpl.replace("__CSS__", css())
+               .replace("__EXAMPLE__", live_example())
+               .replace("__ALERTS_CTA__", cta)
+               .replace(nav, nav + ('<a href="alerts.html">Alerts</a>' if bot_handle() else "")))
 
 
 def main():
@@ -618,6 +712,7 @@ def main():
     out = {
       "index.html": page_home(m, sc),
       "check.html": page_check(),
+      **({"alerts.html": page_alerts()} if bot_handle() else {}),
       "markets/btc.html": page_market(m),
       "research/index.html": page_research_index(),
       "record.html": page_record(sc),

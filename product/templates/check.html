@@ -24,6 +24,8 @@ Hyperliquid. <button class="linkish" id="demo" type="button">Try an example</but
 
 <div id="out"></div>
 
+<section id="alertcta" hidden>__ALERTS_CTA__</section>
+
 <section id="explain" hidden>
   <h2>Why free collateral is the number that matters</h2>
   <p>When price moves against a leveraged position, the usual escape is to add margin and push
@@ -79,7 +81,7 @@ function render(addr, st, px) {
       <div class="a calm" style="font-size:1.5rem;line-height:1.3">Nothing at risk</div>
       <div class="s">This address has no leveraged positions with a liquidation price on
       Hyperliquid right now.</div></div>`;
-    $('explain').hidden = false; return;
+    $('explain').hidden = false; $('alertcta').hidden = false; return;
   }
 
   const worst = pos[0];
@@ -131,6 +133,7 @@ function render(addr, st, px) {
   <p class="hint" style="margin-top:.6rem">Distances far above 100% usually mean a dust position —
   the exchange still reports a liquidation price for it, so we show it rather than hide it.</p>`;
   $('explain').hidden = false;
+  $('alertcta').hidden = false;
 }
 
 async function check(addr) {

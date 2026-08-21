@@ -118,6 +118,10 @@ a{color:inherit;text-underline-offset:2px}
 .hint{font-size:.84rem;color:var(--ink-faint);margin:.2rem 0 1.4rem}
 .linkish{background:none;border:0;padding:0;font:inherit;color:var(--cool);cursor:pointer;
   text-decoration:underline;text-underline-offset:2px}
+
+.cta{display:inline-block;background:var(--ink);color:var(--paper);text-decoration:none;
+  font-weight:600;padding:.75rem 1.4rem;border-radius:3px}
+.cta:hover{opacity:.88}
 </style>
 </head><body>
 <nav class="nav"><a class="brand" href="index.html">Genesis</a>
@@ -138,6 +142,8 @@ and tell you the one thing most tools leave out — whether it has anything left
 Hyperliquid. <button class="linkish" id="demo" type="button">Try an example</button></p>
 
 <div id="out"></div>
+
+<section id="alertcta" hidden></section>
 
 <section id="explain" hidden>
   <h2>Why free collateral is the number that matters</h2>
@@ -194,7 +200,7 @@ function render(addr, st, px) {
       <div class="a calm" style="font-size:1.5rem;line-height:1.3">Nothing at risk</div>
       <div class="s">This address has no leveraged positions with a liquidation price on
       Hyperliquid right now.</div></div>`;
-    $('explain').hidden = false; return;
+    $('explain').hidden = false; $('alertcta').hidden = false; return;
   }
 
   const worst = pos[0];
@@ -246,6 +252,7 @@ function render(addr, st, px) {
   <p class="hint" style="margin-top:.6rem">Distances far above 100% usually mean a dust position —
   the exchange still reports a liquidation price for it, so we show it rather than hide it.</p>`;
   $('explain').hidden = false;
+  $('alertcta').hidden = false;
 }
 
 async function check(addr) {

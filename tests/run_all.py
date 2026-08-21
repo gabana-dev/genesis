@@ -36,6 +36,7 @@ SUITES = [
     "test_costs.py",
     "test_carry.py",
     "test_liqmap.py",
+    "test_alerts.py",
     "test_collectors.py",
     "test_disk_guard.py",
     "test_cascade.py",
