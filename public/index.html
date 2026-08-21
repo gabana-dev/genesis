@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Genesis — where the market is vulnerable</title>
+<meta name="description" content="Live liquidation exposure on Hyperliquid, with the one thing no other map publishes: how much of it can actually defend itself — and how much of the market we can see.">
+<style>
+  :root {
+    --ink:        #16150f;
+    --ink-soft:   #57544a;
+    --ink-faint:  #8b8779;
+    --paper:      #f7f4ec;
+    --card:       #fffdf7;
+    --rule:       #e2ddcf;
+    --danger:     #a4341f;
+    --danger-bg:  #f3e2dd;
+    --calm:       #4a6b52;
+    --mono: ui-monospace, "SF Mono", Menlo, monospace;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    --sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink: #ece8dc; --ink-soft: #a8a294; --ink-faint: #726d61;
+      --paper: #14130f; --card: #1c1a15; --rule: #2e2b23;
+      --danger: #d9705a; --danger-bg: #2e1d18; --calm: #7fa389;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ink: #ece8dc; --ink-soft: #a8a294; --ink-faint: #726d61;
+    --paper: #14130f; --card: #1c1a15; --rule: #2e2b23;
+    --danger: #d9705a; --danger-bg: #2e1d18; --calm: #7fa389;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: var(--sans); line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 46rem; margin: 0 auto; padding: 3rem 1.25rem 5rem; }
+
+  header { margin-bottom: 2.5rem; }
+  h1 { font-family: var(--serif); font-size: clamp(1.9rem,5vw,2.6rem);
+       font-weight: 600; margin: 0 0 .4rem; letter-spacing: -.015em; text-wrap: balance; }
+  .tagline { color: var(--ink-soft); font-size: 1.05rem; margin: 0; text-wrap: balance; }
+
+  .headline {
+    background: var(--card); border: 1px solid var(--rule); border-radius: 3px;
+    padding: 1.75rem; margin-bottom: 1.25rem;
+  }
+  .big { font-family: var(--mono); font-size: clamp(2.4rem,9vw,3.6rem);
+         font-weight: 600; line-height: 1; letter-spacing: -.03em; color: var(--danger); }
+  .big-label { font-size: .82rem; letter-spacing: .07em; text-transform: uppercase;
+               color: var(--ink-faint); margin-bottom: .5rem; }
+  .big-sub { color: var(--ink-soft); margin-top: .75rem; font-size: .95rem; }
+
+  .grid { display: grid; gap: .75rem; grid-template-columns: repeat(auto-fit,minmax(11rem,1fr));
+          margin-bottom: 1.25rem; }
+  .stat { background: var(--card); border: 1px solid var(--rule); border-radius: 3px; padding: 1rem 1.1rem; }
+  .stat .k { font-size: .74rem; letter-spacing: .06em; text-transform: uppercase;
+             color: var(--ink-faint); }
+  .stat .v { font-family: var(--mono); font-size: 1.35rem; font-weight: 600; margin-top: .2rem;
+             font-variant-numeric: tabular-nums; }
+  .stat .n { font-size: .8rem; color: var(--ink-soft); margin-top: .25rem; }
+
+  h2 { font-family: var(--serif); font-size: 1.3rem; font-weight: 600;
+       margin: 2.75rem 0 .35rem; letter-spacing: -.01em; }
+  .lede { color: var(--ink-soft); margin: 0 0 1rem; font-size: .95rem; }
+
+  .scroll { overflow-x: auto; border: 1px solid var(--rule); border-radius: 3px; background: var(--card); }
+  table { border-collapse: collapse; width: 100%; font-size: .9rem; }
+  th, td { padding: .6rem .85rem; text-align: right; white-space: nowrap; }
+  th { font-size: .72rem; letter-spacing: .06em; text-transform: uppercase;
+       color: var(--ink-faint); font-weight: 500; border-bottom: 1px solid var(--rule); }
+  td { font-family: var(--mono); font-variant-numeric: tabular-nums;
+       border-bottom: 1px solid var(--rule); }
+  tr:last-child td { border-bottom: 0; }
+  th:first-child, td:first-child { text-align: left; }
+  .sell { color: var(--danger); }
+  .buy  { color: var(--calm); }
+  .bar { display: inline-block; height: .55rem; background: var(--danger); opacity: .55;
+         border-radius: 1px; vertical-align: middle; min-width: 1px; }
+
+  .note { background: var(--danger-bg); border-left: 2px solid var(--danger);
+          padding: .9rem 1.1rem; margin: 1.25rem 0; font-size: .9rem; border-radius: 0 3px 3px 0; }
+  .note strong { font-weight: 600; }
+
+  ul.plain { list-style: none; padding: 0; margin: .5rem 0 0; }
+  ul.plain li { padding: .45rem 0; border-bottom: 1px solid var(--rule); font-size: .9rem;
+                color: var(--ink-soft); }
+  ul.plain li:last-child { border-bottom: 0; }
+
+  .tag { font-family: var(--mono); font-size: .68rem; letter-spacing: .04em; padding: .12rem .4rem;
+         border: 1px solid var(--rule); border-radius: 2px; color: var(--ink-faint); }
+  .tag.refuted { color: var(--danger); border-color: var(--danger); }
+
+  footer { margin-top: 3.5rem; padding-top: 1.25rem; border-top: 1px solid var(--rule);
+           color: var(--ink-faint); font-size: .82rem; }
+  code { font-family: var(--mono); font-size: .85em; }
+  a { color: inherit; text-underline-offset: 2px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Where the market is vulnerable</h1>
+  <p class="tagline">Live liquidation exposure on Hyperliquid — and the one number
+  no other map publishes: how much of it can actually defend itself.</p>
+</header>
+
+<div class="headline">
+  <div class="big-label">Cannot defend their position</div>
+  <div class="big" id="cannot">—</div>
+  <div class="big-sub" id="cannot-sub">Loading…</div>
+</div>
+
+<div class="grid">
+  <div class="stat"><div class="k">Forced exposure</div><div class="v" id="forced">—</div>
+    <div class="n">within ±10% of price</div></div>
+  <div class="stat"><div class="k">Wallets</div><div class="v" id="wallets">—</div>
+    <div class="n">with positions in range</div></div>
+  <div class="stat"><div class="k">Market we can see</div><div class="v" id="coverage">—</div>
+    <div class="n" id="coverage-note">of open interest</div></div>
+  <div class="stat"><div class="k">Map age</div><div class="v" id="age">—</div>
+    <div class="n">since last position scan</div></div>
+</div>
+
+<div class="note">
+  <strong>What this is not.</strong> This does not predict price. We tested whether forced
+  liquidations move markets and found they do not move them more than an ordinary volatile
+  minute. This page tells you what is positioned where, and how much of it is trapped.
+</div>
+
+<h2>Clusters</h2>
+<p class="lede">Where forced buying and selling sits, and how much of each cluster has
+no free collateral left to escape with.</p>
+<div class="scroll">
+  <table>
+    <thead><tr>
+      <th>Distance</th><th>Price</th><th>Side</th><th>Exposure</th>
+      <th>Wallets</th><th>Cannot defend</th>
+    </tr></thead>
+    <tbody id="clusters"><tr><td colspan="6">Loading…</td></tr></tbody>
+  </table>
+</div>
+
+<h2>What we cannot see</h2>
+<p class="lede">Stated because every other map presents a complete-looking picture and
+lets you discover the holes yourself.</p>
+<ul class="plain" id="blind"></ul>
+
+<h2>Our record</h2>
+<p class="lede">Every claim we have published, including the ones that turned out wrong.
+Refuted findings are never removed.</p>
+<ul class="plain" id="scorecard"></ul>
+
+<footer>
+  <p id="stamp">—</p>
+  <p>Data: <code>data/map.json</code> · <code>data/scorecard.json</code> · <code>data/meta.json</code></p>
+</footer>
+
+</div>
+
+<script>
+const usd = n => n >= 1e9 ? '$' + (n/1e9).toFixed(2) + 'B'
+              : n >= 1e6 ? '$' + (n/1e6).toFixed(1) + 'M'
+              : n >= 1e3 ? '$' + (n/1e3).toFixed(0) + 'k' : '$' + Math.round(n);
+const age = s => s < 90 ? s + 's' : s < 5400 ? Math.round(s/60) + 'm' : (s/3600).toFixed(1) + 'h';
+
+async function load() {
+  const [map, sc, meta] = await Promise.all([
+    fetch('data/map.json').then(r => r.json()),
+    fetch('data/scorecard.json').then(r => r.json()),
+    fetch('data/meta.json').then(r => r.json()),
+  ]);
+
+  const t = map.totals;
+  document.getElementById('cannot').textContent = t.cannot_defend_pct + '%';
+  document.getElementById('cannot-sub').textContent =
+    usd(t.cannot_defend_usd) + ' of ' + usd(t.forced_notional_usd) +
+    ' in forced exposure sits with wallets holding zero free collateral. ' +
+    'They cannot move their liquidation price without depositing from outside.';
+
+  document.getElementById('forced').textContent = usd(t.forced_notional_usd);
+  document.getElementById('wallets').textContent = t.wallets_in_band;
+  document.getElementById('coverage').textContent =
+    (map.coverage.observed_fraction * 100).toFixed(0) + '%';
+  document.getElementById('coverage-note').textContent =
+    map.coverage.wallets_scanned + ' wallets scanned · ' + map.coverage.tier + ' tier';
+  document.getElementById('age').textContent = age(map.map_age_seconds);
+
+  const max = Math.max(...map.clusters.map(c => c.notional_usd));
+  document.getElementById('clusters').innerHTML = map.clusters.map(c => `
+    <tr>
+      <td>${c.distance_pct > 0 ? '+' : ''}${c.distance_pct.toFixed(2)}%</td>
+      <td>${c.price.toLocaleString(undefined,{maximumFractionDigits:0})}</td>
+      <td class="${c.side}">${c.side}</td>
+      <td>${usd(c.notional_usd)}
+        <span class="bar" style="width:${Math.max(1, c.notional_usd/max*54)}px"></span></td>
+      <td>${c.wallets}</td>
+      <td>${c.cannot_defend_pct.toFixed(0)}%</td>
+    </tr>`).join('');
+
+  document.getElementById('blind').innerHTML =
+    meta.what_we_cannot_see.map(x => `<li>${x}</li>`).join('');
+
+  document.getElementById('scorecard').innerHTML = sc.findings.map(f => `
+    <li><span class="tag ${f.status === 'REFUTED' ? 'refuted' : ''}">${f.status}</span>
+        &nbsp;${f.title}</li>`).join('');
+
+  document.getElementById('stamp').textContent =
+    'Map taken ' + map.map_taken_at + ' · generated ' + map.generated_at +
+    ' · ' + sc.findings.length + ' published claims, ' +
+    (sc.counts.REFUTED || 0) + ' of them refuted by us.';
+}
+load().catch(e => {
+  document.getElementById('cannot-sub').textContent = 'Could not load data: ' + e.message;
+});
+</script>
+</body>
+</html>

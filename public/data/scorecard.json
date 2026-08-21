@@ -1,0 +1,122 @@
+{
+ "generated_at": "2026-08-21T07:28:40+00:00",
+ "note": "Every claim Genesis has published, including the ones that turned out wrong. REFUTED entries are never removed.",
+ "counts": {
+  "MEASURED": 6,
+  "REFUTED": 2,
+  "ASSUMED": 1,
+  "PRELIMINARY": 1
+ },
+ "findings": [
+  {
+   "id": "F-0001",
+   "title": "Free collateral cannot be derived from position and margin data; naive arithmetic misclassifies one wallet in five",
+   "status": "MEASURED",
+   "observation": "withdrawable == accountValue - totalMarginUsed for 19% of wallets; 20% misclassified as able to defend",
+   "sample": "74 Hyperliquid wallets holding open BTC positions, queried live 2026-08-20",
+   "method": "compare venue-reported `withdrawable` against marginSummary arithmetic on the same response",
+   "confidence": "single venue, single moment, wallets already known to hold positions; would be strengthened by repetition across days and by a second venue",
+   "first_recorded": "2026-08-20",
+   "last_updated": "2026-08-20"
+  },
+  {
+   "id": "F-0002",
+   "title": "Order-book depth falls as price moves get larger, so a static-book cascade estimate is optimistic",
+   "status": "MEASURED",
+   "observation": "near-book depth falls to 0.8462 at a 5-minute horizon during the largest moves (p25 0.6573), against 1.0015 in quiet markets",
+   "sample": "BTCUSDT, 1,324 days (2023-01-01 to 2026-08-19), 3,733,943 snapshots, 0 missing days; largest bucket n=313 across 160 distinct days",
+   "method": "notional within +/-1% after a window divided by before, bucketed by absolute move, de-overlapped at the horizon",
+   "confidence": "quiet-market control reads 1.000 to four decimals across 1,320 days, so the effect appears only where claimed; one venue, one asset",
+   "first_recorded": "2026-08-20",
+   "last_updated": "2026-08-20"
+  },
+  {
+   "id": "F-0003",
+   "title": "A properly aged wallet universe sees 53.3% of Hyperliquid BTC open interest, not 20%",
+   "status": "MEASURED",
+   "observation": "53.3% coverage, 95% CI [40.9%, 70.8%]",
+   "sample": "31,349-wallet universe; stratified estimate with a random sample of 1,200 of the 25,954 newly discovered wallets",
+   "method": "known stratum from the last deep scan plus mean-per-wallet extrapolation over the new stratum; bootstrapped interval",
+   "confidence": "still a lower bound \u2014 the universe is activity-derived and the recording keeps discovering wallets",
+   "first_recorded": "2026-08-20",
+   "last_updated": "2026-08-20"
+  },
+  {
+   "id": "F-0004",
+   "title": "The wallet universe is exhausted; more wallets of the same kind would add nothing",
+   "status": "REFUTED",
+   "observation": "claimed 20.24% coverage was near the ceiling; actual is 53.3%",
+   "sample": "the claim rested on a universe frozen after FOUR HOURS of recording, documented as 21 days",
+   "method": "n/a \u2014 the error was a premise never measured, not a calculation",
+   "confidence": "refuted by direct measurement",
+   "first_recorded": "2026-08-19",
+   "last_updated": "2026-08-20"
+  },
+  {
+   "id": "F-0005",
+   "title": "Daily-horizon directional tests on one instrument cannot detect realistic edges; the region is unpowerable, not empty",
+   "status": "MEASURED",
+   "observation": "detecting a 52% hit rate needs 4,900 independent days (13.4 years); 51% needs 19,600 (53.7 years)",
+   "sample": "standard power arithmetic applied to the project's own recorded sample sizes",
+   "method": "80% power, alpha .05 two-sided, on a proportion, with observations counted as INDEPENDENT rather than raw",
+   "confidence": "arithmetic, not an estimate; the only judgement is what effect size counts as realistic",
+   "first_recorded": "2026-08-20",
+   "last_updated": "2026-08-20"
+  },
+  {
+   "id": "F-0006",
+   "title": "Binance order-book behaviour under stress transfers to Hyperliquid",
+   "status": "ASSUMED",
+   "observation": "none \u2014 nothing has been measured on Hyperliquid",
+   "sample": "none",
+   "method": "n/a",
+   "confidence": "untested and load-bearing; hl2 began recording Hyperliquid l2Book at nSigFigs=3 on 2026-08-20 to settle it",
+   "first_recorded": "2026-08-20",
+   "last_updated": "2026-08-20"
+  },
+  {
+   "id": "F-0007",
+   "title": "No provider sells per-wallet account state, so an archive of it is a durable moat",
+   "status": "REFUTED",
+   "observation": "HyperTracker sells it \u2014 complete market coverage, 15-20 minute snapshots, history from 2025-04-04, $179-1,999/month",
+   "sample": "their own endpoint documentation, fetched",
+   "method": "n/a \u2014 the claim was asserted from landing pages rather than docs",
+   "confidence": "refuted from the vendor's own field list",
+   "first_recorded": "2026-08-20",
+   "last_updated": "2026-08-20"
+  },
+  {
+   "id": "F-0008",
+   "title": "The position map is up to an hour stale relative to the order book, which manufactures phantom triggers",
+   "status": "MEASURED",
+   "observation": "clock gap of 3,055 s (51 min) between the latest l2Book snapshot and the latest position snapshot",
+   "sample": "first end-to-end cascade run, 2026-08-20",
+   "method": "compare observation timestamps of the two joined sources",
+   "confidence": "structural, not incidental -- the fast position scan runs hourly while the book updates every 5.3 s",
+   "first_recorded": "2026-08-20",
+   "last_updated": "2026-08-20"
+  },
+  {
+   "id": "F-0009",
+   "title": "Visible forced flow on Hyperliquid BTC is small relative to visible book depth",
+   "status": "PRELIMINARY",
+   "observation": "$63.6M total forced selling in the visible map against $222.5M of bids within 2.71% of mid; a $10.6M trigger moved price 0.069%",
+   "sample": "one snapshot pair, 2026-08-20, fast-tier map at 24.2% coverage",
+   "method": "cascade sweep of the observed ladder against the observed book, evaporation not applied",
+   "confidence": "ONE observation, low coverage, static book, and a 51-minute clock gap (F-0008)",
+   "first_recorded": "2026-08-20",
+   "last_updated": "2026-08-20"
+  },
+  {
+   "id": "F-0010",
+   "title": "Forced liquidation does not move price more than a volatility-matched random minute in the same hour",
+   "status": "MEASURED",
+   "observation": "15m mean +40.07 bps in the forced direction against a matched control of 44.52 bps; no horizon clears both benchmarks",
+   "sample": "228 independent episodes >=$250k across 28 symbols (n=106 with price data), Binance market-wide, 2026-08-18 to 2026-08-20",
+   "method": "CASCADE-1, contract frozen sha256 7dee22eed9cdaecb before any outcome; episodes not events; permutation null plus same-symbol same-hour control",
+   "confidence": "K1 met at 228 episodes, so this is not an underpowered null; three days, one venue, and only two of four declared benchmark tiers were implemented",
+   "first_recorded": "2026-08-21",
+   "last_updated": "2026-08-21"
+  }
+ ]
+}
