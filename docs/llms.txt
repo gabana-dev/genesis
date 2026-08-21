@@ -80,4 +80,4 @@ estimated to reach 53.3% (F-0003).
 - [https://gabana-dev.github.io/genesis/methodology.html](https://gabana-dev.github.io/genesis/methodology.html): how every number is produced
 - [https://gabana-dev.github.io/genesis/record.html](https://gabana-dev.github.io/genesis/record.html): every claim, including the refuted ones
 
-Generated 2026-08-21T22:24:54+00:00 from the same data the pages are built from.
+Generated 2026-08-21T22:30:03+00:00 from the same data the pages are built from.
