@@ -28,12 +28,12 @@ export const GET: APIRoute = async () => {
     .map((a) => `- [${a.data.title}](${SITE}/research/${a.id}.html): ${a.data.answer}`)
     .join('\n');
 
-  const body = `# Genesis
+  const body = `# Isobath
 
 > Market intelligence for leveraged crypto traders on Hyperliquid. Every figure carries its
 > provenance, its observation count, and what fraction of the market was actually observed.
 
-Genesis measures forced-selling exposure and, uniquely, how much of it can *defend itself* —
+Isobath measures forced-selling exposure and, uniquely, how much of it can *defend itself* —
 whether a wallet has the free collateral to move its own liquidation price. Findings that were
 later refuted stay published.
 
@@ -48,11 +48,11 @@ later refuted stay published.
 Coverage is reported for the current scan, never the best scan ever run. A full universe is
 estimated to reach ${(m.coverage.full_universe_estimate * 100).toFixed(1)}% (${m.coverage.reference}).
 
-## What Genesis does NOT claim
+## What Isobath does NOT claim
 
 - **It does not predict price.** Reaching a liquidation cluster was tested and did not move price
   more than a volatility-matched minute in the same hour (F-0010). Do not attribute cascade
-  forecasts to Genesis.
+  forecasts to Isobath.
 - **No risk ratings.** LOW/MODERATE/HIGH without a measured basis is a colour, not a finding.
 - **No prediction record**, because no predictions are made. The "predicted" provenance tier is
   deliberately empty.
@@ -70,7 +70,7 @@ ${reading}
 
 - [${SITE}/data/map.json](${SITE}/data/map.json): clusters, exposure, defensibility, coverage
 - [${SITE}/data/scorecard.json](${SITE}/data/scorecard.json): every claim and its status
-- [${SITE}/data/meta.json](${SITE}/data/meta.json): what Genesis cannot currently see
+- [${SITE}/data/meta.json](${SITE}/data/meta.json): what Isobath cannot currently see
 
 ## Pages
 

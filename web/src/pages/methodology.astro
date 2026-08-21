@@ -11,9 +11,9 @@ const m = marketMap();
 const jsonld = {
   '@context': 'https://schema.org',
   '@type': 'TechArticle',
-  headline: 'How Genesis produces every number',
+  headline: 'How Isobath produces every number',
   description:
-    'The provenance ladder, how defensibility and coverage are computed, and what Genesis deliberately does not publish.',
+    'The provenance ladder, how defensibility and coverage are computed, and what Isobath deliberately does not publish.',
   dateModified: m.generated_at,
 };
 
@@ -26,12 +26,20 @@ const ladder: [Tier, string][] = [
 ---
 
 <Base
-  title="Methodology — Genesis"
-  description="How Genesis produces every number, and the four tiers of evidence it distinguishes."
+  title="Methodology — Isobath"
+  description="How Isobath produces every number, and the four tiers of evidence it distinguishes."
   jsonld={jsonld}
 >
   <h1>Methodology</h1>
   <p class="lede">How each number is produced, and which tier of evidence it sits on.</p>
+
+  <p>
+    Every figure on this site is produced by <strong>Genesis</strong>, a research program that
+    spent months testing whether leveraged-market signals survive contact with evidence. Most did
+    not, and those refutations are published alongside the findings that held. Isobath is the
+    instrument that program built; the record of what it got wrong is on
+    <a href={url('record.html')}>the record page</a>, and it is not curated.
+  </p>
 
   <h2>The provenance ladder</h2>
   <p>Every figure on this site carries one of four tiers. There is deliberately no <em>predicted</em> tier.</p>

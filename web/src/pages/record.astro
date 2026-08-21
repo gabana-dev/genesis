@@ -13,9 +13,9 @@ const counts = Object.entries(sc.counts).sort(([a], [b]) => a.localeCompare(b));
 const jsonld = {
   '@context': 'https://schema.org',
   '@type': 'Dataset',
-  name: 'Genesis research record',
+  name: 'Isobath research record',
   description:
-    'Every claim Genesis has published, with its status, sample and method — including the ones we refuted ourselves.',
+    'Every claim Isobath has published, with its status, sample and method — including the ones we refuted ourselves.',
   dateModified: sc.generated_at,
   variableMeasured: Object.entries(sc.counts).map(([name, value]) => ({
     '@type': 'PropertyValue', name, value,
@@ -29,13 +29,13 @@ const jsonld = {
 ---
 
 <Base
-  title="Our record — Genesis"
-  description="Every claim Genesis has published, including the ones we refuted ourselves."
+  title="Our record — Isobath"
+  description="Every claim Isobath has published, including the ones we refuted ourselves."
   jsonld={jsonld}
 >
   <h1>Our record</h1>
   <p class="lede">
-    Every claim Genesis has published, and what happened to it. Refuted findings are never
+    Every claim Isobath has published, and what happened to it. Refuted findings are never
     removed — a record that keeps only its wins is a marketing page.
   </p>
 

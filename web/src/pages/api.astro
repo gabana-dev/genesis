@@ -20,13 +20,13 @@ const SITE = 'https://gabana-dev.github.io/genesis';
 const jsonld = {
   '@context': 'https://schema.org',
   '@type': 'DataCatalog',
-  name: 'Genesis data',
+  name: 'Isobath data',
   description: 'Static JSON: forced-selling exposure, defensibility and stated coverage.',
   dateModified: m.generated_at,
   dataset: [
     ['map', 'Forced-selling clusters, exposure, defensibility and coverage'],
     ['scorecard', 'Every published claim and its status'],
-    ['meta', 'What Genesis currently cannot see'],
+    ['meta', 'What Isobath currently cannot see'],
   ].map(([name, description]) => ({
     '@type': 'Dataset',
     name,
@@ -41,7 +41,7 @@ const jsonld = {
 ---
 
 <Base
-  title="API — Genesis"
+  title="API — Isobath"
   description="Static JSON: liquidation exposure, defensibility and coverage for Hyperliquid."
   jsonld={jsonld}
 >

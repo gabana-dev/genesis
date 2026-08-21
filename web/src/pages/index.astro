@@ -23,7 +23,7 @@ const { totals: t, coverage: cov } = m;
 const jsonld = {
   '@context': 'https://schema.org',
   '@type': 'Dataset',
-  name: 'Genesis liquidation intelligence — Hyperliquid BTC',
+  name: 'Isobath liquidation intelligence — Hyperliquid BTC',
   description: 'Forced-selling exposure and defensibility, with stated coverage.',
   dateModified: m.generated_at,
   variableMeasured: [
@@ -37,7 +37,7 @@ const soon = ['ETH', 'SOL'];
 ---
 
 <Base
-  title="Check your liquidation risk on Hyperliquid — Genesis"
+  title="Check your liquidation risk on Hyperliquid — Isobath"
   description="Paste a Hyperliquid address and see how close it is to liquidation, and whether it has anything left to defend with. Free, no signup."
   jsonld={jsonld}
 >
@@ -85,7 +85,7 @@ const soon = ['ETH', 'SOL'];
     ))}
   </div>
 
-  <Note title="What Genesis does not tell you.">
+  <Note title="What Isobath does not tell you.">
     It does not predict price. We tested whether reaching a liquidation cluster causes a further
     move and found it does not move price more than an ordinary volatile minute in the same hour.
     <a href={url('research/liquidations-dont-move-price.html')}>Read the test →</a>

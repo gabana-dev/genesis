@@ -31,7 +31,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
   </head>
   <body>
     <nav class="nav">
-      <a class="brand" href={url('index.html')}>Genesis</a>
+      <a class="brand" href={url('index.html')}>Isobath</a>
       <a href={url('check.html')}>Check a wallet</a>
       {bot && <a href={url('alerts.html')}>Alerts</a>}
       <a href={url('markets/btc.html')}>Markets</a>
@@ -43,9 +43,13 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
     <main class="wrap"><slot /></main>
     <footer class="wrap foot">
       <p>
-        Genesis — market intelligence for leveraged crypto traders. Every number carries its
-        provenance, its observation count and how much of the market we could see.
-        <a href={url('record.html')}>Including the claims we got wrong.</a>
+        <strong>Isobath</strong> — an isobath is a chart line joining points of equal depth. It is
+        what a navigator reads to know how much water is left under them.
+      </p>
+      <p>
+        Every number here carries its provenance, its observation count and how much of the market
+        we could see. <a href={url('record.html')}>Including the claims we got wrong.</a>
+        Measurements come from Genesis, the research engine behind it.
       </p>
     </footer>
   </body>
