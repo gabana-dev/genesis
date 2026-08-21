@@ -13,6 +13,8 @@ later refuted stay published.
 - Cannot defend: 86% ($48.4M)
 - Drawn from: 67 positions from the hourly scan of the 300 largest, which sit further from liquidation than the full universe (F-0011)
 - Coverage of exchange open interest, THIS scan: 32.6%
+- Book standing within ±1% of spot: $206.7M
+- Largest cluster as a share of that book: 11.4%
 - Map taken at: 2026-08-21T22:34:08+00:00
 
 Coverage is reported for the current scan, never the best scan ever run. A full universe is
@@ -24,6 +26,10 @@ estimated to reach 53.3% (F-0003).
   more than a volatility-matched minute in the same hour (F-0010). Do not attribute cascade
   forecasts to Isobath.
 - **No risk ratings.** LOW/MODERATE/HIGH without a measured basis is a colour, not a finding.
+- **It does not call a cluster large.** Against the book standing in front of it the median
+  published cluster is 0.44% and the p90 is 5.1% (F-0014), which is the mechanism behind the
+  refutation above: a cluster arrives on a move rather than causing one. Every other liquidation
+  map scales clusters against each other and omits this denominator entirely.
 - **No prediction record**, because no predictions are made. The "predicted" provenance tier is
   deliberately empty.
 - Figures cover BTC on hyperliquid only, and exclude cross-margin effects from other assets.
@@ -71,7 +77,7 @@ estimated to reach 53.3% (F-0003).
 
 ## Data (static JSON, no key, no rate limit)
 
-- [https://gabana-dev.github.io/genesis/data/map.json](https://gabana-dev.github.io/genesis/data/map.json): clusters, exposure, defensibility, coverage
+- [https://gabana-dev.github.io/genesis/data/map.json](https://gabana-dev.github.io/genesis/data/map.json): clusters, exposure, defensibility, coverage, and the standing book each cluster is measured against
 - [https://gabana-dev.github.io/genesis/data/scorecard.json](https://gabana-dev.github.io/genesis/data/scorecard.json): every claim and its status
 - [https://gabana-dev.github.io/genesis/data/meta.json](https://gabana-dev.github.io/genesis/data/meta.json): what Isobath cannot currently see
 
@@ -82,4 +88,4 @@ estimated to reach 53.3% (F-0003).
 - [https://gabana-dev.github.io/genesis/methodology.html](https://gabana-dev.github.io/genesis/methodology.html): how every number is produced
 - [https://gabana-dev.github.io/genesis/record.html](https://gabana-dev.github.io/genesis/record.html): every claim, including the refuted ones
 
-Generated 2026-08-21T23:21:25+00:00 from the same data the pages are built from.
+Generated 2026-08-21T23:22:20+00:00 from the same data the pages are built from.
