@@ -1,11 +1,11 @@
 {
- "generated_at": "2026-08-21T22:45:53+00:00",
+ "generated_at": "2026-08-21T23:06:17+00:00",
  "note": "Every claim Genesis has published, including the ones that turned out wrong. REFUTED entries are never removed.",
  "counts": {
   "MEASURED": 7,
   "REFUTED": 2,
   "ASSUMED": 1,
-  "PRELIMINARY": 3
+  "PRELIMINARY": 4
  },
  "findings": [
   {
@@ -122,7 +122,7 @@
    "id": "F-0011",
    "title": "The hourly map systematically under-represents the positions closest to liquidation",
    "status": "PRELIMINARY",
-   "observation": "\"deep scan (5,395 wallets): median distance to liquidation 15.5%, 42.8% of positions within 10%. Fast scan (top 300 by notional) at the same period: median 31.6%, 23.0% within 10%.\"",
+   "observation": "deep scan (5,395 wallets): median distance to liquidation 15.5%, 42.8% of positions within 10%. Fast scan (top 300 by notional) at the same period: median 31.6%, 23.0% within 10%.",
    "sample": "one deep snapshot of 1,327 BTC positions against three fast snapshots of 267-270, 2026-08-21",
    "method": "distance to liquidation as |liquidationPx - spot| / spot, per position, compared across scan tiers",
    "confidence": "one deep snapshot against three fast ones, same day, single venue, single asset. Needs several deep/fast pairs across different market conditions before it is more than PRELIMINARY.",
@@ -133,7 +133,7 @@
    "id": "F-0012",
    "title": "The vulnerability figure Isobath publishes is very nearly a constant, so it cannot discriminate between clusters",
    "status": "MEASURED",
-   "observation": "\"across 433 published clusters, cannot_defend_pct has median 100.0 and 71% sit at exactly 100%. Splitting at the median leaves 29% below and 0% above. thinly_defended_pct behaves the same: median 100.0, 27% below, 0% above.\"",
+   "observation": "across 433 published clusters, cannot_defend_pct has median 100.0 and 71% sit at exactly 100%. Splitting at the median leaves 29% below and 0% above. thinly_defended_pct behaves the same: median 100.0, 27% below, 0% above.",
    "sample": "433 clusters published across 23 hourly and deep snapshots, Hyperliquid BTC, 2026-08-19 to 2026-08-21",
    "method": "contrast pre-condition P1 of market/CONTRACT-calibration.md, run before any outcome was examined",
    "confidence": "three days, one venue, one asset, and drawn largely from the fast scan tier whose selection bias is F-0011. A market regime with materially lower leverage could restore the spread. What is not in doubt is that no spread exists in the period recorded.",
@@ -144,12 +144,23 @@
    "id": "F-0013",
    "title": "Wallets holding free collateral leave the market more often than trapped ones, so disappearance cannot be read as liquidation",
    "status": "PRELIMINARY",
-   "observation": "\"across 4 deep-to-deep transitions, of wallets within 5% of liquidation: 62.7% of those WITH free collateral were absent at the next scan, against 45.1% of those with none. The sign is opposite to the hypothesis that free collateral aids survival.\"",
+   "observation": "across 4 deep-to-deep transitions, of wallets within 5% of liquidation: 62.7% of those WITH free collateral were absent at the next scan, against 45.1% of those with none. The sign is opposite to the hypothesis that free collateral aids survival.",
    "sample": "2,302 wallet-transitions within 5% (3,331 within 10%) across 5 deep scans of the frozen 5,395-wallet universe, Hyperliquid BTC, 2026-08-19 to 2026-08-21",
    "method": "track each wallet's BTC position between consecutive DEEP scans only; classify as absent, survived-improved or survived-worsened; split by whether withdrawable was above zero",
    "confidence": "only 4 transitions, 12.9h apart, so wallets are counted repeatedly and these are not independent observations. One venue, one asset, 54 hours. The direction is clear; the magnitude is not established.",
    "first_recorded": "2026-08-21",
    "last_updated": "2026-08-21"
+  },
+  {
+   "id": "F-0014",
+   "title": "Both venues' \u00b11% BTC book holds roughly a quarter of a billion dollars, so a single sweep costs about 1 bp at retail size and a typical liquidation cluster is too small to move price",
+   "status": "PRELIMINARY",
+   "observation": "standing notional within \u00b11% of mid is $247.6M median on Binance futures and $225.6M median on Hyperliquid \u2014 within 9% of each other. At burst level, a same-side sweep worth 0.5\u20131% of that book costs the taker 0.8\u20131.1 bps of slippage. The median published liquidation cluster is 0.44% of the Hyperliquid book; the p90 cluster is 5.1%.",
+   "sample": "221,778 aggressive bursts \u2265 $50,000 over 2 Binance futures days (2025-03-10/11), joined to bookDepth \u00b11%; 5,112 Hyperliquid l2Book snapshots 2026-08-20/21; 433 published clusters",
+   "method": "contiguous same-side aggTrades within 200 ms grouped into one burst; cost = executed VWAP against the price at which the burst began, signed against the taker; conditioned on the PREVIOUS minute's range so that volatility already in progress cannot be credited to the burst",
+   "confidence": "two Binance days and 34 hours of Hyperliquid book. The order of magnitude is not in doubt; the day-to-day variation is not established, and neither is behaviour in a stressed regime, where F-0002 measured near-book depth falling to 0.657",
+   "first_recorded": "2026-08-22",
+   "last_updated": "2026-08-22"
   }
  ]
 }
