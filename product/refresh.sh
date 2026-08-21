@@ -21,11 +21,17 @@ mkdir -p ~/genesis-evidence/product
   # Publish only when the output actually changed. Committing an identical rebuild every 15
   # minutes would bury the real history under thousands of empty commits.
   if [[ -n "$(git status --porcelain docs web/public/data)" ]]; then
-    # --only commits JUST these paths. Plain `git add` + `git commit` commits the whole index,
-    # and this job once swept a half-finished refactor's staged deletions into a "site: refresh"
-    # commit and pushed it.
-    git commit -q --only docs web/public/data -m "site: refresh $(date -u +%Y-%m-%dT%H:%MZ)"
-    git push -q && echo "  published"
+    # BOTH halves are needed and each fixed a real failure:
+    #   `git add` picks up files that are new (a first-ever alerts.html is untracked, and
+    #     --only alone silently skipped it, publishing a page the site linked but never shipped).
+    #   `--only` scopes the commit to these paths, because plain `git commit` commits the WHOLE
+    #     index -- this job once swept a half-finished refactor's staged deletions into a
+    #     "site: refresh" commit and pushed it.
+    # -m comes BEFORE the `--`, or the message is parsed as a pathspec and the commit fails.
+    git add -- docs web/public/data
+    git commit -q --only -m "site: refresh $(date -u +%Y-%m-%dT%H:%MZ)" -- docs web/public/data \
+      || { echo "  COMMIT FAILED — not publishing"; exit 1; }
+    git push -q && echo "  published" || { echo "  PUSH FAILED"; exit 1; }
   else
     echo "  no change"
   fi
