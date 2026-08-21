@@ -4,18 +4,18 @@ Paste any Hyperliquid address. We read its positions straight from the exchange 
 </p> <form id="f" class="checkform" autocomplete="off"> <input id="addr" type="text" spellcheck="false" placeholder="0x…" aria-label="Hyperliquid address"> <button type="submit">Check</button> </form> <p class="hint">
 No signup, nothing stored. The lookup happens in your browser, straight to Hyperliquid.
 <button class="linkish" id="demo" type="button" data-address="0x66f889094739dbb7d20aa60f645acd88feba75a9">Try an example</button> </p> <details class="disclose"> <summary>Which address, and is it safe to paste?</summary> <p> <strong>Safe.</strong> This reads public data only. There is no wallet connection, no
-      signature, no approval and no private key — nothing here can move funds, and there is
-      nothing an address alone lets anyone do to your account.
-</p> <p> <strong>It is already public.</strong> Hyperliquid publishes every position on every
-      address. That is how this page can read 300 of them an hour without asking anyone. The only
-      real consideration is privacy: if you publicly attach your name to an address, people can
-      watch your positions and your PnL. That is a reason not to broadcast it, not a reason not to
-      check it.
-</p> <p> <strong>Which one:</strong> the account you deposit and trade with — shown at the top right
-      of the Hyperliquid app, or in MetaMask, Rabby or whichever wallet you connected.
-</p> <p> <strong>Not an API or agent wallet.</strong> Those authorise trades but never hold
-      positions, so Hyperliquid returns an empty result for them and this page would have nothing
-      to report. An empty answer here is not the same as a safe one.
+    signature, no approval and no private key — nothing here can move funds, and there is nothing
+    an address alone lets anyone do to your account.
+</p> <p> <strong>It is already public.</strong> Hyperliquid publishes every position on every address.
+    That is how this page can read 300 of them an hour without asking anyone. The only real
+    consideration is privacy: if you publicly attach your name to an address, people can watch
+    your positions and your PnL. That is a reason not to broadcast it, not a reason not to check
+    it.
+</p> <p> <strong>Which one:</strong> the account you deposit and trade with — shown at the top right of
+    the Hyperliquid app, or in MetaMask, Rabby or whichever wallet you connected.
+</p> <p> <strong>Not an API or agent wallet.</strong> Those authorise trades but never hold positions,
+    so Hyperliquid returns an empty result for them and this page would have nothing to report.
+    An empty answer here is not the same as a safe one.
 </p> </details> <div id="out"></div> <section id="alertcta" hidden> <div class="note"><strong>Want to be told when this changes?</strong> 
 The bot messages you when this address crosses into a tighter band, or loses the collateral
         to defend itself — and says nothing at all otherwise.
