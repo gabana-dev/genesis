@@ -139,6 +139,11 @@ easier to skip.
 
 ## 6. Order of work
 
+**Superseded by `product/PHASES.md`**, which carries the same ordering with gates attached and
+adds everything this file did not cover — correctness debt, design, instrumentation, and the
+research track that runs on its own clock. The table below is kept because the reasoning behind
+each item is still the reasoning.
+
 Each line names what it is for. Anything that cannot state its distribution surface does not get
 built.
 
