@@ -29,14 +29,15 @@ WHAT IT DOES NOT CLAIM
 
 import json
 import os
-import re
 import sys
 import glob
 from datetime import datetime, timezone
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "market"))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "findings"))
 
 import liqmap as L  # noqa: E402
+from build_index import front_matter  # noqa: E402
 
 ROOT = os.path.join(os.path.dirname(__file__), "..")
 # The Astro build copies web/public/ into docs/, so the engine writes here and the site
@@ -133,14 +134,12 @@ def build_scorecard():
     """
     out = []
     for p in sorted(glob.glob(os.path.join(ROOT, "findings", "F-*.md"))):
-        m = re.search(r"^---\n(.*?)\n---", open(p).read(), re.S)
-        if not m:
+        # One parser, shared with findings/build_index.py. The local copy this replaced did not
+        # strip the quotes around a quoted front-matter value, so every `observation` written in
+        # quotes reached the published scorecard wearing literal \" marks.
+        d = front_matter(p)
+        if not d:
             continue
-        d = {}
-        for line in m.group(1).splitlines():
-            if ": " in line:
-                k, v = line.split(": ", 1)
-                d[k.strip()] = v.strip()
         out.append({k: d.get(k) for k in
                     ("id", "title", "status", "observation", "sample", "method",
                      "confidence", "first_recorded", "last_updated")})
