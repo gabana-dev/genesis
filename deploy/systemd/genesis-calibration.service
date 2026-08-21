@@ -1,0 +1,16 @@
+[Unit]
+Description=Isobath calibration record - append calls, resolve outcomes
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=genesis
+Group=genesis
+WorkingDirectory=/opt/genesis
+ExecStart=/usr/bin/python3 /opt/genesis/product/calibration.py
+TimeoutStartSec=600
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/genesis/genesis-evidence
