@@ -85,6 +85,27 @@ until it is done.
 - **A conventional rail only when someone asks.** Polar supports Kenya and individuals. Building
   it before the request is the trap that ate the last two products.
 
+## Phase 4b — The three things we agreed and never built
+
+**Goal:** stop paying for a limitation that free data already lifts.
+**Gate:** each is built, or written down as deliberately dropped with a reason.
+
+Found by re-reading yesterday's contemplation against what actually exists. All three are free
+and all three were agreed:
+
+- **The OI-drop forced-flow proxy.** A sharp open-interest fall alongside a price move is a
+  liquidation, and Binance `metrics` gives 5-minute open interest back to **2020-09**. Six years
+  of forced-flow episodes against the 228 CASCADE-1 had. It will **not** rescue CASCADE-1 — that
+  died on a matched control and more data does not repair losing to a control — but it is the
+  sample any successor question would need.
+- **The impact function.** Given the depth actually present, how far did price move when $X of
+  aggressive volume hit? `bookDepth` + `aggTrades`, three years, already on disk.
+- **A second, wider wallet universe.** LIQ-2's universe is frozen at **5,395** by contract, for
+  comparability, and that is correct. But our recordings have discovered **32,000+** wallets, so
+  observed coverage cannot rise above roughly a third without a separate scan that leaves the
+  frozen archive untouched. Coverage is currently capped by our own design rather than by the
+  venue.
+
 ## Phase 5 — Depth
 
 **Goal:** the things that are only worth building once demand is proven.
