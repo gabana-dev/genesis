@@ -167,6 +167,58 @@ def nearest_dense_ignores_buckets_under_the_threshold():
     return "nearest dense cluster is +4%, not +1%"
 
 
+@check
+def test_scan_delegates_and_btc_output_is_unchanged():
+    """LIQ-2's contract is frozen. scan() must return exactly what it always did.
+
+    scan() is now a wrapper over scan_multi, so this pins the contract-facing shape: a flat list
+    of BTC positions, an int scanned, an int with_position -- not the dicts scan_multi returns.
+    """
+    calls = []
+
+    def fake_post(body, budget):
+        calls.append(body)
+        if body["type"] != "clearinghouseState":
+            return None
+        return {"withdrawable": "0.0", "marginSummary": {"accountValue": "100"},
+                "assetPositions": [
+                    {"position": {"coin": "BTC", "szi": "-1.0", "liquidationPx": "80000"}},
+                    {"position": {"coin": "ETH", "szi": "10.0", "liquidationPx": "1500"}},
+                    {"position": {"coin": "DOGE", "szi": "5.0", "liquidationPx": "0.1"}}]}
+
+    orig = L._post
+    L._post = fake_post
+    try:
+        pos, scanned, with_pos = L.scan(["0xaa"], {"sleep": 0, "throttled": 0})
+        assert isinstance(pos, list) and isinstance(scanned, int) and isinstance(with_pos, int)
+        assert scanned == 1 and with_pos == 1, (scanned, with_pos)
+        assert len(pos) == 1 and pos[0]["liquidationPx"] == 80000.0, pos
+
+        # And the multi-asset pass costs no extra requests: one clearinghouseState per wallet,
+        # however many coins are wanted. That is the whole reason this is nearly free.
+        calls.clear()
+        multi, scanned, wp = L.scan_multi(["0xaa"], {"sleep": 0, "throttled": 0}, ("BTC", "ETH"))
+        assert len([c for c in calls if c["type"] == "clearinghouseState"]) == 1, calls
+        assert set(multi) == {"BTC", "ETH"}, multi
+        assert len(multi["BTC"]) == 1 and len(multi["ETH"]) == 1
+        assert wp == {"BTC": 1, "ETH": 1}, wp
+        # DOGE was returned by the venue and must be ignored, not silently collected.
+        assert "DOGE" not in multi
+    finally:
+        L._post = orig
+    return "scan() shape preserved; scan_multi adds assets at zero request cost"
+
+
+@check
+def test_extra_assets_never_enter_the_liq2_archive():
+    """The frozen archive keeps one asset and one schema. Everything else gets its own file."""
+    assert L.snap_path("BTC") == L.LIQ2_SNAP_PATH
+    for c in L.EXTRA_COINS:
+        assert L.snap_path(c) != L.LIQ2_SNAP_PATH, c
+        assert c.lower() in L.snap_path(c), c
+    return f"BTC archive isolated from {', '.join(L.EXTRA_COINS)}"
+
+
 def main():
     failed = 0
     for fn in _checks:

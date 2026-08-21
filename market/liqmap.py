@@ -112,12 +112,24 @@ def build_scanset(recording, n=N_WALLETS):
     return wallets
 
 
-def spot_price(budget):
+def spot_price(budget, coin=None):
     mids = _post({"type": "allMids"}, budget)
     try:
-        return float(mids[COIN])
+        return float(mids[coin or COIN])
     except (TypeError, KeyError, ValueError):
         return None
+
+
+def spot_prices(budget, coins):
+    """Mid for several coins in one request, so a multi-asset scan does not make N of them."""
+    mids = _post({"type": "allMids"}, budget) or {}
+    out = {}
+    for c in coins:
+        try:
+            out[c] = float(mids[c])
+        except (TypeError, KeyError, ValueError):
+            out[c] = None
+    return out
 
 
 def snapshot(recording, budget=None):
@@ -152,8 +164,8 @@ def snapshot(recording, budget=None):
                 lpx = float(lpx)
             except (TypeError, ValueError):
                 continue
-            with_pos += 1
-            positions.append({
+            with_pos[coin] += 1
+            positions[coin].append({
                 "wallet": w, "szi": szi, "liquidationPx": lpx,
                 "entryPx": p.get("entryPx"), "leverage": (p.get("leverage") or {}).get("value"),
                 # short -> forced BUY, long -> forced SELL
@@ -230,15 +242,26 @@ def collect(recording=os.path.expanduser("~/genesis-evidence/hl1/btc-hl1.jsonl")
 # LIQ-2: coverage, credibility weighting, and the two-tier scan
 # ---------------------------------------------------------------------------------------
 
-def exchange_open_interest(budget):
-    """BTC open interest in USD, from the venue. K2 makes coverage binding, not advisory."""
+def exchange_open_interest(budget, coin=None):
+    """Open interest in USD, from the venue. K2 makes coverage binding, not advisory."""
+    return open_interests(budget, (coin or COIN,)).get(coin or COIN)
+
+
+def open_interests(budget, coins):
+    """Open interest for several coins in one request."""
     meta = _post({"type": "metaAndAssetCtxs"}, budget)
+    out = {c: None for c in coins}
     try:
         names = [a["name"] for a in meta[0]["universe"]]
-        ctx = meta[1][names.index(COIN)]
-        return float(ctx["openInterest"]) * float(ctx["markPx"])
     except Exception:
-        return None
+        return out
+    for c in coins:
+        try:
+            ctx = meta[1][names.index(c)]
+            out[c] = float(ctx["openInterest"]) * float(ctx["markPx"])
+        except Exception:
+            pass
+    return out
 
 
 def credible_notional(p):
@@ -279,6 +302,22 @@ def rank_by_notional(positions, n=FAST_N):
 
 HL1 = os.path.expanduser("~/genesis-evidence/hl1/btc-hl1.jsonl")
 LIQ2_SNAP_PATH = f"{STATE_DIR}/snapshots-liq2.jsonl"
+
+# ADDITIONAL ASSETS, RECORDED ALONGSIDE -- NEVER INSIDE -- THE LIQ-2 ARCHIVE.
+#
+# clearinghouseState returns every position a wallet holds, so these cost NO additional requests;
+# the scanner was fetching and discarding them. But LIQ-2's contract is frozen and its coverage is
+# defined against BTC open interest, so its archive keeps exactly the schema and the single asset
+# it was frozen with. The extra assets go to their own files.
+#
+# Their coverage will be LOWER and that is not a defect to hide: the wallet universe was harvested
+# from a BTC recording, so it is BTC-biased by construction. Coverage is stated per asset, as it
+# is everywhere else here.
+EXTRA_COINS = ("ETH", "SOL")
+
+
+def snap_path(coin):
+    return LIQ2_SNAP_PATH if coin == COIN else f"{STATE_DIR}/snapshots-{coin.lower()}.jsonl"
 FASTSET_PATH = f"{STATE_DIR}/fastset.json"
 UNIVERSE_PATH = f"{STATE_DIR}/universe.json"
 CONTRACT_2 = "market/CONTRACT-liquidation-map-2.md"
@@ -303,8 +342,28 @@ def universe(recording=HL1, refresh=False):
 
 
 def scan(wallets, budget):
-    """BTC positions across a wallet list. The tiers differ only in which list they are given."""
-    positions, scanned, with_pos = [], 0, 0
+    """BTC positions across a wallet list. The tiers differ only in which list they are given.
+
+    Kept as a thin wrapper over scan_multi so there is ONE implementation of the per-position
+    logic. LIQ-2's contract is frozen and its coverage is measured against BTC open interest, so
+    the BTC output of this function must not change; delegating guarantees it cannot drift from
+    the multi-asset path.
+    """
+    out, scanned, with_pos = scan_multi(wallets, budget, (COIN,))
+    return out.get(COIN, []), scanned, with_pos[COIN]
+
+
+def scan_multi(wallets, budget, coins):
+    """Positions in `coins` across a wallet list, in ONE pass.
+
+    clearinghouseState returns every position a wallet holds, so scanning additional assets costs
+    no additional requests -- the previous version fetched them and threw them away. Returns
+    ({coin: [positions]}, wallets_scanned, {coin: wallets_with_a_position}).
+    """
+    coins = tuple(coins)
+    positions = {c: [] for c in coins}
+    with_pos = {c: 0 for c in coins}
+    scanned = 0
     for w in wallets:
         st = _post({"type": "clearinghouseState", "user": w}, budget)
         scanned += 1
@@ -312,7 +371,8 @@ def scan(wallets, budget):
             continue
         for ap in st.get("assetPositions") or []:
             p = ap.get("position") or {}
-            if p.get("coin") != COIN:
+            coin = p.get("coin")
+            if coin not in positions:
                 continue
             try:
                 szi = float(p.get("szi") or 0.0)
@@ -322,8 +382,8 @@ def scan(wallets, budget):
                 lpx = float(lpx)
             except (TypeError, ValueError):
                 continue
-            with_pos += 1
-            positions.append({
+            with_pos[coin] += 1
+            positions[coin].append({
                 "wallet": w, "szi": szi, "liquidationPx": lpx,
                 "entryPx": p.get("entryPx"), "leverage": (p.get("leverage") or {}).get("value"),
                 "forced_side": "buy" if szi < 0 else "sell",
@@ -405,20 +465,37 @@ def collect2(tier, recording=HL1):
             return {"error": "no fast set yet; a deep scan must run first"}
         wallets = json.load(open(FASTSET_PATH))["wallets"]
 
-    spot = spot_price(budget)
-    oi = exchange_open_interest(budget)
-    if spot is None:
+    coins = (COIN,) + EXTRA_COINS
+    spots = spot_prices(budget, coins)
+    ois = open_interests(budget, coins)
+    if spots.get(COIN) is None:
         return {"error": "no spot price"}
 
-    positions, scanned, with_pos = scan(wallets, budget)
-    snap = {"t": int(time.time() * 1000), "spot": spot, "oi_usd": oi, "tier": tier,
-            "scanned": scanned, "with_position": with_pos, "positions": positions,
-            "throttled": budget["throttled"]}
-    row = bucketise2(snap)
-    row["positions"] = positions
-    with open(LIQ2_SNAP_PATH, "a") as f:
-        f.write(json.dumps(row) + "\n")
+    all_pos, scanned, with_pos = scan_multi(wallets, budget, coins)
+    t_ms = int(time.time() * 1000)
 
+    rows = {}
+    for coin in coins:
+        if spots.get(coin) is None:
+            continue
+        snap = {"t": t_ms, "spot": spots[coin], "oi_usd": ois.get(coin), "tier": tier,
+                "scanned": scanned, "with_position": with_pos[coin],
+                "positions": all_pos[coin], "throttled": budget["throttled"]}
+        r = bucketise2(snap)
+        r["positions"] = all_pos[coin]
+        # The extra assets carry their own asset field. BTC's schema is untouched: the LIQ-2
+        # archive must stay exactly what the frozen contract describes.
+        if coin != COIN:
+            r["asset"] = coin
+        with open(snap_path(coin), "a") as f:
+            f.write(json.dumps(r) + "\n")
+        rows[coin] = r
+
+    row = rows[COIN]
+    positions = all_pos[COIN]
+
+    # The fast set is ranked on BTC notional ONLY, exactly as the contract froze it. Ranking on a
+    # blend across assets would silently change the LIQ-2 population.
     if tier == "deep":
         json.dump({"wallets": rank_by_notional(positions), "ranked_at": row["t"],
                    "rule": "top %d by |szi| * liquidationPx" % FAST_N},
@@ -432,3 +509,32 @@ def collect2(tier, recording=HL1):
 
 if __name__ == "__main__":
     print(json.dumps(collect2(sys.argv[1] if len(sys.argv) > 1 else "fast")))
+
+
+# ---------------------------------------------------------------------------------------
+# FIRST MULTI-ASSET SCAN, 2026-08-21 -- two results, recorded before anything is built on them.
+#
+# 1. ETH AND SOL ARE TOO SPARSE TO PUBLISH, and coverage hides it.
+#
+#    coverage    positions   in-band notional   clusters
+#    BTC  30.5%     260           $48.2M          29
+#    ETH  35.8%     104            $0.4M           4
+#    SOL  99.8%      67            $0.1M           1
+#
+#    ETH coverage LOOKS better than BTC. But the wallets we hold barely have ETH or SOL positions
+#    within +/-10% of spot, so the map is nearly empty. A per-asset page built on four clusters
+#    worth $0.4M would be a thin page dressed as an analytical answer, which product/PLAN.md
+#    explicitly forbids. Keep collecting -- it costs no requests -- publish nothing yet.
+#
+#    SOL's 99.8% should be read with suspicion, not pride. Scanned notional is |szi| * liqPx while
+#    open interest is size * markPx, so the ratio compares two different bases and inflates when
+#    liquidation prices sit far from mark. That is inherited from the frozen contract, not
+#    introduced here, but it is visible now and should not be quoted as "we see all of SOL".
+#
+# 2. IT DID NOT RESCUE CALIBRATION, which was half the reason for doing it.
+#
+#    The hope was that other assets would give cannot_defend_pct the variance BTC lacks. The
+#    opposite: ETH is 4/4 at 100% and SOL 1/1, stdev 0.0 for both, against BTC's 36.3. Adding
+#    assets made the metric look MORE pinned, not less. The contrast calibration needs is not
+#    here, and it has to be found in another variable or another framing.
+# ---------------------------------------------------------------------------------------
