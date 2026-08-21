@@ -72,12 +72,21 @@ const jsonld = {
     <a href={url('research/free-collateral-misclassification.html')}>The measurement →</a>
   </p>
 
-  <h2>Right now, on Hyperliquid</h2>
+  {/* NOT "right now". F-0012 measured that this figure is very nearly a constant -- median 100%
+      across 433 published clusters, 71% at exactly 100%. Framing a constant as a live reading
+      invites the reader to infer something from its level, and there is nothing to infer. The
+      durable claim is more interesting anyway, and nobody else is able to make it. */}
+  <h2>Almost nothing near liquidation can defend itself</h2>
 
   <p class="lede">
-    Of {usd(t.forced_notional_usd)} in BTC exposure within ±10% of spot,
-    <strong>{usd(t.cannot_defend_usd)}</strong> sits with wallets holding zero free collateral.
-    They cannot move their liquidation price without depositing from outside.
+    Not today — <em>always</em>. Across every scan we have taken, the overwhelming majority of
+    forced BTC exposure sits with wallets holding zero free collateral. They cannot move their own
+    liquidation price without depositing from outside.
+    <a href={url('research/vulnerability-does-not-vary.html')}>We measured how constant it is →</a>
+  </p>
+  <p class="lede">
+    In the latest scan: <strong>{usd(t.cannot_defend_usd)}</strong> of
+    {usd(t.forced_notional_usd)} within ±10% of spot.
   </p>
   <p style="margin-bottom:1.6rem">
     <Prov
