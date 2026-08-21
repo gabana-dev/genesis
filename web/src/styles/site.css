@@ -281,3 +281,21 @@ ul.plain li:last-child{border-bottom:0}
   /* The graphic follows the answer on a phone: it is context, not the entry point. */
   .hero-fig{order:2}
 }
+
+/* The two things every liquidation map leaves out, set side by side because they are a pair:
+   one is about the wallet, the other about the market, and the site sells both. Stacks on a
+   phone rather than shrinking, since each paragraph carries a measured number. */
+.missing{display:grid;grid-template-columns:1fr 1fr;gap:2.2rem;margin:1.5rem 0 2rem}
+.missing h3{font-family:var(--display);font-size:1.12rem;font-weight:400;color:var(--sounding);
+  margin:0 0 .5rem;padding-top:.85rem;border-top:1px solid var(--rule)}
+.missing p{margin:0 0 .6rem}
+.missing p:last-child{margin-bottom:0}
+/* The scale line under the hero graphic. Sits apart from the two caption lines above it because
+   it answers a different question -- those say where, this says how big. */
+.fig-scale{display:block;margin-top:.5rem;padding-top:.5rem;border-top:1px solid var(--rule)}
+.fig-scale b{font-family:var(--mono);color:var(--sounding);font-weight:500}
+/* Stacks at the same width as .hero: two columns of measured prose need ~30rem each, and the
+   file's other breakpoints are in rem, not px. */
+@media(max-width:60rem){
+  .missing{grid-template-columns:1fr;gap:1.4rem}
+}

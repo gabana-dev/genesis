@@ -20,7 +20,10 @@ import { age, liveExample, marketMap, population, scorecard, url, usd } from '..
 const m = marketMap();
 const sc = scorecard();
 const example = liveExample();
-const { totals: t, coverage: cov } = m;
+const { totals: t, coverage: cov, book } = m;
+
+const biggest = Math.max(...m.clusters.map((c) => c.notional_usd));
+const biggestPct = (biggest / book.standing_notional_usd) * 100;
 
 const jsonld = {
   '@context': 'https://schema.org',
@@ -32,6 +35,7 @@ const jsonld = {
     { '@type': 'PropertyValue', name: 'forced_notional_usd', value: t.forced_notional_usd },
     { '@type': 'PropertyValue', name: 'cannot_defend_pct', value: t.cannot_defend_pct },
     { '@type': 'PropertyValue', name: 'coverage', value: cov.observed_fraction },
+    { '@type': 'PropertyValue', name: 'book_standing_notional_usd', value: book.standing_notional_usd },
   ],
 };
 
@@ -69,6 +73,13 @@ const jsonld = {
       <figcaption>
         <span class="label">Forced exposure around {Math.round(m.spot_at_map).toLocaleString('en-US')}</span>
         <span>Each line is a price band. A line bows where exposure sits there.</span>
+        {/* The contours show WHERE, at a scale relative to each other. This says HOW BIG, and it
+            is the number that decides whether any of it matters. Placed here rather than left to
+            the map page, because the shape above is what a visitor remembers. */}
+        <span class="fig-scale">
+          The largest bow is <b>{biggestPct < 1 ? biggestPct.toFixed(2) : biggestPct.toFixed(1)}%</b>
+          {' '}of the {usd(book.standing_notional_usd)} standing behind it.
+        </span>
       </figcaption>
     </figure>
   </div>
@@ -76,17 +87,37 @@ const jsonld = {
   <AddressHelp />
 
   <h2>Why not just read a liquidation map?</h2>
-  <p>
-    Because the number every map shows you is the amount at risk, and the number that decides
-    whether you survive is whether you can move your own liquidation price. That depends on free
-    collateral — and the obvious way to compute it is wrong.
+  <p class="lede">
+    Because every map shows you one number — the amount at risk — and both of the numbers that
+    decide what it means are missing from all of them.
   </p>
-  <p>
-    We checked the arithmetic against the exchange's own figure on 74 wallets. It agreed
-    <strong>19%</strong> of the time and called <strong>one wallet in five</strong> able to defend
-    itself when it was not. Always in the direction of looking safer.
-    <a href={url('research/free-collateral-misclassification.html')}>The measurement →</a>
-  </p>
+
+  <div class="missing">
+    <section>
+      <h3>Whether it can defend itself</h3>
+      <p>
+        Surviving depends on being able to move your own liquidation price, which depends on free
+        collateral. The obvious way to compute it is wrong: checked against the exchange's own
+        figure on 74 wallets it agreed <strong>19%</strong> of the time and called
+        <strong>one wallet in five</strong> able to defend itself when it was not — always in the
+        direction of looking safer.
+      </p>
+      <p><a href={url('research/free-collateral-misclassification.html')}>The measurement →</a></p>
+    </section>
+
+    <section>
+      <h3>How big it is against the book</h3>
+      <p>
+        A map scales its clusters against each other, so the biggest always looks like a wall.
+        Against the liquidity standing in front of it, the largest cluster on our map right now is
+        <strong>{biggestPct < 1 ? biggestPct.toFixed(2) : biggestPct.toFixed(1)}%</strong> of the
+        {' '}{usd(book.standing_notional_usd)} book — and the median one is under half a percent.
+        That ratio is why reaching a cluster moves price about a tenth as much as the move it
+        arrived on.
+      </p>
+      <p><a href={url('markets/btc.html')}>See it at true scale →</a></p>
+    </section>
+  </div>
 
   {/* NOT "right now". F-0012 measured that this figure is very nearly a constant -- median 100%
       across 433 published clusters, 71% at exactly 100%. Framing a constant as a live reading
