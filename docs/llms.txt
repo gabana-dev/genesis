@@ -13,8 +13,8 @@ later refuted stay published.
 - Cannot defend: 79.8% ($48.2M)
 - Drawn from: 63 positions from the hourly scan of the 300 largest. Being large correlates with being safe: this tier holds 28% of positions within 10% of liquidation where the full scan holds 47% (F-0018). Coverage and dollar totals are unaffected
 - Coverage of exchange open interest, THIS scan: 34.5%
-- Book standing within ±1% of spot: $220.7M
-- Largest cluster as a share of that book: 10.5%
+- Book standing within ±1% of spot: $243.8M
+- Largest cluster as a share of that book: 9.5%
 - Map taken at: 2026-08-22T07:54:14+00:00
 
 Coverage is reported for the current scan, never the best scan ever run. A full universe is
@@ -101,4 +101,4 @@ estimated to reach 53.3% (F-0003).
 - [https://gabana-dev.github.io/genesis/methodology.html](https://gabana-dev.github.io/genesis/methodology.html): how every number is produced
 - [https://gabana-dev.github.io/genesis/record.html](https://gabana-dev.github.io/genesis/record.html): every claim, including the refuted ones
 
-Generated 2026-08-22T09:16:19+00:00 from the same data the pages are built from.
+Generated 2026-08-22T09:31:36+00:00 from the same data the pages are built from.
