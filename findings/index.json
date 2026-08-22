@@ -225,6 +225,21 @@
    "last_updated": "2026-08-22",
    "supersedes": "none",
    "path": "findings/F-0015-liquidation-response-to-margin-not-derivable.md"
+  },
+  {
+   "id": "F-0016",
+   "title": "Across six years, none of eight public market-state variables separates forward trading conditions once trailing realised range is held constant",
+   "status": "PRELIMINARY",
+   "observation": "band-controlled lift for all eight candidates sits between 0.914 and 1.129 in raw form, and z-scoring each against its own 30-day history collapses every one toward 1.000 (1.129 to 1.039, 1.126 to 1.052, 0.914 to 0.964). The raw long/short lift reverses sign by year: 1.170, 0.990, 0.948, 0.869, 1.164, 1.232, 1.178 for 2020 through 2026",
+   "sample": "66,397 hours of BTCUSDT, ~51,000 usable per candidate; Binance 5-minute metrics from 2020-09 joined to 1-minute klines",
+   "method": "outcome is realised range over the following 24h; control is realised range over the previous 24h, banded; inside each band the candidate is split at its own median and the ratio of median forward ranges taken, then averaged across bands by weight",
+   "evidence": "market/screen.py",
+   "confidence": "24h windows stepped hourly overlap ~24-fold, so the effective sample is nearer 2,000 than 51,000 and a residual lift of 4-5% is far inside the noise. One venue, one asset, one horizon, one outcome family. A screen, not a pre-registered test \u2014 its authority is only to eliminate",
+   "market_gap": "none. Every variable here is public and anyone could run this; that it has apparently not been run is not the same as it being ours",
+   "first_recorded": "2026-08-22",
+   "last_updated": "2026-08-22",
+   "supersedes": "none",
+   "path": "findings/F-0016-public-positioning-adds-nothing-to-the-tape.md"
   }
  ]
 }
