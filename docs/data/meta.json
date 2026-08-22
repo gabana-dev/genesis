@@ -1,9 +1,9 @@
 {
- "generated_at": "2026-08-22T09:01:06+00:00",
+ "generated_at": "2026-08-22T09:16:19+00:00",
  "what_we_cannot_see": [
   "65% of open interest -- wallets absent from our trade-derived universe",
   "cross-margin effects from positions in other assets",
-  "anything that changed in the last 4012s; the map lags the book (F-0008)"
+  "anything that changed in the last 4924s; the map lags the book (F-0008)"
  ],
  "surfaces": [
   "map.json",
