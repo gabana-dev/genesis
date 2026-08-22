@@ -9,13 +9,13 @@ later refuted stay published.
 
 ## Current reading (BTC on hyperliquid)
 
-- Forced exposure within ±10%: $60.9M
-- Cannot defend: 87.2% ($53.1M)
-- Drawn from: 66 positions from the hourly scan of the 300 largest, which sit further from liquidation than the full universe (F-0011)
-- Coverage of exchange open interest, THIS scan: 35.0%
-- Book standing within ±1% of spot: $209.0M
-- Largest cluster as a share of that book: 11.3%
-- Map taken at: 2026-08-22T04:29:10+00:00
+- Forced exposure within ±10%: $59.5M
+- Cannot defend: 80.7% ($48.0M)
+- Drawn from: 60 positions from the hourly scan of the 300 largest, which sit further from liquidation than the full universe (F-0011)
+- Coverage of exchange open interest, THIS scan: 34.6%
+- Book standing within ±1% of spot: $211.6M
+- Largest cluster as a share of that book: 10.9%
+- Map taken at: 2026-08-22T07:27:35+00:00
 
 Coverage is reported for the current scan, never the best scan ever run. A full universe is
 estimated to reach 53.3% (F-0003).
@@ -97,4 +97,4 @@ estimated to reach 53.3% (F-0003).
 - [https://gabana-dev.github.io/genesis/methodology.html](https://gabana-dev.github.io/genesis/methodology.html): how every number is produced
 - [https://gabana-dev.github.io/genesis/record.html](https://gabana-dev.github.io/genesis/record.html): every claim, including the refuted ones
 
-Generated 2026-08-22T07:24:29+00:00 from the same data the pages are built from.
+Generated 2026-08-22T07:39:38+00:00 from the same data the pages are built from.
