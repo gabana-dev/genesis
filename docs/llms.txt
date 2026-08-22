@@ -13,8 +13,8 @@ later refuted stay published.
 - Cannot defend: 79.8% ($48.2M)
 - Drawn from: 63 positions from the hourly scan of the 300 largest. Being large correlates with being safe: this tier holds 28% of positions within 10% of liquidation where the full scan holds 47% (F-0018). Coverage and dollar totals are unaffected
 - Coverage of exchange open interest, THIS scan: 34.5%
-- Book standing within ±1% of spot: $202.2M
-- Largest cluster as a share of that book: 11.4%
+- Book standing within ±1% of spot: $216.0M
+- Largest cluster as a share of that book: 10.7%
 - Map taken at: 2026-08-22T07:54:14+00:00
 
 Coverage is reported for the current scan, never the best scan ever run. A full universe is
@@ -34,7 +34,7 @@ estimated to reach 53.3% (F-0003).
   deliberately empty.
 - Figures cover BTC on hyperliquid only, and exclude cross-margin effects from other assets.
 
-## The record (18 claims, 2 refuted by us)
+## The record (19 claims, 2 refuted by us)
 
 - [MEASURED] F-0001: Free collateral cannot be derived from position and margin data; naive arithmetic misclassifies one wallet in five
   withdrawable == accountValue - totalMarginUsed for 19% of wallets; 20% misclassified as able to defend
@@ -72,6 +72,8 @@ estimated to reach 53.3% (F-0003).
   of 8,000 wallets drawn uniformly at random from 51,765 discovered, 2,249 held a BTC position totalling $222.9M. The top 1 wallet holds 14.0%, the top 10 hold 56.6%, the top 100 hold 87.6%. Median position $1,308 against a mean of $99,108 — a mean 76 times the median
 - [PRELIMINARY] F-0018: The hourly scan reproduces coverage and forced notional to within a point, but sees only 28% of positions near liquidation where the full scan sees 47%
   across 7 deep scans paired with the fast scan nearest in time, coverage agrees to within 1.6 points (36.8% vs 36.2% on the closest pair) and forced sell-side notional within ±12%; but median distance to liquidation is 11.6% in the deep tier against 26.5% in the fast tier, and the share of positions sitting within 10% of liquidation is 47.4% deep against 27.8% fast
+- [PRELIMINARY] F-0019: Holding trade size against the standing book fixed, a book thinner than three-quarters of its own daily normal costs about 20% more — so the ratio absorbs most but not all of the stress regime
+  across 985,950 aggressive bursts, median cost at a burst/depth ratio of 0.01-0.02 is 1.88 bps when the book is below 0.75x its day's median, against 1.62, 1.54 and 1.62 bps in the three deeper regimes. The pattern repeats at every ratio band: 0.98 vs 0.80-0.83 at 0.005+, 3.24 vs 2.58-2.74 at 0.02+. Only the thinnest band separates; the other three are indistinguishable
 
 ## Research
 
@@ -99,4 +101,4 @@ estimated to reach 53.3% (F-0003).
 - [https://gabana-dev.github.io/genesis/methodology.html](https://gabana-dev.github.io/genesis/methodology.html): how every number is produced
 - [https://gabana-dev.github.io/genesis/record.html](https://gabana-dev.github.io/genesis/record.html): every claim, including the refuted ones
 
-Generated 2026-08-22T08:46:04+00:00 from the same data the pages are built from.
+Generated 2026-08-22T08:55:08+00:00 from the same data the pages are built from.
