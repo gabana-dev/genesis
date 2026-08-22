@@ -1,11 +1,11 @@
 {
- "generated_at": "2026-08-22T00:06:57+00:00",
+ "generated_at": "2026-08-22T00:10:50+00:00",
  "note": "Every claim Genesis has published, including the ones that turned out wrong. REFUTED entries are never removed.",
  "counts": {
   "MEASURED": 7,
   "REFUTED": 2,
   "ASSUMED": 1,
-  "PRELIMINARY": 5
+  "PRELIMINARY": 6
  },
  "findings": [
   {
@@ -170,6 +170,17 @@
    "sample": "90 Hyperliquid accounts fetched live 2026-08-22 (1,474 positions, 1,019 cross); 39 accounts holding 2+ cross positions; 1,923 wallet-transitions across 6 deep scans",
    "method": "liq_px = entry - side*margin_available/|szi|/(1 - l*side) with l = 1/(2*maxLeverage), margin_available = crossMarginSummary.accountValue - crossMaintenanceMarginUsed; then the same formula inverted per position and compared within each account; then the implied derivative compared against observed liquidationPx movement in wallets whose position size was unchanged",
    "confidence": "one venue, one afternoon, 90 accounts. The three checks disagree with the formula in three different ways, which is stronger than any one of them; but the third conflates unrealised PnL with deposited collateral and cannot yet isolate a real deposit",
+   "first_recorded": "2026-08-22",
+   "last_updated": "2026-08-22"
+  },
+  {
+   "id": "F-0016",
+   "title": "Across six years, none of eight public market-state variables separates forward trading conditions once trailing realised range is held constant",
+   "status": "PRELIMINARY",
+   "observation": "band-controlled lift for all eight candidates sits between 0.914 and 1.129 in raw form, and z-scoring each against its own 30-day history collapses every one toward 1.000 (1.129 to 1.039, 1.126 to 1.052, 0.914 to 0.964). The raw long/short lift reverses sign by year: 1.170, 0.990, 0.948, 0.869, 1.164, 1.232, 1.178 for 2020 through 2026",
+   "sample": "66,397 hours of BTCUSDT, ~51,000 usable per candidate; Binance 5-minute metrics from 2020-09 joined to 1-minute klines",
+   "method": "outcome is realised range over the following 24h; control is realised range over the previous 24h, banded; inside each band the candidate is split at its own median and the ratio of median forward ranges taken, then averaged across bands by weight",
+   "confidence": "24h windows stepped hourly overlap ~24-fold, so the effective sample is nearer 2,000 than 51,000 and a residual lift of 4-5% is far inside the noise. One venue, one asset, one horizon, one outcome family. A screen, not a pre-registered test \u2014 its authority is only to eliminate",
    "first_recorded": "2026-08-22",
    "last_updated": "2026-08-22"
   }

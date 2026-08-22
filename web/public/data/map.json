@@ -1,9 +1,9 @@
 {
  "asset": "BTC",
  "venue": "hyperliquid",
- "generated_at": "2026-08-22T00:06:57+00:00",
+ "generated_at": "2026-08-22T00:10:50+00:00",
  "map_taken_at": "2026-08-21T23:49:07+00:00",
- "map_age_seconds": 1070,
+ "map_age_seconds": 1303,
  "spot_at_map": 78559.5,
  "coverage": {
   "observed_fraction": 0.3707,
@@ -15,10 +15,10 @@
   "reference": "F-0003"
  },
  "book": {
-  "standing_notional_usd": 196491662.58,
+  "standing_notional_usd": 169939854.64,
   "band_pct": 1.0,
-  "mid": 77850.0,
-  "observable_reach_pct": 2.5,
+  "mid": 78000.0,
+  "observable_reach_pct": 2.56,
   "source": "hyperliquid l2Book, nSigFigs=3, fetched live",
   "note": "the denominator for every cluster below. Outside +/-1% it is a proxy, not an observation -- the book at a distant price is not visible today",
   "reference": "F-0014"
