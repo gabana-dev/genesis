@@ -201,3 +201,91 @@ if __name__ == "__main__":
                }, open(out, "w"))
     print(f"\nwritten to {out}")
     print("\nP1 EVIDENCE. Nothing here may be quoted to a user until CONTRACT-impact.md is frozen.")
+
+
+# ---------------------------------------------------------------------------------------
+# Q6 — is the volume/depth ratio SUFFICIENT, or does a thin book cost more at the same ratio?
+# ---------------------------------------------------------------------------------------
+#
+# The ratio already divides by depth, so a book that halves doubles the ratio and the model
+# should already know. Q6 asks the sharper question: holding the RATIO fixed, does the same
+# trade cost more when the book is thin in absolute terms?
+#
+# If yes, the book does not merely shrink under stress -- its SHAPE changes, and a model
+# calibrated on calm markets understates the cost in exactly the minutes anyone would use it.
+# F-0002 measured near-book depth falling to 0.657 in the worst quarter, so the regime is real;
+# what is untested is whether the ratio absorbs it.
+#
+# If the rows are flat, that is the better outcome and a real result: it means one number --
+# size against the standing book -- is enough, and no regime term is needed.
+
+# Depth relative to the same day's median, so the split is "thin for this market" rather than
+# "thin for 2023". An absolute threshold would mostly sort days by BTC's price level.
+DEPTH_BANDS = [0.0, 0.75, 0.9, 1.1, 1e9]
+DEPTH_LABELS = ["<0.75x", "0.75-0.9x", "0.9-1.1x", ">1.1x"]
+
+
+def run_stress(days, verbose=True):
+    """Burst cost by (depth regime, burst/depth ratio). Rows flat => the ratio is sufficient."""
+    import statistics as st
+    cells = defaultdict(list)
+    kl_cache = {}
+    total = 0
+
+    for i, day in enumerate(days):
+        ym = day[:7]
+        if ym not in kl_cache:
+            kl_cache = {ym: klines_by_minute(ym)}
+        kl = kl_cache[ym]
+        dpath = f"{DEPTH_DIR}/BTCUSDT-bookDepth-{day}.zip"
+        if not kl or not os.path.exists(dpath):
+            continue
+        try:
+            depth = depth_series(dpath)
+        except Exception:
+            continue
+        if len(depth) < 200:
+            continue
+        day_median = st.median(depth.values())
+        if day_median <= 0:
+            continue
+
+        n = 0
+        for start, _side, notional, vwap_bps, _disp in bursts(day):
+            minute = start - (start % 60000)
+            standing = depth.get(minute)
+            prev = kl.get(minute - 60000)
+            if not standing or prev is None or prev[0] <= 0:
+                continue
+            ratio = notional / standing
+            rel = standing / day_median
+            db = next(b for b, nb in zip(DEPTH_BANDS, DEPTH_BANDS[1:]) if b <= rel < nb)
+            for lo, hi in zip(RATIO_BINS, RATIO_BINS[1:]):
+                if lo <= ratio < hi:
+                    cells[(db, lo)].append(vwap_bps)
+                    break
+            n += 1
+        total += n
+        if verbose:
+            print(f"  {day}: {n:,} bursts (median depth ${day_median/1e6:.0f}M)", flush=True)
+    return cells, total
+
+
+def stress_table(cells, min_n=200):
+    import statistics as st
+    ratios = sorted({r for _, r in cells})
+    print("\nCOST PAID (bps) by DEPTH REGIME x burst/depth ratio")
+    print("rows flat => the ratio is sufficient and no regime term is needed\n")
+    print("book vs day median".ljust(20) + "".join(f"{r:g}+".rjust(14) for r in ratios))
+    for db, label in zip(DEPTH_BANDS, DEPTH_LABELS):
+        line = label.ljust(20)
+        shown = False
+        for r in ratios:
+            v = cells.get((db, r), [])
+            if len(v) >= min_n:
+                line += f"{st.median(v):.2f} ({len(v)//1000}k)".rjust(14)
+                shown = True
+            else:
+                line += "-".rjust(14)
+        if shown:
+            print(line)

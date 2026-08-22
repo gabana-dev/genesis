@@ -270,6 +270,21 @@
    "last_updated": "2026-08-22",
    "supersedes": "none",
    "path": "findings/F-0018-fast-tier-bias-quantified.md"
+  },
+  {
+   "id": "F-0019",
+   "title": "Holding trade size against the standing book fixed, a book thinner than three-quarters of its own daily normal costs about 20% more \u2014 so the ratio absorbs most but not all of the stress regime",
+   "status": "PRELIMINARY",
+   "observation": "across 985,950 aggressive bursts, median cost at a burst/depth ratio of 0.01-0.02 is 1.88 bps when the book is below 0.75x its day's median, against 1.62, 1.54 and 1.62 bps in the three deeper regimes. The pattern repeats at every ratio band: 0.98 vs 0.80-0.83 at 0.005+, 3.24 vs 2.58-2.74 at 0.02+. Only the thinnest band separates; the other three are indistinguishable",
+   "sample": "985,950 same-side aggressive bursts of $50,000 or more, 22 days sampled every 60 days across Binance futures BTCUSDT from 2023-01-01 to 2026-06-14, joined to bookDepth within \u00b11%",
+   "method": "contiguous same-side aggTrades within 200 ms grouped into one burst; cost is executed VWAP against the price at which the burst began, signed against the taker; depth regime is the standing \u00b11% notional divided by the same day's median, so the split is \"thin for this market\" rather than \"thin for 2023\"",
+   "evidence": "market/impact2.py run_stress, market/CONTRACT-impact.md K4, research/QUEUE.md Q6",
+   "confidence": "the daily-median regime is not the same stress F-0002 measured, which was depth AFTER a large move relative to before \u2014 a sharper and rarer condition this test does not isolate. Bursts within a day are not independent. The high-ratio cells above 0.05 remain empty, so nothing is established about large trades",
+   "market_gap": "every execution model assumes a static book; none states whether its own estimate survives the regime where it would be used",
+   "first_recorded": "2026-08-22",
+   "last_updated": "2026-08-22",
+   "supersedes": "none",
+   "path": "findings/F-0019-impact-holds-under-thin-books.md"
   }
  ]
 }

@@ -143,7 +143,7 @@ Any one ends IMPACT-1 and is published as a refutation.
 | **K1** | At aggTrades resolution the rows go flat within prior-volatility bands — the minute-level result was aggregation artefact |
 | **K2** | The relationship loses to the matched same-hour control |
 | **K3** | After block bootstrap over days, the CI on adjacent ratio buckets overlaps enough that the estimate cannot distinguish costs worth acting on |
-| **K4** | The relationship reverses or vanishes in the stressed-depth regime — i.e. it holds only when it is useless |
+| ~~**K4**~~ | ~~The relationship reverses or vanishes in the stressed-depth regime~~ — **TESTED 2026-08-22, DID NOT FIRE.** F-0019: 985,950 bursts. The relationship holds under thin books and strengthens slightly; a book below 0.75× its daily normal costs ~20% more at the same ratio. Note the regime tested is a daily median, not F-0002's post-move ratio — Q8 |
 | **K5** | F-0006 resolves against transfer, and the Hyperliquid book behaves differently enough that a Binance-derived estimate misleads |
 
 ## 7. What may be published either way
