@@ -9,13 +9,13 @@ later refuted stay published.
 
 ## Current reading (BTC on hyperliquid)
 
-- Forced exposure within ±10%: $65.4M
-- Cannot defend: 85.2% ($55.8M)
-- Drawn from: 72 positions from the hourly scan of the 300 largest, which sit further from liquidation than the full universe (F-0011)
-- Coverage of exchange open interest, THIS scan: 36.5%
-- Book standing within ±1% of spot: $210.6M
-- Largest cluster as a share of that book: 11.6%
-- Map taken at: 2026-08-22T00:28:08+00:00
+- Forced exposure within ±10%: $60.9M
+- Cannot defend: 87.2% ($53.1M)
+- Drawn from: 66 positions from the hourly scan of the 300 largest, which sit further from liquidation than the full universe (F-0011)
+- Coverage of exchange open interest, THIS scan: 35.0%
+- Book standing within ±1% of spot: $205.7M
+- Largest cluster as a share of that book: 11.4%
+- Map taken at: 2026-08-22T04:29:10+00:00
 
 Coverage is reported for the current scan, never the best scan ever run. A full universe is
 estimated to reach 53.3% (F-0003).
@@ -34,7 +34,7 @@ estimated to reach 53.3% (F-0003).
   deliberately empty.
 - Figures cover BTC on hyperliquid only, and exclude cross-margin effects from other assets.
 
-## The record (16 claims, 2 refuted by us)
+## The record (17 claims, 2 refuted by us)
 
 - [MEASURED] F-0001: Free collateral cannot be derived from position and margin data; naive arithmetic misclassifies one wallet in five
   withdrawable == accountValue - totalMarginUsed for 19% of wallets; 20% misclassified as able to defend
@@ -68,21 +68,26 @@ estimated to reach 53.3% (F-0003).
   the documented formula reproduces the venue's own liquidationPx to within 10 bps for only 56.4% of cross positions (median error 4.79 bps, n=1,019); inverting it position-by-position within a single account recovers margin_available values that disagree by 3.49% at the median and 73.7% at p90, so only 28.2% of accounts are internally consistent within 1%
 - [PRELIMINARY] F-0016: Across six years, none of nine public market-state variables separates forward trading conditions once trailing realised range is held constant
   band-controlled lift for all nine candidates sits between 0.914 and 1.129 in raw form, and z-scoring each against its own 30-day history collapses every one toward 1.000 (1.129 to 1.039, 1.126 to 1.052, 0.914 to 0.964). The raw long/short lift reverses sign by year: 1.170, 0.990, 0.948, 0.869, 1.164, 1.232, 1.178 for 2020 through 2026
+- [PRELIMINARY] F-0017: In a uniform random sample of Hyperliquid BTC traders, ten wallets hold 57% of the leveraged exposure and the median position is $1,308
+  of 8,000 wallets drawn uniformly at random from 51,765 discovered, 2,249 held a BTC position totalling $222.9M. The top 1 wallet holds 14.0%, the top 10 hold 56.6%, the top 100 hold 87.6%. Median position $1,308 against a mean of $99,108 — a mean 76 times the median
 
 ## Research
 
 - [One leveraged wallet in five is misclassified when you ignore free collateral](https://gabana-dev.github.io/genesis/research/free-collateral-misclassification.html): The obvious arithmetic is right 19% of the time.
-- [Liquidation maps show where forced selling is. We tested whether it moves price.](https://gabana-dev.github.io/genesis/research/liquidations-dont-move-price.html): No evidence, once you control for the volatility that was already there.
-- [The spread was 0.00154 bps. The cost was 5.19.](https://gabana-dev.github.io/genesis/research/market-making-spread-versus-cost.html): Passive market making on BTCUSDT loses by a factor of about 3,400.
-- [Crypto order books lose 15% of their depth during large moves](https://gabana-dev.github.io/genesis/research/order-books-lose-depth.html): 0.8462 — and 0.6573 in the worst quarter.
 - [Twenty-five crypto assets are worth 2.65 independent bets](https://gabana-dev.github.io/genesis/research/twenty-five-assets-two-bets.html): 2.65 of 20 — until you strip the market factor, and then it is 14.24.
-- [Your backtest needs 13 years to prove what it claims](https://gabana-dev.github.io/genesis/research/your-backtest-needs-thirteen-years.html): 4,900 independent observations to detect a 52% edge. 19,600 for 51%.
+- [Crypto order books lose 15% of their depth during large moves](https://gabana-dev.github.io/genesis/research/order-books-lose-depth.html): 0.8462 — and 0.6573 in the worst quarter.
+- [The spread was 0.00154 bps. The cost was 5.19.](https://gabana-dev.github.io/genesis/research/market-making-spread-versus-cost.html): Passive market making on BTCUSDT loses by a factor of about 3,400.
 - [The number everyone would put on the front page turns out to be a constant](https://gabana-dev.github.io/genesis/research/vulnerability-does-not-vary.html): Median 100%. It cannot rank anything.
+- [Your backtest needs 13 years to prove what it claims](https://gabana-dev.github.io/genesis/research/your-backtest-needs-thirteen-years.html): 4,900 independent observations to detect a 52% edge. 19,600 for 51%.
+- [Liquidation maps show where forced selling is. We tested whether it moves price.](https://gabana-dev.github.io/genesis/research/liquidations-dont-move-price.html): No evidence, once you control for the volatility that was already there.
 
 ## Data (static JSON, no key, no rate limit)
 
 - [https://gabana-dev.github.io/genesis/data/map.json](https://gabana-dev.github.io/genesis/data/map.json): clusters, exposure, defensibility, coverage, and the standing book each cluster is measured against
 - [https://gabana-dev.github.io/genesis/data/scorecard.json](https://gabana-dev.github.io/genesis/data/scorecard.json): every claim and its status
+- [https://gabana-dev.github.io/genesis/data/findings.json](https://gabana-dev.github.io/genesis/data/findings.json): the full registry — each claim with its
+  sample, method, evidence, stated limits and canonical page. Cite these by id (F-0001 … F-00NN);
+  each also renders at https://gabana-dev.github.io/genesis/findings/<id>.html
 - [https://gabana-dev.github.io/genesis/data/meta.json](https://gabana-dev.github.io/genesis/data/meta.json): what Isobath cannot currently see
 
 ## Pages
@@ -92,4 +97,4 @@ estimated to reach 53.3% (F-0003).
 - [https://gabana-dev.github.io/genesis/methodology.html](https://gabana-dev.github.io/genesis/methodology.html): how every number is produced
 - [https://gabana-dev.github.io/genesis/record.html](https://gabana-dev.github.io/genesis/record.html): every claim, including the refuted ones
 
-Generated 2026-08-22T00:37:23+00:00 from the same data the pages are built from.
+Generated 2026-08-22T04:33:26+00:00 from the same data the pages are built from.

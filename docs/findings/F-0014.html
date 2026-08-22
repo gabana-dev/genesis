@@ -1,0 +1,144 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>F-0014 — Both venues&#39; ±1% BTC book holds roughly a quarter of a billion dollars — Isobath</title><meta name="description" content="standing notional within ±1% of mid is $247.6M median on Binance futures and $225.6M median on Hyperliquid — within 9% of each other. At burst level, a same-side sweep worth 0.5–1% of that book costs "><link rel="canonical" href="https://gabana-dev.github.io/genesis/findings/F-0014"><meta property="og:type" content="website"><meta property="og:site_name" content="Isobath"><meta property="og:title" content="F-0014 — Both venues' ±1% BTC book holds roughly a quarter of a billion dollars — Isobath"><meta property="og:description" content="standing notional within ±1% of mid is $247.6M median on Binance futures and $225.6M median on Hyperliquid — within 9% of each other. At burst level, a same-side sweep worth 0.5–1% of that book costs "><meta property="og:url" content="https://gabana-dev.github.io/genesis/findings/F-0014"><meta property="og:image" content="https://gabana-dev.github.io/genesis/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="F-0014 — Both venues' ±1% BTC book holds roughly a quarter of a billion dollars — Isobath"><meta name="twitter:description" content="standing notional within ±1% of mid is $247.6M median on Binance futures and $225.6M median on Hyperliquid — within 9% of each other. At burst level, a same-side sweep worth 0.5–1% of that book costs "><meta name="twitter:image" content="https://gabana-dev.github.io/genesis/og.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"Claim","identifier":"F-0014","name":"Both venues' ±1% BTC book holds roughly a quarter of a billion dollars, so a single sweep costs about 1 bp at retail size and a typical liquidation cluster is too small to move price","text":"standing notional within ±1% of mid is $247.6M median on Binance futures and $225.6M median on Hyperliquid — within 9% of each other. At burst level, a same-side sweep worth 0.5–1% of that book costs the taker 0.8–1.1 bps of slippage. The median published liquidation cluster is 0.44% of the Hyperliquid book; the p90 cluster is 5.1%.","claimInterpreter":{"@type":"Organization","name":"Isobath"},"dateCreated":"2026-08-22","dateModified":"2026-08-22","url":"https://gabana-dev.github.io/genesis/findings/F-0014.html"}</script><link rel="stylesheet" href="/genesis/_assets/_alertsRoute_.D3c7Tdu_.css">
+<style>.finding-meta[data-astro-cid-5dkislp6] th[data-astro-cid-5dkislp6]{text-align:left;white-space:normal;width:12rem;vertical-align:top;color:var(--faint);font-family:var(--ui);text-transform:none;letter-spacing:0;font-size:.78rem}.finding-meta[data-astro-cid-5dkislp6] td[data-astro-cid-5dkislp6]{text-align:left;white-space:normal;font-family:var(--ui);font-size:.86rem;line-height:1.55}.finding-body[data-astro-cid-5dkislp6] h2:first-of-type{margin-top:2.4rem}
+</style></head> <body> <nav class="nav"> <a class="brand" href="/genesis/index.html"> <svg class="brandmark" viewBox="0 0 24 17" aria-hidden="true"> <path d="M1 14C4 14 5.5 9.5 9 9.5S14 14 17.5 14 22 11 23 10.5"></path> <path d="M2 10C5 10 6 5.5 9.5 5.5S14.5 10 18 10 22 7.5 23 7"></path> <path d="M3 6C6 6 7 1.5 10 1.5S15 6 18.5 6 22.5 4 23 3.5"></path> </svg>
+Isobath
+</a> <a href="/genesis/check.html">Check a wallet</a> <a href="/genesis/alerts.html">Alerts</a> <a href="/genesis/markets/btc.html">Markets</a> <a href="/genesis/research/index.html">Research</a> <a href="/genesis/record.html">Record</a> <a href="/genesis/methodology.html">Methodology</a> <a href="/genesis/api.html">API</a> </nav> <main class="wrap"> <p class="label" data-astro-cid-5dkislp6> F-0014 · first recorded 2026-08-22  </p> <h1 data-astro-cid-5dkislp6>Both venues&#39; ±1% BTC book holds roughly a quarter of a billion dollars, so a single sweep costs about 1 bp at retail size and a typical liquidation cluster is too small to move price</h1> <p style="margin:1rem 0 1.6rem" data-astro-cid-5dkislp6> <span class="tag PRELIMINARY" data-astro-cid-5dkislp6>PRELIMINARY</span>  </p> <div class="scroll" data-astro-cid-5dkislp6> <table class="finding-meta" data-astro-cid-5dkislp6> <tbody data-astro-cid-5dkislp6> <tr data-astro-cid-5dkislp6><th data-astro-cid-5dkislp6>Observation</th><td data-astro-cid-5dkislp6>standing notional within ±1% of mid is $247.6M median on Binance futures and $225.6M median on Hyperliquid — within 9% of each other. At burst level, a same-side sweep worth 0.5–1% of that book costs the taker 0.8–1.1 bps of slippage. The median published liquidation cluster is 0.44% of the Hyperliquid book; the p90 cluster is 5.1%.</td></tr><tr data-astro-cid-5dkislp6><th data-astro-cid-5dkislp6>Sample</th><td data-astro-cid-5dkislp6>221,778 aggressive bursts ≥ $50,000 over 2 Binance futures days (2025-03-10/11), joined to bookDepth ±1%; 5,112 Hyperliquid l2Book snapshots 2026-08-20/21; 433 published clusters</td></tr><tr data-astro-cid-5dkislp6><th data-astro-cid-5dkislp6>Method</th><td data-astro-cid-5dkislp6>contiguous same-side aggTrades within 200 ms grouped into one burst; cost = executed VWAP against the price at which the burst began, signed against the taker; conditioned on the PREVIOUS minute&#39;s range so that volatility already in progress cannot be credited to the burst</td></tr><tr data-astro-cid-5dkislp6><th data-astro-cid-5dkislp6>What is not established</th><td data-astro-cid-5dkislp6>two Binance days and 34 hours of Hyperliquid book. The order of magnitude is not in doubt; the day-to-day variation is not established, and neither is behaviour in a stressed regime, where F-0002 measured near-book depth falling to 0.657</td></tr><tr data-astro-cid-5dkislp6><th data-astro-cid-5dkislp6>Who else publishes this</th><td data-astro-cid-5dkislp6>liquidation heatmaps publish cluster notional without ever stating it as a fraction of the book standing in front of it, which is the only form in which the number means anything</td></tr><tr data-astro-cid-5dkislp6><th data-astro-cid-5dkislp6>Evidence</th><td data-astro-cid-5dkislp6>market/impact2.py, market/impact.py, market/CONTRACT-impact.md §4 P1/P2, ~/genesis-evidence/hl2/btc-l2book.jsonl</td></tr> </tbody> </table> </div> <div class="finding-body" data-astro-cid-5dkislp6><p>This was meant to be pre-condition P1 of IMPACT-1 — a check that minute-level aggregation had not
+distorted the cost estimate. It found a distortion in the <strong>opposite direction to the one the
+contract predicted</strong>, and the correction is larger than the experiment.</p>
+<h2 id="what-was-measured">What was measured</h2>
+<p><strong>Burst-level cost, median bps paid by the taker</strong>, by the previous minute’s range (the control)
+and the burst’s size as a fraction of the standing ±1% book:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>prior range</th><th>0+</th><th>0.005+</th><th>0.01+</th><th>0.02+</th></tr></thead><tbody><tr><td>5–10 bps</td><td>0.0 (25k)</td><td>0.8</td><td>1.4</td><td>2.3</td></tr><tr><td>10–20 bps</td><td>0.0 (74k)</td><td>1.0</td><td>1.6</td><td>2.7</td></tr><tr><td>20–40 bps</td><td>0.1 (85k)</td><td>1.1</td><td>1.8</td><td>3.0</td></tr><tr><td>40+ bps</td><td>0.1 (25k)</td><td>1.1</td><td>2.2</td><td>3.7</td></tr></tbody></table>
+<p><strong>The rows are not flat</strong>, so the relationship IMPACT-1 set out to measure is real at burst
+resolution too. But the magnitudes are an order of magnitude below the minute-level table —
+0.1 to 3.7 bps against 16 to 44 — for a reason that is obvious in hindsight and was not stated in
+the contract: the minute-level outcome was the whole minute’s high-low excursion, which is
+<strong>everyone’s</strong> trading, while this is what <strong>one</strong> taker actually paid.</p>
+<h2 id="the-number-that-reframes-the-product">The number that reframes the product</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th></th><th>±1% standing notional</th></tr></thead><tbody><tr><td>Binance futures BTCUSDT</td><td><strong>$247.6M</strong> median</td></tr><tr><td>Hyperliquid BTC</td><td><strong>$225.6M</strong> median</td></tr></tbody></table>
+<p>Two things follow, and they point in opposite directions.</p>
+<p><strong>1. F-0006’s transfer assumption looks far safer than assumed.</strong> The two venues’ BTC books are
+within 9% of each other in depth. Binance-derived microstructure is not obviously the wrong
+model for Hyperliquid at this asset. <em>This does not settle F-0006</em> — depth parity is not the same
+as identical response under stress — but it removes the largest reason to doubt it.</p>
+<p><strong>2. The retail execution-cost product is dead on BTC.</strong> A $2.1M position is 0.9% of that book.
+Closing it in one sweep costs about <strong>1 bp — roughly $200</strong>. Nobody subscribes to learn that.</p>
+<h2 id="and-it-explains-f-0010-rather-than-merely-repeating-it">And it explains F-0010 rather than merely repeating it</h2>
+<p>F-0010 measured that liquidation clusters do not move price: +40.07 bps at 15 minutes, which lost
+to a volatility-matched control at 44.52 bps. That was a refutation without a mechanism.</p>
+<p>Here is the mechanism, in the same units:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>published cluster</th><th>notional</th><th>as % of HL ±1% book</th><th>implied one-sweep displacement</th></tr></thead><tbody><tr><td>median</td><td>$1.0M</td><td>0.44%</td><td>under 2 bps</td></tr><tr><td>p90</td><td>$11.4M</td><td>5.1%</td><td>roughly 4 bps</td></tr><tr><td>p99</td><td>$85.8M</td><td>38%</td><td>outside the measured range</td></tr></tbody></table>
+<p><strong>A p90 cluster firing all at once accounts for about a tenth of the move F-0010 observed.</strong> The
+cluster is not the cause of the move; it is a passenger on it. Liquidation heatmaps are drawn at a
+scale that invites the reader to compare clusters to each other, never to the book — and against
+the book, almost all of them disappear.</p>
+<h2 id="where-the-value-survives">Where the value survives</h2>
+<p>Nothing here says impact modelling is worthless. It says <strong>it is worthless where the book is
+deep</strong>, and both BTC books are deep. The measurement retains value in exactly three places, none
+of which has been measured yet:</p>
+<ul>
+<li><strong>Thin markets</strong> — Hyperliquid altcoins, where a $2M position is a meaningful share of the book</li>
+<li><strong>Stressed regimes</strong> — F-0002 measured near-book depth at 0.657 in the worst quarter; the cost
+that matters is the cost when depth is gone, and every estimate above is a median across calm</li>
+<li><strong>The tail cluster</strong> — the p99 at 38% of the book is a different object from the median at 0.44%,
+and IMPACT-1 P2 forbids quoting it because the cells backing it are empty</li>
+</ul>
+<h2 id="the-methodological-note">The methodological note</h2>
+<p>The contract’s P1 asserted that minute aggregation <strong>understates</strong> single-sweep cost. It
+overstates it, by an order of magnitude. The assertion was written before the measurement and was
+wrong, which is the correct order in which to be wrong; it is recorded in
+<code>market/CONTRACT-impact.md</code> as an amendment rather than a silent edit, because the contract was
+still unfrozen when the error was found.</p></div> <p style="margin-top:2.4rem" data-astro-cid-5dkislp6> <a href="/genesis/record.html" data-astro-cid-5dkislp6>← Every claim and its status</a> ·
+<a href="/genesis/data/findings.json" data-astro-cid-5dkislp6>This finding as JSON →</a> </p> </main> <footer class="wrap foot"> <p> <strong>Isobath</strong> — an isobath is a chart line joining points of equal depth. It is
+        what a navigator reads to know how much water is left under them.
+</p> <p>
+Every number here carries its provenance, its observation count and how much of the market
+        we could see. <a href="/genesis/record.html">Including the claims we got wrong.</a>
+Measurements come from Genesis, the research engine behind it.
+</p> </footer> </body></html> 

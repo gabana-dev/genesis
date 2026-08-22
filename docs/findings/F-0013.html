@@ -1,0 +1,67 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>F-0013 — Wallets holding free collateral leave the market more often than trapp — Isobath</title><meta name="description" content="across 4 deep-to-deep transitions, of wallets within 5% of liquidation: 62.7% of those WITH free collateral were absent at the next scan, against 45.1% of those with none. The sign is opposite to the "><link rel="canonical" href="https://gabana-dev.github.io/genesis/findings/F-0013"><meta property="og:type" content="website"><meta property="og:site_name" content="Isobath"><meta property="og:title" content="F-0013 — Wallets holding free collateral leave the market more often than trapp — Isobath"><meta property="og:description" content="across 4 deep-to-deep transitions, of wallets within 5% of liquidation: 62.7% of those WITH free collateral were absent at the next scan, against 45.1% of those with none. The sign is opposite to the "><meta property="og:url" content="https://gabana-dev.github.io/genesis/findings/F-0013"><meta property="og:image" content="https://gabana-dev.github.io/genesis/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="F-0013 — Wallets holding free collateral leave the market more often than trapp — Isobath"><meta name="twitter:description" content="across 4 deep-to-deep transitions, of wallets within 5% of liquidation: 62.7% of those WITH free collateral were absent at the next scan, against 45.1% of those with none. The sign is opposite to the "><meta name="twitter:image" content="https://gabana-dev.github.io/genesis/og.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"Claim","identifier":"F-0013","name":"Wallets holding free collateral leave the market more often than trapped ones, so disappearance cannot be read as liquidation","text":"across 4 deep-to-deep transitions, of wallets within 5% of liquidation: 62.7% of those WITH free collateral were absent at the next scan, against 45.1% of those with none. The sign is opposite to the hypothesis that free collateral aids survival.","claimInterpreter":{"@type":"Organization","name":"Isobath"},"dateCreated":"2026-08-21","dateModified":"2026-08-21","url":"https://gabana-dev.github.io/genesis/findings/F-0013.html"}</script><link rel="stylesheet" href="/genesis/_assets/_alertsRoute_.D3c7Tdu_.css">
+<style>.finding-meta[data-astro-cid-5dkislp6] th[data-astro-cid-5dkislp6]{text-align:left;white-space:normal;width:12rem;vertical-align:top;color:var(--faint);font-family:var(--ui);text-transform:none;letter-spacing:0;font-size:.78rem}.finding-meta[data-astro-cid-5dkislp6] td[data-astro-cid-5dkislp6]{text-align:left;white-space:normal;font-family:var(--ui);font-size:.86rem;line-height:1.55}.finding-body[data-astro-cid-5dkislp6] h2:first-of-type{margin-top:2.4rem}
+</style></head> <body> <nav class="nav"> <a class="brand" href="/genesis/index.html"> <svg class="brandmark" viewBox="0 0 24 17" aria-hidden="true"> <path d="M1 14C4 14 5.5 9.5 9 9.5S14 14 17.5 14 22 11 23 10.5"></path> <path d="M2 10C5 10 6 5.5 9.5 5.5S14.5 10 18 10 22 7.5 23 7"></path> <path d="M3 6C6 6 7 1.5 10 1.5S15 6 18.5 6 22.5 4 23 3.5"></path> </svg>
+Isobath
+</a> <a href="/genesis/check.html">Check a wallet</a> <a href="/genesis/alerts.html">Alerts</a> <a href="/genesis/markets/btc.html">Markets</a> <a href="/genesis/research/index.html">Research</a> <a href="/genesis/record.html">Record</a> <a href="/genesis/methodology.html">Methodology</a> <a href="/genesis/api.html">API</a> </nav> <main class="wrap"> <p class="label" data-astro-cid-5dkislp6> F-0013 · first recorded 2026-08-21  </p> <h1 data-astro-cid-5dkislp6>Wallets holding free collateral leave the market more often than trapped ones, so disappearance cannot be read as liquidation</h1> <p style="margin:1rem 0 1.6rem" data-astro-cid-5dkislp6> <span class="tag PRELIMINARY" data-astro-cid-5dkislp6>PRELIMINARY</span>  </p> <div class="scroll" data-astro-cid-5dkislp6> <table class="finding-meta" data-astro-cid-5dkislp6> <tbody data-astro-cid-5dkislp6> <tr data-astro-cid-5dkislp6><th data-astro-cid-5dkislp6>Observation</th><td data-astro-cid-5dkislp6>across 4 deep-to-deep transitions, of wallets within 5% of liquidation: 62.7% of those WITH free collateral were absent at the next scan, against 45.1% of those with none. The sign is opposite to the hypothesis that free collateral aids survival.</td></tr><tr data-astro-cid-5dkislp6><th data-astro-cid-5dkislp6>Sample</th><td data-astro-cid-5dkislp6>2,302 wallet-transitions within 5% (3,331 within 10%) across 5 deep scans of the frozen 5,395-wallet universe, Hyperliquid BTC, 2026-08-19 to 2026-08-21</td></tr><tr data-astro-cid-5dkislp6><th data-astro-cid-5dkislp6>Method</th><td data-astro-cid-5dkislp6>track each wallet&#39;s BTC position between consecutive DEEP scans only; classify as absent, survived-improved or survived-worsened; split by whether withdrawable was above zero</td></tr><tr data-astro-cid-5dkislp6><th data-astro-cid-5dkislp6>What is not established</th><td data-astro-cid-5dkislp6>only 4 transitions, 12.9h apart, so wallets are counted repeatedly and these are not independent observations. One venue, one asset, 54 hours. The direction is clear; the magnitude is not established.</td></tr><tr data-astro-cid-5dkislp6><th data-astro-cid-5dkislp6>Who else publishes this</th><td data-astro-cid-5dkislp6>no provider publishes wallet-level survival at all, because none archives per-wallet account state over time</td></tr><tr data-astro-cid-5dkislp6><th data-astro-cid-5dkislp6>Evidence</th><td data-astro-cid-5dkislp6>product/calibration.py, ~/genesis-evidence/liqmap/snapshots-liq2.jsonl</td></tr> </tbody> </table> </div> <div class="finding-body" data-astro-cid-5dkislp6><p>The proposed product was a base rate: <em>“wallets in your situation escaped 3 times in 10.”</em> It
+required that wallets which survive be distinguishable from wallets which do not.</p>
+<p>They are not, and the reason is more interesting than the failure.</p>
+<h2 id="what-was-measured">What was measured</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>within 5% of liquidation</th><th>n</th><th>absent at next scan</th><th>improved</th><th>cut size</th></tr></thead><tbody><tr><td><strong>free collateral > 0</strong></td><td>1,109</td><td><strong>62.7%</strong></td><td>63.8%</td><td>39.4%</td></tr><tr><td><strong>free collateral = 0</strong></td><td>1,193</td><td><strong>45.1%</strong></td><td>70.8%</td><td>37.1%</td></tr></tbody></table>
+<p><strong>Wallets with the means to defend themselves disappear more often than wallets without.</strong></p>
+<h2 id="why-and-why-it-kills-the-base-rate">Why, and why it kills the base rate</h2>
+<p><strong>“Absent” conflates two opposite events.</strong> A wallet holding free collateral can close its
+position and walk away. A wallet at zero free collateral is <em>stuck</em> — it cannot exit without
+realising the loss, and it cannot move its liquidation price either.</p>
+<p>So the most likely reading is that free collateral predicts <strong>voluntary exit</strong>, not survival, and
+that trapped wallets persist in the data precisely because they are trapped.</p>
+<p>Our archive cannot separate the two. A wallet is recorded only while it holds a BTC position, so
+a wallet that closed out and a wallet that was liquidated both vanish identically. <strong>No amount of
+further collection fixes this</strong>, because the distinguishing event is not in the data we collect.</p>
+<h2 id="what-it-does-not-mean">What it does not mean</h2>
+<p>It does not mean free collateral is useless — F-0001 stands, and the venue’s own figure is still
+the only correct way to compute it. It means <strong>presence in a later scan is the wrong outcome
+variable</strong>, and any product built on it would have been measuring exits and calling them escapes.</p>
+<h2 id="the-remedy-and-it-is-specific">The remedy, and it is specific</h2>
+<p>Liquidation <em>events</em> are published, and 0xArchive’s free tier carries them alongside trades,
+funding and open interest. Joining their events to our states labels each disappearance as
+liquidation or exit, and the base rate becomes answerable.</p>
+<p>That join is the next thing to try. Until it exists, the escape-rate product is not merely
+unproven — it is unmeasurable.</p>
+<h2 id="the-methodological-warning">The methodological warning</h2>
+<p>The same analysis run on the <strong>fast</strong> tier gives 13.3% absent instead of 49.1%, because a wallet
+leaving the top-300 by notional looks identical to a wallet leaving the market. Had this been run
+on the hourly data — the obvious thing to do, since there is six times more of it — it would have
+produced a confident number that was almost entirely scan-set churn. F-0011 again, in a new place.</p></div> <p style="margin-top:2.4rem" data-astro-cid-5dkislp6> <a href="/genesis/record.html" data-astro-cid-5dkislp6>← Every claim and its status</a> ·
+<a href="/genesis/data/findings.json" data-astro-cid-5dkislp6>This finding as JSON →</a> </p> </main> <footer class="wrap foot"> <p> <strong>Isobath</strong> — an isobath is a chart line joining points of equal depth. It is
+        what a navigator reads to know how much water is left under them.
+</p> <p>
+Every number here carries its provenance, its observation count and how much of the market
+        we could see. <a href="/genesis/record.html">Including the claims we got wrong.</a>
+Measurements come from Genesis, the research engine behind it.
+</p> </footer> </body></html> 

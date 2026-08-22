@@ -1,11 +1,11 @@
 {
- "generated_at": "2026-08-22T00:37:23+00:00",
+ "generated_at": "2026-08-22T04:33:26+00:00",
  "note": "Every claim Genesis has published, including the ones that turned out wrong. REFUTED entries are never removed.",
  "counts": {
   "MEASURED": 7,
   "REFUTED": 2,
   "ASSUMED": 1,
-  "PRELIMINARY": 6
+  "PRELIMINARY": 7
  },
  "findings": [
   {
@@ -181,6 +181,17 @@
    "sample": "66,397 hours of BTCUSDT, ~51,000 usable per candidate; Binance 5-minute metrics from 2020-09 joined to 1-minute klines",
    "method": "outcome is realised range over the following 24h; control is realised range over the previous 24h, banded; inside each band the candidate is split at its own median and the ratio of median forward ranges taken, then averaged across bands by weight",
    "confidence": "24h windows stepped hourly overlap ~24-fold, so the effective sample is nearer 2,000 than 51,000 and a residual lift of 4-5% is far inside the noise. One venue, one asset, one horizon, one outcome family. A screen, not a pre-registered test \u2014 its authority is only to eliminate",
+   "first_recorded": "2026-08-22",
+   "last_updated": "2026-08-22"
+  },
+  {
+   "id": "F-0017",
+   "title": "In a uniform random sample of Hyperliquid BTC traders, ten wallets hold 57% of the leveraged exposure and the median position is $1,308",
+   "status": "PRELIMINARY",
+   "observation": "of 8,000 wallets drawn uniformly at random from 51,765 discovered, 2,249 held a BTC position totalling $222.9M. The top 1 wallet holds 14.0%, the top 10 hold 56.6%, the top 100 hold 87.6%. Median position $1,308 against a mean of $99,108 \u2014 a mean 76 times the median",
+   "sample": "WIDE-1 first scan, 8,000 wallets, Hyperliquid BTC, 2026-08-22",
+   "method": "uniform random sample without replacement, seed 20260822 recorded before drawing, from every distinct wallet seen in the BTC trade recording; positions read from the venue's own clearinghouse state",
+   "confidence": "one scan. Concentration through time is the question worth asking and this is a single point on it. The draw is uniform over wallets that TRADED BTC during the recording window, which is not the same as uniform over all Hyperliquid accounts",
    "first_recorded": "2026-08-22",
    "last_updated": "2026-08-22"
   }

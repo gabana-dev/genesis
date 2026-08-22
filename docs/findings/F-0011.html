@@ -1,0 +1,45 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>F-0011 — The hourly map systematically under-represents the positions closest t — Isobath</title><meta name="description" content="deep scan (5,395 wallets): median distance to liquidation 15.5%, 42.8% of positions within 10%. Fast scan (top 300 by notional) at the same period: median 31.6%, 23.0% within 10%."><link rel="canonical" href="https://gabana-dev.github.io/genesis/findings/F-0011"><meta property="og:type" content="website"><meta property="og:site_name" content="Isobath"><meta property="og:title" content="F-0011 — The hourly map systematically under-represents the positions closest t — Isobath"><meta property="og:description" content="deep scan (5,395 wallets): median distance to liquidation 15.5%, 42.8% of positions within 10%. Fast scan (top 300 by notional) at the same period: median 31.6%, 23.0% within 10%."><meta property="og:url" content="https://gabana-dev.github.io/genesis/findings/F-0011"><meta property="og:image" content="https://gabana-dev.github.io/genesis/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="F-0011 — The hourly map systematically under-represents the positions closest t — Isobath"><meta name="twitter:description" content="deep scan (5,395 wallets): median distance to liquidation 15.5%, 42.8% of positions within 10%. Fast scan (top 300 by notional) at the same period: median 31.6%, 23.0% within 10%."><meta name="twitter:image" content="https://gabana-dev.github.io/genesis/og.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"Claim","identifier":"F-0011","name":"The hourly map systematically under-represents the positions closest to liquidation","text":"deep scan (5,395 wallets): median distance to liquidation 15.5%, 42.8% of positions within 10%. Fast scan (top 300 by notional) at the same period: median 31.6%, 23.0% within 10%.","claimInterpreter":{"@type":"Organization","name":"Isobath"},"dateCreated":"2026-08-21","dateModified":"2026-08-21","url":"https://gabana-dev.github.io/genesis/findings/F-0011.html"}</script><link rel="stylesheet" href="/genesis/_assets/_alertsRoute_.D3c7Tdu_.css">
+<style>.finding-meta[data-astro-cid-5dkislp6] th[data-astro-cid-5dkislp6]{text-align:left;white-space:normal;width:12rem;vertical-align:top;color:var(--faint);font-family:var(--ui);text-transform:none;letter-spacing:0;font-size:.78rem}.finding-meta[data-astro-cid-5dkislp6] td[data-astro-cid-5dkislp6]{text-align:left;white-space:normal;font-family:var(--ui);font-size:.86rem;line-height:1.55}.finding-body[data-astro-cid-5dkislp6] h2:first-of-type{margin-top:2.4rem}
+</style></head> <body> <nav class="nav"> <a class="brand" href="/genesis/index.html"> <svg class="brandmark" viewBox="0 0 24 17" aria-hidden="true"> <path d="M1 14C4 14 5.5 9.5 9 9.5S14 14 17.5 14 22 11 23 10.5"></path> <path d="M2 10C5 10 6 5.5 9.5 5.5S14.5 10 18 10 22 7.5 23 7"></path> <path d="M3 6C6 6 7 1.5 10 1.5S15 6 18.5 6 22.5 4 23 3.5"></path> </svg>
+Isobath
+</a> <a href="/genesis/check.html">Check a wallet</a> <a href="/genesis/alerts.html">Alerts</a> <a href="/genesis/markets/btc.html">Markets</a> <a href="/genesis/research/index.html">Research</a> <a href="/genesis/record.html">Record</a> <a href="/genesis/methodology.html">Methodology</a> <a href="/genesis/api.html">API</a> </nav> <main class="wrap"> <p class="label" data-astro-cid-5dkislp6> F-0011 · first recorded 2026-08-21  </p> <h1 data-astro-cid-5dkislp6>The hourly map systematically under-represents the positions closest to liquidation</h1> <p style="margin:1rem 0 1.6rem" data-astro-cid-5dkislp6> <span class="tag PRELIMINARY" data-astro-cid-5dkislp6>PRELIMINARY</span>  </p> <div class="scroll" data-astro-cid-5dkislp6> <table class="finding-meta" data-astro-cid-5dkislp6> <tbody data-astro-cid-5dkislp6> <tr data-astro-cid-5dkislp6><th data-astro-cid-5dkislp6>Observation</th><td data-astro-cid-5dkislp6>deep scan (5,395 wallets): median distance to liquidation 15.5%, 42.8% of positions within 10%. Fast scan (top 300 by notional) at the same period: median 31.6%, 23.0% within 10%.</td></tr><tr data-astro-cid-5dkislp6><th data-astro-cid-5dkislp6>Sample</th><td data-astro-cid-5dkislp6>one deep snapshot of 1,327 BTC positions against three fast snapshots of 267-270, 2026-08-21</td></tr><tr data-astro-cid-5dkislp6><th data-astro-cid-5dkislp6>Method</th><td data-astro-cid-5dkislp6>distance to liquidation as |liquidationPx - spot| / spot, per position, compared across scan tiers</td></tr><tr data-astro-cid-5dkislp6><th data-astro-cid-5dkislp6>What is not established</th><td data-astro-cid-5dkislp6>one deep snapshot against three fast ones, same day, single venue, single asset. Needs several deep/fast pairs across different market conditions before it is more than PRELIMINARY.</td></tr><tr data-astro-cid-5dkislp6><th data-astro-cid-5dkislp6>Who else publishes this</th><td data-astro-cid-5dkislp6>no liquidation product we surveyed states which population its map is drawn from, let alone how that population biases the result</td></tr><tr data-astro-cid-5dkislp6><th data-astro-cid-5dkislp6>Evidence</th><td data-astro-cid-5dkislp6>market/liqmap.py (tier definitions), ~/genesis-evidence/liqmap/snapshots-liq2.jsonl</td></tr> </tbody> </table> </div> <div class="finding-body" data-astro-cid-5dkislp6><p>The LIQ-2 fast tier is the <strong>top 300 wallets by position notional</strong>, re-ranked by each deep scan.
+That rule was chosen because position notional is what determines forced flow, and it is the
+right rule for measuring <em>size</em>.</p>
+<p>It appears to be the wrong rule for measuring <em>proximity</em>. The largest positions sit further from
+their liquidation price than smaller ones — plausibly because size and caution correlate, and
+because a wallet large enough to rank in the top 300 has usually not levered itself to the edge.
+The consequence is that the map we publish every hour is drawn from the population <strong>least likely
+to be near liquidation</strong>, and the six-hourly deep scan sees nearly twice the share of close
+positions.</p>
+<h2 id="what-it-means">What it means</h2>
+<p>The hourly figures are not wrong, but they answer a narrower question than they appear to: <em>among
+the 300 largest positions</em>, this much forced selling sits nearby. That is not the same as <em>among
+all observable positions</em>.</p>
+<p>It may also bear on the near-constant <code>cannot_defend_pct</code> recorded the same day — 71% of clusters
+at exactly 100%. If the hourly population is large, distant positions, the clusters built from it
+may be dominated by a handful of wallets, and a bucket containing one fully-committed wallet is
+100% by construction. That is a hypothesis, not a result.</p>
+<h2 id="what-it-does-not-mean">What it does not mean</h2>
+<p>It does not mean the fast tier should be abandoned. A 5,395-wallet scan takes about 2h22m; an
+hourly cadence is only possible on a subset, and <code>clearinghouseState</code> has no history, so an
+uncollected hour is lost permanently. The trade is real.</p>
+<p>It also does not mean the deep scan is unbiased. Its universe is every wallet appearing in the
+<code>hl1</code> trade recording, frozen at first scan — a population selected by having traded BTC during
+one recording window, which is its own bias and is documented in the LIQ-2 contract.</p>
+<h2 id="what-would-refute-it">What would refute it</h2>
+<p>Several deep/fast pairs across different volatility regimes showing no consistent gap in median
+distance or in the share within 10%. A single pair on a single day is a coincidence until it
+repeats.</p>
+<h2 id="why-it-was-nearly-missed">Why it was nearly missed</h2>
+<p>It surfaced while checking something else entirely — whether ETH’s near-empty map was a universe
+problem or a market fact. The ETH and SOL numbers come from the fast tier, so the same bias
+applies to them, and the conclusion “ETH traders simply sit further from liquidation” was about to
+be drawn from the population least able to support it. The first multi-asset <strong>deep</strong> scan will
+settle that, and it is already scheduled.</p></div> <p style="margin-top:2.4rem" data-astro-cid-5dkislp6> <a href="/genesis/record.html" data-astro-cid-5dkislp6>← Every claim and its status</a> ·
+<a href="/genesis/data/findings.json" data-astro-cid-5dkislp6>This finding as JSON →</a> </p> </main> <footer class="wrap foot"> <p> <strong>Isobath</strong> — an isobath is a chart line joining points of equal depth. It is
+        what a navigator reads to know how much water is left under them.
+</p> <p>
+Every number here carries its provenance, its observation count and how much of the market
+        we could see. <a href="/genesis/record.html">Including the claims we got wrong.</a>
+Measurements come from Genesis, the research engine behind it.
+</p> </footer> </body></html> 

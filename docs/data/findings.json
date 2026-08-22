@@ -1,12 +1,7 @@
 {
  "generated_at": "2026-08-22T04:33:26+00:00",
- "note": "Every claim Genesis has published, including the ones that turned out wrong. REFUTED entries are never removed.",
- "counts": {
-  "MEASURED": 7,
-  "REFUTED": 2,
-  "ASSUMED": 1,
-  "PRELIMINARY": 7
- },
+ "note": "Every measurement Isobath has published, with its sample, method and stated limits. REFUTED entries are never removed. Each has a page at /findings/<id>.html",
+ "count": 17,
  "findings": [
   {
    "id": "F-0001",
@@ -17,7 +12,11 @@
    "method": "compare venue-reported `withdrawable` against marginSummary arithmetic on the same response",
    "confidence": "single venue, single moment, wallets already known to hold positions; would be strengthened by repetition across days and by a second venue",
    "first_recorded": "2026-08-20",
-   "last_updated": "2026-08-20"
+   "last_updated": "2026-08-20",
+   "evidence": "research/withdrawable-is-not-derivable.md",
+   "market_gap": "no provider checked (HyperTracker, Coinglass, 0xArchive, Tardis, QuickNode, Dwellir, PurrData) exposes this field",
+   "supersedes": "none",
+   "url": "/findings/F-0001.html"
   },
   {
    "id": "F-0002",
@@ -28,7 +27,11 @@
    "method": "notional within +/-1% after a window divided by before, bucketed by absolute move, de-overlapped at the horizon",
    "confidence": "quiet-market control reads 1.000 to four decimals across 1,320 days, so the effect appears only where claimed; one venue, one asset",
    "first_recorded": "2026-08-20",
-   "last_updated": "2026-08-20"
+   "last_updated": "2026-08-20",
+   "evidence": "research/evaporation-result.md, market/evaporation_run.py, ~/genesis-evidence/bookdepth/evaporation.json",
+   "market_gap": "no liquidation product models a non-static book",
+   "supersedes": "none",
+   "url": "/findings/F-0002.html"
   },
   {
    "id": "F-0003",
@@ -39,7 +42,11 @@
    "method": "known stratum from the last deep scan plus mean-per-wallet extrapolation over the new stratum; bootstrapped interval",
    "confidence": "still a lower bound \u2014 the universe is activity-derived and the recording keeps discovering wallets",
    "first_recorded": "2026-08-20",
-   "last_updated": "2026-08-20"
+   "last_updated": "2026-08-20",
+   "evidence": "research/coverage-measured-53-percent.md",
+   "market_gap": "no provider publishes a coverage figure for position data",
+   "supersedes": "F-0004",
+   "url": "/findings/F-0003.html"
   },
   {
    "id": "F-0004",
@@ -50,7 +57,11 @@
    "method": "n/a \u2014 the error was a premise never measured, not a calculation",
    "confidence": "refuted by direct measurement",
    "first_recorded": "2026-08-19",
-   "last_updated": "2026-08-20"
+   "last_updated": "2026-08-20",
+   "evidence": "research/DEFECT-universe-was-four-hours-not-21-days.md, research/coverage-measured-53-percent.md",
+   "market_gap": "n/a",
+   "supersedes": "none",
+   "url": "/findings/F-0004.html"
   },
   {
    "id": "F-0005",
@@ -61,7 +72,11 @@
    "method": "80% power, alpha .05 two-sided, on a proportion, with observations counted as INDEPENDENT rather than raw",
    "confidence": "arithmetic, not an estimate; the only judgement is what effect size counts as realistic",
    "first_recorded": "2026-08-20",
-   "last_updated": "2026-08-20"
+   "last_updated": "2026-08-20",
+   "evidence": "research/POWER-AUDIT-the-daily-lane-is-unpowerable.md",
+   "market_gap": "n/a",
+   "supersedes": "none",
+   "url": "/findings/F-0005.html"
   },
   {
    "id": "F-0006",
@@ -72,7 +87,11 @@
    "method": "n/a",
    "confidence": "untested and load-bearing; hl2 began recording Hyperliquid l2Book at nSigFigs=3 on 2026-08-20 to settle it",
    "first_recorded": "2026-08-20",
-   "last_updated": "2026-08-20"
+   "last_updated": "2026-08-20",
+   "evidence": "research/ASSUMPTION-binance-physics-may-not-transfer.md",
+   "market_gap": "n/a",
+   "supersedes": "none",
+   "url": "/findings/F-0006.html"
   },
   {
    "id": "F-0007",
@@ -83,7 +102,11 @@
    "method": "n/a \u2014 the claim was asserted from landing pages rather than docs",
    "confidence": "refuted from the vendor's own field list",
    "first_recorded": "2026-08-20",
-   "last_updated": "2026-08-20"
+   "last_updated": "2026-08-20",
+   "evidence": "research/VERDICT-the-collection-thesis-is-dead.md, research/CORRECTION-the-moat-is-thinner-than-i-said.md",
+   "market_gap": "n/a",
+   "supersedes": "none",
+   "url": "/findings/F-0007.html"
   },
   {
    "id": "F-0008",
@@ -94,7 +117,11 @@
    "method": "compare observation timestamps of the two joined sources",
    "confidence": "structural, not incidental -- the fast position scan runs hourly while the book updates every 5.3 s",
    "first_recorded": "2026-08-20",
-   "last_updated": "2026-08-20"
+   "last_updated": "2026-08-20",
+   "evidence": "market/cascade_live.py",
+   "market_gap": "no liquidation product discloses the age of the positions behind its map",
+   "supersedes": "none",
+   "url": "/findings/F-0008.html"
   },
   {
    "id": "F-0009",
@@ -105,7 +132,11 @@
    "method": "cascade sweep of the observed ladder against the observed book, evaporation not applied",
    "confidence": "ONE observation, low coverage, static book, and a 51-minute clock gap (F-0008)",
    "first_recorded": "2026-08-20",
-   "last_updated": "2026-08-20"
+   "last_updated": "2026-08-20",
+   "evidence": "market/cascade_live.py",
+   "market_gap": "no product publishes forced flow as a ratio to available depth",
+   "supersedes": "none",
+   "url": "/findings/F-0009.html"
   },
   {
    "id": "F-0010",
@@ -116,7 +147,11 @@
    "method": "CASCADE-1, contract frozen sha256 7dee22eed9cdaecb before any outcome; episodes not events; permutation null plus same-symbol same-hour control",
    "confidence": "K1 met at 228 episodes, so this is not an underpowered null; three days, one venue, and only two of four declared benchmark tiers were implemented",
    "first_recorded": "2026-08-21",
-   "last_updated": "2026-08-21"
+   "last_updated": "2026-08-21",
+   "evidence": "research/cascade-1-result.md, market/cascade1.py",
+   "market_gap": "no liquidation product publishes a volatility-matched control",
+   "supersedes": "none",
+   "url": "/findings/F-0010.html"
   },
   {
    "id": "F-0011",
@@ -127,7 +162,11 @@
    "method": "distance to liquidation as |liquidationPx - spot| / spot, per position, compared across scan tiers",
    "confidence": "one deep snapshot against three fast ones, same day, single venue, single asset. Needs several deep/fast pairs across different market conditions before it is more than PRELIMINARY.",
    "first_recorded": "2026-08-21",
-   "last_updated": "2026-08-21"
+   "last_updated": "2026-08-21",
+   "evidence": "market/liqmap.py (tier definitions), ~/genesis-evidence/liqmap/snapshots-liq2.jsonl",
+   "market_gap": "no liquidation product we surveyed states which population its map is drawn from, let alone how that population biases the result",
+   "supersedes": "none",
+   "url": "/findings/F-0011.html"
   },
   {
    "id": "F-0012",
@@ -138,7 +177,11 @@
    "method": "contrast pre-condition P1 of market/CONTRACT-calibration.md, run before any outcome was examined",
    "confidence": "three days, one venue, one asset, and drawn largely from the fast scan tier whose selection bias is F-0011. A market regime with materially lower leverage could restore the spread. What is not in doubt is that no spread exists in the period recorded.",
    "first_recorded": "2026-08-21",
-   "last_updated": "2026-08-21"
+   "last_updated": "2026-08-21",
+   "evidence": "market/CONTRACT-calibration.md \u00a73, product/calibration.py, ~/genesis-evidence/calibration/calls.jsonl",
+   "market_gap": "no liquidation product publishes a defensibility figure at all, so none has had occasion to discover that theirs would not vary either",
+   "supersedes": "none",
+   "url": "/findings/F-0012.html"
   },
   {
    "id": "F-0013",
@@ -149,7 +192,11 @@
    "method": "track each wallet's BTC position between consecutive DEEP scans only; classify as absent, survived-improved or survived-worsened; split by whether withdrawable was above zero",
    "confidence": "only 4 transitions, 12.9h apart, so wallets are counted repeatedly and these are not independent observations. One venue, one asset, 54 hours. The direction is clear; the magnitude is not established.",
    "first_recorded": "2026-08-21",
-   "last_updated": "2026-08-21"
+   "last_updated": "2026-08-21",
+   "evidence": "product/calibration.py, ~/genesis-evidence/liqmap/snapshots-liq2.jsonl",
+   "market_gap": "no provider publishes wallet-level survival at all, because none archives per-wallet account state over time",
+   "supersedes": "none",
+   "url": "/findings/F-0013.html"
   },
   {
    "id": "F-0014",
@@ -160,7 +207,11 @@
    "method": "contiguous same-side aggTrades within 200 ms grouped into one burst; cost = executed VWAP against the price at which the burst began, signed against the taker; conditioned on the PREVIOUS minute's range so that volatility already in progress cannot be credited to the burst",
    "confidence": "two Binance days and 34 hours of Hyperliquid book. The order of magnitude is not in doubt; the day-to-day variation is not established, and neither is behaviour in a stressed regime, where F-0002 measured near-book depth falling to 0.657",
    "first_recorded": "2026-08-22",
-   "last_updated": "2026-08-22"
+   "last_updated": "2026-08-22",
+   "evidence": "market/impact2.py, market/impact.py, market/CONTRACT-impact.md \u00a74 P1/P2, ~/genesis-evidence/hl2/btc-l2book.jsonl",
+   "market_gap": "liquidation heatmaps publish cluster notional without ever stating it as a fraction of the book standing in front of it, which is the only form in which the number means anything",
+   "supersedes": "none",
+   "url": "/findings/F-0014.html"
   },
   {
    "id": "F-0015",
@@ -171,7 +222,11 @@
    "method": "liq_px = entry - side*margin_available/|szi|/(1 - l*side) with l = 1/(2*maxLeverage), margin_available = crossMarginSummary.accountValue - crossMaintenanceMarginUsed; then the same formula inverted per position and compared within each account; then the implied derivative compared against observed liquidationPx movement in wallets whose position size was unchanged",
    "confidence": "one venue, one afternoon, 90 accounts. The three checks disagree with the formula in three different ways, which is stronger than any one of them; but the third conflates unrealised PnL with deposited collateral and cannot yet isolate a real deposit",
    "first_recorded": "2026-08-22",
-   "last_updated": "2026-08-22"
+   "last_updated": "2026-08-22",
+   "evidence": "market/liqcalc.py, ~/genesis-evidence/liqmap/snapshots-liq2.jsonl",
+   "market_gap": "no provider offers a margin-response figure at all, and this measurement suggests why -- the obvious arithmetic is wrong in a way that only shows up in the tail",
+   "supersedes": "none",
+   "url": "/findings/F-0015.html"
   },
   {
    "id": "F-0016",
@@ -182,7 +237,11 @@
    "method": "outcome is realised range over the following 24h; control is realised range over the previous 24h, banded; inside each band the candidate is split at its own median and the ratio of median forward ranges taken, then averaged across bands by weight",
    "confidence": "24h windows stepped hourly overlap ~24-fold, so the effective sample is nearer 2,000 than 51,000 and a residual lift of 4-5% is far inside the noise. One venue, one asset, one horizon, one outcome family. A screen, not a pre-registered test \u2014 its authority is only to eliminate",
    "first_recorded": "2026-08-22",
-   "last_updated": "2026-08-22"
+   "last_updated": "2026-08-22",
+   "evidence": "market/screen.py",
+   "market_gap": "none. Every variable here is public and anyone could run this; that it has apparently not been run is not the same as it being ours",
+   "supersedes": "none",
+   "url": "/findings/F-0016.html"
   },
   {
    "id": "F-0017",
@@ -193,7 +252,11 @@
    "method": "uniform random sample without replacement, seed 20260822 recorded before drawing, from every distinct wallet seen in the BTC trade recording; positions read from the venue's own clearinghouse state",
    "confidence": "one scan. Concentration through time is the question worth asking and this is a single point on it. The draw is uniform over wallets that TRADED BTC during the recording window, which is not the same as uniform over all Hyperliquid accounts",
    "first_recorded": "2026-08-22",
-   "last_updated": "2026-08-22"
+   "last_updated": "2026-08-22",
+   "evidence": "market/wide.py, ~/genesis-evidence/liqmap/snapshots-wide.jsonl",
+   "market_gap": "every provider reports aggregate open interest. None reports how few accounts it belongs to, because none holds an unbiased per-wallet sample",
+   "supersedes": "none",
+   "url": "/findings/F-0017.html"
   }
  ]
 }
