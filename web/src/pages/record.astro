@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import Grid from '../components/Grid.astro';
 import Note from '../components/Note.astro';
 import Stat from '../components/Stat.astro';
-import { abs, scorecard } from '../lib/data';
+import { abs, scorecard, url } from '../lib/data';
 
 const sc = scorecard();
 const counts = Object.entries(sc.counts).sort(([a], [b]) => a.localeCompare(b));
@@ -48,12 +48,22 @@ const jsonld = {
     a competitor will not reproduce, because doing so means publishing when you were wrong.
   </Note>
 
+  {/* Each row now links to the finding's own page. Until 2026-08-22 the record listed every
+      claim and only seven were reachable — the ten that had never been written up as essays
+      existed in the repository and nowhere a reader could get to them. */}
   <ul class="plain">
     {sc.findings.map((f) => (
       <li>
-        <span class={`tag ${f.status}`}>{f.status}</span>&nbsp; <strong>{f.title}</strong><br />
-        <span style="color:var(--ink-faint);font-size:.85rem">{f.observation ?? ''}</span>
+        <span class={`tag ${f.status}`}>{f.status}</span>&nbsp;
+        <a href={url(`findings/${f.id}.html`)}><strong>{f.title}</strong></a><br />
+        <span style="color:var(--faint);font-size:.85rem">{f.observation ?? ''}</span>
       </li>
     ))}
   </ul>
+
+  <p style="margin-top:1.6rem" class="hint">
+    Every finding is also a machine-readable object:
+    <a href={url('data/findings.json')}>data/findings.json</a> carries all
+    {sc.findings.length} with their status, sample, method and stated limits.
+  </p>
 </Base>

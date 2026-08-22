@@ -124,7 +124,7 @@ def build_map(snap):
     return clusters, total, zero, len(in_band), len(pos)
 
 
-def build_scorecard():
+def build_scorecard(full=False):
     """
     Every claim Genesis has published, and what happened to it.
 
@@ -140,9 +140,14 @@ def build_scorecard():
         d = front_matter(p)
         if not d:
             continue
-        out.append({k: d.get(k) for k in
-                    ("id", "title", "status", "observation", "sample", "method",
-                     "confidence", "first_recorded", "last_updated")})
+        keys = ("id", "title", "status", "observation", "sample", "method",
+                "confidence", "first_recorded", "last_updated")
+        if full:
+            keys += ("evidence", "market_gap", "supersedes")
+        row = {k: d.get(k) for k in keys}
+        if full:
+            row["url"] = f"/findings/{d.get('id')}.html"
+        out.append(row)
     counts = {}
     for f in out:
         counts[f["status"]] = counts.get(f["status"], 0) + 1
@@ -227,6 +232,7 @@ def main():
     }
 
     sc, counts = build_scorecard()
+    sc_full = build_scorecard(full=True)[0]
     scorecard_doc = {
         "generated_at": now.isoformat(timespec="seconds"),
         "note": "Every claim Genesis has published, including the ones that turned out wrong. "
@@ -245,7 +251,19 @@ def main():
         "surfaces": ["map.json", "scorecard.json", "meta.json"],
     }
 
-    for name, doc in (("map", map_doc), ("scorecard", scorecard_doc), ("meta", meta_doc)):
+    # The full findings registry, not the scorecard's summary of it. The scorecard answers "how
+    # often were you wrong"; this answers "what exactly do you claim, from what sample, by what
+    # method, and what is not established" -- which is what an agent citing us actually needs.
+    findings_doc = {
+        "generated_at": now.isoformat(timespec="seconds"),
+        "note": "Every measurement Isobath has published, with its sample, method and stated "
+                "limits. REFUTED entries are never removed. Each has a page at /findings/<id>.html",
+        "count": len(sc_full),
+        "findings": sc_full,
+    }
+
+    for name, doc in (("map", map_doc), ("scorecard", scorecard_doc), ("meta", meta_doc),
+                      ("findings", findings_doc)):
         with open(os.path.join(OUTDIR, f"{name}.json"), "w") as f:
             json.dump(doc, f, indent=1)
 

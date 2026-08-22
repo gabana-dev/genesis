@@ -21,4 +21,35 @@ const research = defineCollection({
   }),
 });
 
-export const collections = { research };
+/**
+ * The findings registry — every measurement, rendered from the same markdown the repository holds.
+ *
+ * WHY IT LOADS FROM OUTSIDE web/. `findings/F-*.md` is the source of truth for the whole project:
+ * the scorecard, the MCP server and `findings/index.json` are all generated from it. Copying those
+ * files in here would create a second copy that drifts, and the first thing to drift would be a
+ * status — a REFUTED finding still reading MEASURED on the public site is the exact failure this
+ * project exists to make impossible. So the site reads the originals.
+ */
+const findings = defineCollection({
+  loader: glob({ pattern: 'F-*.md', base: '../findings' }),
+  schema: z.object({
+    id: z.string(),
+    title: z.string(),
+    status: z.enum(['MEASURED', 'PRELIMINARY', 'ASSUMED', 'REFUTED', 'SUPERSEDED']),
+    observation: z.string(),
+    sample: z.string(),
+    method: z.string(),
+    evidence: z.string(),
+    /** What would make this wrong, and what is not established. Never optional. */
+    confidence: z.string(),
+    market_gap: z.string(),
+    /* YAML parses a bare 2026-08-22 as a Date, not a string, so these are coerced rather than
+       declared as strings. Quoting them in seventeen markdown files would work too and would be
+       one quote away from breaking again the next time a finding is written by hand. */
+    first_recorded: z.coerce.date(),
+    last_updated: z.coerce.date(),
+    supersedes: z.string(),
+  }),
+});
+
+export const collections = { research, findings };

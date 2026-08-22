@@ -1,0 +1,109 @@
+---
+/**
+ * One finding, as a page.
+ *
+ * WHY THIS EXISTS SEPARATELY FROM /research. A research article is an essay written for a reader.
+ * A finding is a RECORD: an id, a status, a sample, a method, and an explicit statement of what is
+ * not established. Both should exist, and conflating them means either the essays fill with
+ * front-matter or the records never get published at all — and only seven of seventeen findings
+ * had ever been written up as essays.
+ *
+ * Rendered from findings/F-*.md directly, so a status can never differ between the repository and
+ * the site. The machine-readable form of the same object is /data/findings.json.
+ */
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { SITE, url } from '../../lib/data';
+
+export async function getStaticPaths() {
+  const all = await getCollection('findings');
+  return all.map((entry) => ({ params: { id: entry.data.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+/** YAML gives these as Dates; the page and the JSON-LD both want a plain calendar day. */
+const iso = (v: Date) => v.toISOString().slice(0, 10);
+
+const d = entry.data;
+
+// Claim, not Article. The identifier, the status and the date are the point — an agent asking
+// "what does Isobath find about X, and is it still standing" needs those three and nothing else.
+const jsonld = {
+  '@context': 'https://schema.org',
+  '@type': 'Claim',
+  identifier: d.id,
+  name: d.title,
+  text: d.observation,
+  claimInterpreter: { '@type': 'Organization', name: 'Isobath' },
+  dateCreated: iso(d.first_recorded),
+  dateModified: iso(d.last_updated),
+  url: `${SITE}/findings/${d.id}.html`,
+};
+
+const rows: [string, string][] = [
+  ['Observation', d.observation],
+  ['Sample', d.sample],
+  ['Method', d.method],
+  ['What is not established', d.confidence],
+  ['Who else publishes this', d.market_gap],
+  ['Evidence', d.evidence],
+];
+---
+
+<Base title={`${d.id} — ${d.title.slice(0, 70)} — Isobath`} description={d.observation.slice(0, 200)} jsonld={jsonld}>
+  <p class="label">
+    {d.id} · first recorded {iso(d.first_recorded)}
+    {iso(d.last_updated) !== iso(d.first_recorded) && ` · updated ${iso(d.last_updated)}`}
+  </p>
+  <h1>{d.title}</h1>
+
+  <p style="margin:1rem 0 1.6rem">
+    <span class={`tag ${d.status}`}>{d.status}</span>
+    {d.supersedes !== 'none' && <span class="hint" style="margin-left:.6rem">supersedes {d.supersedes}</span>}
+  </p>
+
+  <div class="scroll">
+    <table class="finding-meta">
+      <tbody>
+        {rows.map(([k, v]) => (
+          <tr><th>{k}</th><td>{v}</td></tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="finding-body"><Content /></div>
+
+  <p style="margin-top:2.4rem">
+    <a href={url('record.html')}>← Every claim and its status</a> ·
+    <a href={url(`data/findings.json`)}>This finding as JSON →</a>
+  </p>
+</Base>
+
+<style>
+  .finding-meta th {
+    text-align: left;
+    white-space: normal;
+    width: 12rem;
+    vertical-align: top;
+    color: var(--faint);
+    font-family: var(--ui);
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 0.78rem;
+  }
+  .finding-meta td {
+    text-align: left;
+    white-space: normal;
+    font-family: var(--ui);
+    font-size: 0.86rem;
+    line-height: 1.55;
+  }
+  /* The body is the finding's own markdown, so it arrives with tables and headings the rest of
+     the site styles globally. Only the top margin needs correcting: the metadata table already
+     provides the separation an <h2> would normally open. */
+  .finding-body :global(h2:first-of-type) {
+    margin-top: 2.4rem;
+  }
+</style>

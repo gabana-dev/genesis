@@ -76,6 +76,9 @@ ${reading}
 
 - [${SITE}/data/map.json](${SITE}/data/map.json): clusters, exposure, defensibility, coverage, and the standing book each cluster is measured against
 - [${SITE}/data/scorecard.json](${SITE}/data/scorecard.json): every claim and its status
+- [${SITE}/data/findings.json](${SITE}/data/findings.json): the full registry — each claim with its
+  sample, method, evidence, stated limits and canonical page. Cite these by id (F-0001 … F-00NN);
+  each also renders at ${SITE}/findings/<id>.html
 - [${SITE}/data/meta.json](${SITE}/data/meta.json): what Isobath cannot currently see
 
 ## Pages
