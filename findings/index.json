@@ -255,6 +255,21 @@
    "last_updated": "2026-08-22",
    "supersedes": "none",
    "path": "findings/F-0017-exposure-is-extremely-concentrated.md"
+  },
+  {
+   "id": "F-0018",
+   "title": "The hourly scan reproduces coverage and forced notional to within a point, but sees only 28% of positions near liquidation where the full scan sees 47%",
+   "status": "PRELIMINARY",
+   "observation": "across 7 deep scans paired with the fast scan nearest in time, coverage agrees to within 1.6 points (36.8% vs 36.2% on the closest pair) and forced sell-side notional within \u00b112%; but median distance to liquidation is 11.6% in the deep tier against 26.5% in the fast tier, and the share of positions sitting within 10% of liquidation is 47.4% deep against 27.8% fast",
+   "sample": "7 deep/fast snapshot pairs within one hour of each other, 10,585 deep positions and 1,896 fast positions, Hyperliquid BTC, 2026-08-19 to 2026-08-22",
+   "method": "pair each deep snapshot with the fast snapshot closest in time; compare the published aggregates directly, and compare the full distance-to-liquidation distribution of the positions each tier actually holds",
+   "evidence": "~/genesis-evidence/liqmap/snapshots-liq2.jsonl, research/QUEUE.md Q7",
+   "confidence": "three days, one venue, one asset, 7 pairs. The direction is unambiguous and consistent across every pair; the exact ratio is not established. The earliest pair sat at 20% coverage while the archive was still filling and its forced-notional gap (71.3M vs 33.6M) is far larger than any later pair's",
+   "market_gap": "no provider states which of its published figures survive its own sampling and which do not",
+   "first_recorded": "2026-08-22",
+   "last_updated": "2026-08-22",
+   "supersedes": "none",
+   "path": "findings/F-0018-fast-tier-bias-quantified.md"
   }
  ]
 }

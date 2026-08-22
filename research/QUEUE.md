@@ -28,6 +28,13 @@ moment it arrives.
 | F-0015 | margin response can be computed | formula reproduces the venue for 56.4%, internally inconsistent for 71.8% of accounts |
 | F-0016 | public market state predicts conditions | nine variables, six years, **every lift within noise of 1.00**; long/short and funding reverse sign by year |
 
+## Answered, not killed — a measurement that changed what we publish
+
+| # | question | answer |
+|---|---|---|
+| F-0017 | what does an unbiased sample of this market look like | ten wallets hold **56.6%**; median position **$1,308** against a mean of $99,108 |
+| F-0018 | how much does the hourly tier's selection bias the published map | coverage and dollar totals survive; **position counts do not** — 28% vs 47% within 10% of liquidation |
+
 **The pattern, stated so it is not rediscovered a seventh time:** every one of these was either
 volatility wearing a costume, a constant, or arithmetic that did not hold. Any new hypothesis must
 say, before it runs, which of those three it could be — and how the test would tell.
@@ -40,14 +47,15 @@ say, before it runs, which of those three it could be — and how the test would
 |---|---|---|---|---|
 | **Q1** | a dollar of margin moves a liquidation price by a measurable amount | deposits + hourly `liquidationPx` | **collecting now** — `market/deposits.py` records the fast set hourly; needs enough deposits landing between two scans | **waiting on time** |
 | **Q2** | exposure concentration varies, and varies with something | wide-tier per-wallet state | **collecting now** — `market/wide.py`, 8,000 wallets, frozen sample | **waiting on time** |
-| **Q3** | forced exposure as a share of the standing book is a market-level variable that varies | LIQ-2 + `standing_book()` | book is captured live per refresh but not archived per snapshot | **fixable today** |
+| **Q3** | forced exposure as a share of the standing book is a market-level variable that varies | LIQ-2 + `standing_book()` | none — `market/bookwatch.py` archives it every 15 minutes since 2026-08-22 | **collecting; testable once the series is weeks long** |
 | **Q4** | wallet cohorts behave differently before failure | longitudinal per-wallet state | wide tier plus months | **waiting on time** |
 | **Q5** | IMPACT-1 at burst level in a **thin** book (HL altcoins) | HL l2Book + trades for non-BTC | needs a thin-book recorder; BTC's book is $225M and the cost is ~1 bp (F-0014) | **buildable** |
 | **Q6** | IMPACT-1 under **stressed** depth | bookDepth + aggTrades, conditioned on the F-0002 regime | none — data is on disk | **runnable today** |
-| **Q7** | does the fast tier's non-representativeness (F-0011) bias the published map, and by how much | LIQ-2 deep vs fast, paired | none — both archives exist | **runnable today** |
+| ~~Q7~~ | ~~does the fast tier bias the published map~~ | | | **ANSWERED 2026-08-22 → F-0018.** Coverage and dollar totals survive (within 1.6 points, within a tenth); position counts do not (28% vs 47% within 10% of liquidation) |
 
-**Q3, Q6 and Q7 have no blocker.** They are the next tests, in that order, and the queue exists so
-that "we are waiting for data" cannot be said while three runnable questions sit unrun.
+**Q7 is answered and Q3 is now collecting.** Q6 is the remaining test with no blocker at all —
+bookDepth and aggTrades are both on disk. The queue exists so that "we are waiting for data"
+cannot be said while a runnable question sits unrun.
 
 ---
 

@@ -149,18 +149,28 @@ export const TIERS: Record<Tier, string> = {
 /**
  * How to describe the population a figure was drawn from.
  *
- * F-0011: the hourly fast tier is the top 300 wallets by position notional, and those sit
- * FURTHER from liquidation than the full universe -- deep scans show median distance 15.5% and
- * 42.8% within 10%, against the fast tier's 31.6% and 23.0%. So an unqualified headline drawn
- * from the fast tier overstates how representative it is.
+ * F-0011 established the direction: the hourly fast tier is the top 300 wallets by position
+ * notional, and those sit FURTHER from liquidation than the full universe. F-0018 paired seven
+ * deep scans with the fast scan nearest in time and measured the size of it -- median distance
+ * 11.6% deep against 26.5% fast, and 47.4% of positions within 10% of liquidation against 27.8%.
+ * (F-0011's own figures, 42.8% and 23.0%, came from a different window; same direction, and the
+ * paired design is the stronger measurement.)
+ *
+ * The same pairing found coverage agreeing to within 1.6 points and forced notional to within a
+ * tenth, so DOLLAR figures are not qualified here -- only counts of positions.
  *
  * Written once and used on every surface -- home page, map, social card, llms.txt, MCP -- because
  * a caveat that appears on one page and not another is worse than none: it looks like the
  * unqualified number is the reliable one.
  */
 export function population(tier: string, wallets: number): string {
+  // The fast-tier warning used to read "which sit further from liquidation than the full
+  // universe" and stop there. F-0018 measured how much further: the hourly scan sees 28% of
+  // positions within 10% of liquidation where the full scan sees 47%. A number the reader can
+  // weigh beats a hedge they can only take on trust — and the same measurement found coverage
+  // and dollar totals agree between tiers, so those are NOT hedged here.
   return tier === 'fast'
-    ? `${wallets} positions from the hourly scan of the 300 largest, which sit further from liquidation than the full universe (F-0011)`
+    ? `${wallets} positions from the hourly scan of the 300 largest. Being large correlates with being safe: this tier holds 28% of positions within 10% of liquidation where the full scan holds 47% (F-0018). Coverage and dollar totals are unaffected`
     : `${wallets} positions from the full frozen universe`;
 }
 
