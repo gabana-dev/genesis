@@ -197,8 +197,13 @@ of charts. None of them is readable.
 1. ~~`/check` — "what would change this"~~ **BLOCKED by F-0015.** Do not ship a computed margin
    response. The replacement task is instrumentation: record deposits against liquidation prices
    until the response can be measured.
-2. **Navigation and language pass** — Alerts out, Methodology to the footer, "defensibility"
-   replaced with "can you defend this" everywhere a trader reads.
+2. ~~Navigation and language pass~~ **DONE 2026-08-22.** Nav is the four jobs plus API set apart:
+   Markets · Check a wallet · Research · Record | API. Alerts left the top bar and lives where it
+   belongs — after a result on `/check` — and Methodology moved to the footer alongside the API
+   and the findings JSON. The language audit found "defensibility" was *already* confined to
+   methodology, the API and the research library; trader-facing copy said "nothing to defend
+   with" throughout. The real gap was `/check` never mentioning what F-0015 blocked, and it now
+   carries **What we cannot tell you yet**, shown only after a result.
 3. **`/research/<slug>` restructured** to Question → Test → Result → **What would change our
    mind** → Data → Status, pulling kill conditions from the contracts that already hold them.
 4. **Answer pages**, each one carrying live data and an original measurement.

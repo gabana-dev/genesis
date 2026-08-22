@@ -57,13 +57,16 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
         </svg>
         Isobath
       </a>
-      <a href={url('check.html')}>Check a wallet</a>
-      {bot && <a href={url('alerts.html')}>Alerts</a>}
+      {/* Four jobs, one entry each (product/IA.md §1). Alerts is deliberately NOT here: the bot
+          works, and nobody who is not us has used it. A half-used surface in the top bar reads as
+          an unfinished product, and the honest place to offer it is after someone has just learnt
+          they are exposed — which is where check.html already puts it. Methodology moved to the
+          footer for the opposite reason: it is load-bearing, and nobody arrives to read it. */}
       <a href={url('markets/btc.html')}>Markets</a>
+      <a href={url('check.html')}>Check a wallet</a>
       <a href={url('research/index.html')}>Research</a>
       <a href={url('record.html')}>Record</a>
-      <a href={url('methodology.html')}>Methodology</a>
-      <a href={url('api.html')}>API</a>
+      <a class="nav-end" href={url('api.html')}>API</a>
     </nav>
     <main class={`wrap${wide ? ' wrap-wide' : ''}`}><slot /></main>
     <footer class="wrap foot">
@@ -75,6 +78,12 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
         Every number here carries its provenance, its observation count and how much of the market
         we could see. <a href={url('record.html')}>Including the claims we got wrong.</a>
         Measurements come from Genesis, the research engine behind it.
+      </p>
+      <p class="foot-links">
+        <a href={url('methodology.html')}>How every number is produced</a>
+        <a href={url('api.html')}>API</a>
+        <a href={url('data/findings.json')}>Findings as JSON</a>
+        {bot && <a href={url('alerts.html')}>Alerts</a>}
       </p>
     </footer>
   </body>

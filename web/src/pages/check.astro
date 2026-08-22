@@ -64,6 +64,37 @@ const jsonld = {
     </section>
   )}
 
+  {/* The question every visitor asks next, answered with the reason we cannot answer it.
+      Two independent product reviews both landed on "add $500 and your liquidation moves to X"
+      as the feature worth building. F-0015 measured that it cannot be computed from the venue's
+      published state, and shipping a number wrong for two positions in five would be F-0001 all
+      over again — in the safer-looking direction, which is the dangerous one. Saying so is worth
+      more than the number would have been, and it is the kind of thing a competitor will not
+      copy because it costs them a feature. */}
+  <section id="cannot" hidden>
+    <h2>What we cannot tell you yet</h2>
+    <p>
+      The obvious next question is <em>how much would I have to add to move my liquidation price
+      out of danger</em> — and we are not going to answer it with arithmetic, because we checked
+      whether the arithmetic works and it does not.
+    </p>
+    <p>
+      Hyperliquid publishes a formula for the liquidation price. Run against the exchange's own
+      figure on 1,019 live positions it agreed to within a tenth of a percent for
+      <strong>56%</strong> of them, and inverting it position-by-position inside a single account
+      gives answers that disagree with each other for <strong>72%</strong> of accounts. A margin
+      figure that is right three times in five, in the direction of looking safer, is worse than
+      no figure at all.
+      <a href={url('findings/F-0015.html')}>The measurement →</a>
+    </p>
+    <p>
+      So we are recording it instead. Every hour we log real deposits against the liquidation
+      prices either side of them, which turns the question from a derivation into an observation.
+      That needs months of archive, and it is the one thing here nobody else can do — it requires
+      per-wallet account state through time, which no data provider collects.
+    </p>
+  </section>
+
   <section id="explain" hidden>
     <h2>Why free collateral is the number that matters</h2>
     <p>

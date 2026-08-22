@@ -104,6 +104,9 @@ function verdict(free: number, used: number): string {
 
 function reveal(): void {
   $('explain').hidden = false;
+  // Shown only after a result, never before one: "what we cannot tell you" is an answer to a
+  // question the visitor has just formed, and on an empty page it reads as an excuse.
+  $('cannot').hidden = false;
   const cta = document.getElementById('alertcta');
   if (cta) cta.hidden = false;
 }
