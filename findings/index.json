@@ -228,9 +228,9 @@
   },
   {
    "id": "F-0016",
-   "title": "Across six years, none of eight public market-state variables separates forward trading conditions once trailing realised range is held constant",
+   "title": "Across six years, none of nine public market-state variables separates forward trading conditions once trailing realised range is held constant",
    "status": "PRELIMINARY",
-   "observation": "band-controlled lift for all eight candidates sits between 0.914 and 1.129 in raw form, and z-scoring each against its own 30-day history collapses every one toward 1.000 (1.129 to 1.039, 1.126 to 1.052, 0.914 to 0.964). The raw long/short lift reverses sign by year: 1.170, 0.990, 0.948, 0.869, 1.164, 1.232, 1.178 for 2020 through 2026",
+   "observation": "band-controlled lift for all nine candidates sits between 0.914 and 1.129 in raw form, and z-scoring each against its own 30-day history collapses every one toward 1.000 (1.129 to 1.039, 1.126 to 1.052, 0.914 to 0.964). The raw long/short lift reverses sign by year: 1.170, 0.990, 0.948, 0.869, 1.164, 1.232, 1.178 for 2020 through 2026",
    "sample": "66,397 hours of BTCUSDT, ~51,000 usable per candidate; Binance 5-minute metrics from 2020-09 joined to 1-minute klines",
    "method": "outcome is realised range over the following 24h; control is realised range over the previous 24h, banded; inside each band the candidate is split at its own median and the ratio of median forward ranges taken, then averaged across bands by weight",
    "evidence": "market/screen.py",

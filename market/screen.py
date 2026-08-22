@@ -29,6 +29,7 @@ any claim is published.
 DATA, all free and already on disk:
     metrics   5-minute open interest and positioning ratios, BTCUSDT, from 2020-09  (701,594 rows)
     klines    1-minute OHLCV, from 2019
+    funding   8-hourly funding rate, from 2020-01 (7,212 prints)
 """
 import os
 import sys
@@ -40,6 +41,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 EVIDENCE = os.path.expanduser("~/genesis-evidence")
 METRICS = f"{EVIDENCE}/metrics/metrics-consolidated.npy"
 KLINES = f"{EVIDENCE}/market-data"
+FUNDING = f"{EVIDENCE}/market-data/BTCUSDT-funding.npy"
 
 M_TS, M_OI, M_OIV, M_CT_LS, M_ST_LS, M_C_LS, M_TAKER = range(7)
 
@@ -121,6 +123,13 @@ def build():
             out[i] = (x[i] - w.mean()) / w.std()
         return out
 
+    # Funding prints 8-hourly; the last print AT OR BEFORE the hour, same no-look-ahead rule.
+    fund = np.full(len(hours), np.nan)
+    if os.path.exists(FUNDING):
+        f = np.load(FUNDING)
+        fi = np.searchsorted(f[:, 0].astype(np.int64), hours, side="right") - 1
+        fund = np.where(fi >= 0, f[np.clip(fi, 0, len(f) - 1), 1], np.nan)
+
     cands = {
         "OI level (z, 30d)": zscore(oi),
         "OI change 24h %": pct_change(oi, 24),
@@ -131,6 +140,8 @@ def build():
         "top traders L/S (count)": ct_ls,
         "all accounts L/S": c_ls,
         "taker buy/sell ratio": taker,
+        "funding rate": fund,
+        "funding rate (z, 30d)": zscore(fund),
     }
     return hours, trail, fwd, cands
 
