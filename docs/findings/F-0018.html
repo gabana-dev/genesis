@@ -1,0 +1,103 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>F-0018 — The hourly scan reproduces coverage and forced notional to within a po — Isobath</title><meta name="description" content="across 7 deep scans paired with the fast scan nearest in time, coverage agrees to within 1.6 points (36.8% vs 36.2% on the closest pair) and forced sell-side notional within ±12%; but median distance "><link rel="canonical" href="https://gabana-dev.github.io/genesis/findings/F-0018"><meta property="og:type" content="website"><meta property="og:site_name" content="Isobath"><meta property="og:title" content="F-0018 — The hourly scan reproduces coverage and forced notional to within a po — Isobath"><meta property="og:description" content="across 7 deep scans paired with the fast scan nearest in time, coverage agrees to within 1.6 points (36.8% vs 36.2% on the closest pair) and forced sell-side notional within ±12%; but median distance "><meta property="og:url" content="https://gabana-dev.github.io/genesis/findings/F-0018"><meta property="og:image" content="https://gabana-dev.github.io/genesis/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="F-0018 — The hourly scan reproduces coverage and forced notional to within a po — Isobath"><meta name="twitter:description" content="across 7 deep scans paired with the fast scan nearest in time, coverage agrees to within 1.6 points (36.8% vs 36.2% on the closest pair) and forced sell-side notional within ±12%; but median distance "><meta name="twitter:image" content="https://gabana-dev.github.io/genesis/og.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"Claim","identifier":"F-0018","name":"The hourly scan reproduces coverage and forced notional to within a point, but sees only 28% of positions near liquidation where the full scan sees 47%","text":"across 7 deep scans paired with the fast scan nearest in time, coverage agrees to within 1.6 points (36.8% vs 36.2% on the closest pair) and forced sell-side notional within ±12%; but median distance to liquidation is 11.6% in the deep tier against 26.5% in the fast tier, and the share of positions sitting within 10% of liquidation is 47.4% deep against 27.8% fast","claimInterpreter":{"@type":"Organization","name":"Isobath"},"dateCreated":"2026-08-22","dateModified":"2026-08-22","url":"https://gabana-dev.github.io/genesis/findings/F-0018.html"}</script><link rel="stylesheet" href="/genesis/_assets/_alertsRoute_.D3c7Tdu_.css">
+<style>.finding-meta[data-astro-cid-5dkislp6] th[data-astro-cid-5dkislp6]{text-align:left;white-space:normal;width:12rem;vertical-align:top;color:var(--faint);font-family:var(--ui);text-transform:none;letter-spacing:0;font-size:.78rem}.finding-meta[data-astro-cid-5dkislp6] td[data-astro-cid-5dkislp6]{text-align:left;white-space:normal;font-family:var(--ui);font-size:.86rem;line-height:1.55}.finding-body[data-astro-cid-5dkislp6] h2:first-of-type{margin-top:2.4rem}
+</style></head> <body> <nav class="nav"> <a class="brand" href="/genesis/index.html"> <svg class="brandmark" viewBox="0 0 24 17" aria-hidden="true"> <path d="M1 14C4 14 5.5 9.5 9 9.5S14 14 17.5 14 22 11 23 10.5"></path> <path d="M2 10C5 10 6 5.5 9.5 5.5S14.5 10 18 10 22 7.5 23 7"></path> <path d="M3 6C6 6 7 1.5 10 1.5S15 6 18.5 6 22.5 4 23 3.5"></path> </svg>
+Isobath
+</a> <a href="/genesis/check.html">Check a wallet</a> <a href="/genesis/alerts.html">Alerts</a> <a href="/genesis/markets/btc.html">Markets</a> <a href="/genesis/research/index.html">Research</a> <a href="/genesis/record.html">Record</a> <a href="/genesis/methodology.html">Methodology</a> <a href="/genesis/api.html">API</a> </nav> <main class="wrap"> <p class="label" data-astro-cid-5dkislp6> F-0018 · first recorded 2026-08-22  </p> <h1 data-astro-cid-5dkislp6>The hourly scan reproduces coverage and forced notional to within a point, but sees only 28% of positions near liquidation where the full scan sees 47%</h1> <p style="margin:1rem 0 1.6rem" data-astro-cid-5dkislp6> <span class="tag PRELIMINARY" data-astro-cid-5dkislp6>PRELIMINARY</span>  </p> <div class="scroll" data-astro-cid-5dkislp6> <table class="finding-meta" data-astro-cid-5dkislp6> <tbody data-astro-cid-5dkislp6> <tr data-astro-cid-5dkislp6><th data-astro-cid-5dkislp6>Observation</th><td data-astro-cid-5dkislp6>across 7 deep scans paired with the fast scan nearest in time, coverage agrees to within 1.6 points (36.8% vs 36.2% on the closest pair) and forced sell-side notional within ±12%; but median distance to liquidation is 11.6% in the deep tier against 26.5% in the fast tier, and the share of positions sitting within 10% of liquidation is 47.4% deep against 27.8% fast</td></tr><tr data-astro-cid-5dkislp6><th data-astro-cid-5dkislp6>Sample</th><td data-astro-cid-5dkislp6>7 deep/fast snapshot pairs within one hour of each other, 10,585 deep positions and 1,896 fast positions, Hyperliquid BTC, 2026-08-19 to 2026-08-22</td></tr><tr data-astro-cid-5dkislp6><th data-astro-cid-5dkislp6>Method</th><td data-astro-cid-5dkislp6>pair each deep snapshot with the fast snapshot closest in time; compare the published aggregates directly, and compare the full distance-to-liquidation distribution of the positions each tier actually holds</td></tr><tr data-astro-cid-5dkislp6><th data-astro-cid-5dkislp6>What is not established</th><td data-astro-cid-5dkislp6>three days, one venue, one asset, 7 pairs. The direction is unambiguous and consistent across every pair; the exact ratio is not established. The earliest pair sat at 20% coverage while the archive was still filling and its forced-notional gap (71.3M vs 33.6M) is far larger than any later pair&#39;s</td></tr><tr data-astro-cid-5dkislp6><th data-astro-cid-5dkislp6>Who else publishes this</th><td data-astro-cid-5dkislp6>no provider states which of its published figures survive its own sampling and which do not</td></tr><tr data-astro-cid-5dkislp6><th data-astro-cid-5dkislp6>Evidence</th><td data-astro-cid-5dkislp6>~/genesis-evidence/liqmap/snapshots-liq2.jsonl, research/QUEUE.md Q7</td></tr> </tbody> </table> </div> <div class="finding-body" data-astro-cid-5dkislp6><p>F-0011 established that the fast tier — the 300 largest positions, scanned hourly — sits further
+from liquidation than the full universe, and the site has carried that warning as words ever
+since. Q7 asked how much it actually matters. The answer separates our published numbers into two
+groups, which is more useful than a single verdict.</p>
+<h2 id="what-survives-the-sampling">What survives the sampling</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>paired, deep vs fast</th><th>deep</th><th>fast</th></tr></thead><tbody><tr><td>coverage (closest pair)</td><td>36.8%</td><td>36.2%</td></tr><tr><td>forced sell-side notional</td><td>$21.7M</td><td>$19.3M</td></tr></tbody></table>
+<p><strong>Coverage and notional are safe.</strong> Both are notional-weighted, and the notional lives in a
+handful of very large accounts (F-0017: ten wallets hold 57% of an unbiased sample) which <em>both</em>
+tiers see. Scanning 5,395 wallets instead of 300 adds 1,000 more positions and almost no dollars.</p>
+<p>So the coverage figure on the map is not distorted by which tier produced it. That is worth
+knowing precisely because it was not obvious.</p>
+<h2 id="what-does-not-survive">What does not survive</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>distance to liquidation</th><th>deep</th><th>fast</th></tr></thead><tbody><tr><td>p10</td><td>1.2%</td><td>3.2%</td></tr><tr><td>p25</td><td>3.2%</td><td>9.0%</td></tr><tr><td><strong>median</strong></td><td><strong>11.6%</strong></td><td><strong>26.5%</strong></td></tr><tr><td>p75</td><td>43.3%</td><td>80.3%</td></tr><tr><td>p90</td><td>130.9%</td><td>571.7%</td></tr><tr><td><strong>within 10% of liquidation</strong></td><td><strong>47.4%</strong></td><td><strong>27.8%</strong></td></tr></tbody></table>
+<p><strong>The hourly map sees a market where 28% of positions are near liquidation. The full scan sees
+47%.</strong> Every quantity counted in <em>positions</em> rather than dollars inherits that, and the gap widens
+at every percentile.</p>
+<p>The mechanism is not mysterious and it is the same one as F-0017: the largest positions are the
+best capitalised, so ranking by notional selects for distance from liquidation. The fast tier is
+not a random sample of the market — it is a sample of the market’s biggest accounts, and being big
+is correlated with being safe.</p>
+<h2 id="what-this-changes">What this changes</h2>
+<p>Nothing about coverage, and nothing about the forced-exposure totals. It changes the caveat, which
+until now said <em>“these sit further from liquidation than the full universe”</em> without saying how
+much further. <strong>28% against 47%</strong> is a measurement; the sentence it replaces was a hedge.</p>
+<p>It also sets a rule going forward: any figure this project publishes as a <strong>count of positions</strong>
+or a <strong>share of positions</strong> must state its tier, and must not be compared across tiers. Dollar
+figures may be.</p>
+<h2 id="what-it-does-not-establish">What it does not establish</h2>
+<p>Whether the deep tier is itself representative. It is the frozen 5,395-wallet universe, which
+F-0017 showed is selected for trading activity and is not a uniform draw of the market either. The
+deep tier is <em>less</em> biased than the fast tier on this axis. It is not unbiased. WIDE-1 exists to
+find out how much of a difference that second layer of selection makes, and it needs months.</p></div> <p style="margin-top:2.4rem" data-astro-cid-5dkislp6> <a href="/genesis/record.html" data-astro-cid-5dkislp6>← Every claim and its status</a> ·
+<a href="/genesis/data/findings.json" data-astro-cid-5dkislp6>This finding as JSON →</a> </p> </main> <footer class="wrap foot"> <p> <strong>Isobath</strong> — an isobath is a chart line joining points of equal depth. It is
+        what a navigator reads to know how much water is left under them.
+</p> <p>
+Every number here carries its provenance, its observation count and how much of the market
+        we could see. <a href="/genesis/record.html">Including the claims we got wrong.</a>
+Measurements come from Genesis, the research engine behind it.
+</p> </footer> </body></html> 
